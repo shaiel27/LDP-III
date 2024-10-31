@@ -145,14 +145,14 @@ const Dashboard = () => {
     {
       avatar: { src: avatar5, status: 'success' },
       user: {
-        name: 'Agapetus Tadeáš',
+        name: 'Shaiel Becerra',
         new: true,
         registered: 'Jan 1, 2023',
       },
       country: { name: 'Spain', flag: cifEs },
       usage: {
         value: 22,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
+        period: 'Jun 12, 2023 - Jul 10, 2023',
         color: 'primary',
       },
       payment: { name: 'Google Wallet', icon: cibCcApplePay },

@@ -1,1 +1,15 @@
 // Here you can add other styles
+:root{
+    --color-primary:red  !important;
+    --color-bg:white !important;
+}
+.bg-primary{
+    background-color: var(--color-primary) !important;
+    
+}
+.container-lg{
+    background-color: var(--color-bg) !important;
+}
+.header{
+    background-color: #16423C !important;
+}

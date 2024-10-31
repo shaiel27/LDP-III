@@ -1,5 +1,7 @@
 import React from 'react'
+import  CIconSvg from '@coreui/icons-react'
 import CIcon from '@coreui/icons-react'
+
 import {
   cilBell,
   cilCalculator,
@@ -12,6 +14,10 @@ import {
   cilPuzzle,
   cilSpeedometer,
   cilStar,
+  cilMedicalCross,
+  cibFurryNetwork,
+  cilClipboard,
+  cilCalendar,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -28,19 +34,19 @@ const _nav = [
   },
   {
     component: CNavTitle,
-    name: 'Theme',
+    name: 'Interes',
   },
   {
     component: CNavItem,
-    name: 'Colors',
+    name: 'Citas',
     to: '/theme/colors',
     icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
-    name: 'Typography',
+    name: 'Horarios',
     to: '/theme/typography',
-    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilCalendar} customClassName="nav-icon" />,
   },
   {
     component: CNavTitle,
@@ -48,18 +54,18 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Base',
+    name: 'Mascotas',
     to: '/base',
-    icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" />,
+    icon: <CIcon icon={cibFurryNetwork} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'Accordion',
+        name: 'Agregar Mascotas',
         to: '/base/accordion',
       },
       {
         component: CNavItem,
-        name: 'Breadcrumb',
+        name: 'Mis Mascotas',
         to: '/base/breadcrumbs',
       },
       {
@@ -131,24 +137,52 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Buttons',
+    name: 'Citas',
     to: '/buttons',
-    icon: <CIcon icon={cilCursor} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilMedicalCross} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'Buttons',
+        name: 'Consulta',
         to: '/buttons/buttons',
       },
       {
         component: CNavItem,
-        name: 'Buttons groups',
+        name: 'Servicio de  Baño',
         to: '/buttons/button-groups',
       },
       {
         component: CNavItem,
-        name: 'Dropdowns',
+        name: 'Servicio de Peluqueria',
         to: '/buttons/dropdowns',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Inventario',
+    to: '/buttons',
+    icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Consulta',
+        to: '/buttons/buttons',
+      },
+      {
+        component: CNavItem,
+        name: 'Baño',
+        to: '/buttons/button-groups',
+      },
+      {
+        component: CNavItem,
+        name: 'Peluqueria',
+        to: '/buttons/dropdowns',
+      },
+      {
+        component: CNavItem,
+        name: 'Mis Mascotas',
+        to: '/buttons/buttons',
       },
     ],
   },
