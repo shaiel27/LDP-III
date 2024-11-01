@@ -18,6 +18,7 @@ import {
   cibFurryNetwork,
   cilClipboard,
   cilCalendar,
+  cilGroup,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -36,6 +37,7 @@ const _nav = [
     component: CNavTitle,
     name: 'Interes',
   },
+  
   {
     component: CNavItem,
     name: 'Citas',
@@ -44,8 +46,14 @@ const _nav = [
   },
   {
     component: CNavItem,
+    name: 'Empleados',
+    to: '/Workers',
+    icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
     name: 'Horarios',
-    to: '/theme/typography',
+    to: '/pages/Schedule',
     icon: <CIcon icon={cilCalendar} customClassName="nav-icon" />,
   },
   {
@@ -61,14 +69,19 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Agregar Mascotas',
-        to: '/base/accordion',
+        to: 'pages/Addpet',
       },
+      /*{
+        component: CNavItem,
+        name: 'Agregar Mascotas',
+        to: '/base/accordion',
+      },*/
       {
         component: CNavItem,
         name: 'Mis Mascotas',
         to: '/base/breadcrumbs',
       },
-      {
+      /*{
         component: CNavItem,
         name: 'Cards',
         to: '/base/cards',
@@ -132,7 +145,7 @@ const _nav = [
         component: CNavItem,
         name: 'Tooltips',
         to: '/base/tooltips',
-      },
+      },*/
     ],
   },
   {
@@ -166,27 +179,27 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Consulta',
+        name: 'Medicamentos',
         to: '/buttons/buttons',
       },
       {
         component: CNavItem,
-        name: 'Baño',
+        name: 'Alimentos',
         to: '/buttons/button-groups',
       },
       {
         component: CNavItem,
-        name: 'Peluqueria',
+        name: 'Accesorios',
         to: '/buttons/dropdowns',
       },
-      {
+      /*{
         component: CNavItem,
         name: 'Mis Mascotas',
         to: '/buttons/buttons',
-      },
+      },*/
     ],
   },
-  {
+  /*{
     component: CNavGroup,
     name: 'Forms',
     icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
@@ -305,7 +318,7 @@ const _nav = [
   {
     component: CNavTitle,
     name: 'Extras',
-  },
+  },*/
   {
     component: CNavGroup,
     name: 'Pages',
