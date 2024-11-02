@@ -45,16 +45,27 @@ const _nav = [
     icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
   },
   {
-    component: CNavItem,
+    component: CNavGroup,
     name: 'Empleados',
     to: '/Workers',
     icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Horarios',
-    to: '/pages/Schedule',
-    icon: <CIcon icon={cilCalendar} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Mis empleados',
+        to: '/Workers',
+      },
+      {
+        component: CNavItem,
+        name: 'Añadir Empleados',
+        to: '/pages/AddWorker'
+      },
+      {
+        component: CNavItem,
+        name: 'Horarios',
+        to: '/pages/Schedule',
+      },
+    ]  
   },
   {
     component: CNavTitle,
@@ -79,7 +90,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Mis Mascotas',
-        to: '/base/breadcrumbs',
+        to: '/pages/Pets',
       },
       /*{
         component: CNavItem,
