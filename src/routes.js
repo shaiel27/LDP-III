@@ -1,3 +1,4 @@
+import { element } from 'prop-types';
 import React from 'react';
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
@@ -9,6 +10,8 @@ const PetRecords = React.lazy(() => import('./views/pages/Pets/pet'));
 const AppointmentRequest = React.lazy(() => import('./views/pages/date/dates'));
 const InventoryManagement = React.lazy(() => import('./views/pages/inventory/products'));
 const UserAppointments = React.lazy(() => import('./views/pages/mydates/Userappointments'));
+const EmployeeDashboard  = React.lazy(() => import('./views/pages/workerInfo/Workerinfo'))
+const PaymentAdminModule = React.lazy (() => import ('./views/pages/payments/Payments'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home', element: Dashboard },
@@ -21,6 +24,8 @@ const routes = [
   { path: '/pages/date', name: 'AppointmentManagement', element: AppointmentRequest },
   { path: '/pages/inventory', name: 'InventoryManagement', element: InventoryManagement },
   { path: '/pages/mydates', name: 'UserAppointments', element: UserAppointments },
+  { path: '/pages/workerInfo', name: 'EmployeeModuleDesign ', element: EmployeeDashboard },
+  { path: '/pages/payments', name: 'PaymentAdminModule ', element: PaymentAdminModule },
 ];
 
 export default routes
