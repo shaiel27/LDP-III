@@ -127,7 +127,7 @@ export default function InventoryManagement() {
                 </CRow>
                 <CRow className="mb-3">
                   <CCol>
-                    <CFormLabel htmlFor="productImage">Product Image</CFormLabel>
+                    <CFormLabel htmlFor="productImage">Imagen del producto</CFormLabel>
                     <CFormInput
                       type="file"
                       id="productImage"
@@ -147,7 +147,7 @@ export default function InventoryManagement() {
 
       <CRow>
         <CCol>
-          <h2 className="mb-4">Product Inventory</h2>
+          <h2 className="mb-4">Inventario</h2>
         </CCol>
       </CRow>
 
@@ -159,9 +159,9 @@ export default function InventoryManagement() {
               <CCardBody>
                 <CCardTitle>{product.name}</CCardTitle>
                 <CCardText>
-                  Category: {product.category}<br />
-                  Price: ${product.price.toFixed(2)}<br />
-                  Quantity: {product.quantity}
+                  Categoria: {product.category}<br />
+                  Precio ${product.price.toFixed(2)}<br />
+                  Cantidad: {product.quantity}
                 </CCardText>
               </CCardBody>
             </CCard>

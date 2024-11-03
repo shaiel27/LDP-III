@@ -86,7 +86,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Mis Mascotas',
-        to: '/pages/Pets',
+        to: 'pages/mydates',
       },
       /*{
         component: CNavItem,
