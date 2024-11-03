@@ -49,6 +49,8 @@ export default function RegistrationForm() {
                 <option value="surgery">Cirujano Veterinario</option>
                 <option value="dermatology">Dermatólogo Veterinario</option>
                 <option value="nutrition">Nutricionista Veterinario</option>
+                <option value="groomer">Personal de Baños Veterinarios</option>
+                <option value="stylist"> Estilista Veterinario</option>
               </CFormSelect>
             </CCol>
             <CCol md={6}>

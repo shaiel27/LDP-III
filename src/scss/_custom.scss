@@ -15,7 +15,7 @@
     background-color: #12372A!important;
 }
 .nav-link{
-    border: white !important;
+    border: #B6C4B6 !important;
     color: white !important;
 }
 .nav-link:hover{
@@ -25,5 +25,22 @@
     background-color: #B6C4B6 !important;
 }
 .simplebar-content{
-    border-color: white !important;
+    border-color: #B6C4B6 !important;
+}
+.sidebar-header{
+    border-color: #B6C4B6 !important;
+}
+.header-title{
+    text-align: center;
+    font-size: 20px;
+    text-decoration: none;
+}
+.container-fluid a{
+    color: white !important;
+}
+.container-fluid .active{
+    color: white !important;
+}
+.container-fluid .active::before{
+    color: white !important;
 }

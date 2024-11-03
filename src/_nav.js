@@ -3,21 +3,13 @@ import  CIconSvg from '@coreui/icons-react'
 import CIcon from '@coreui/icons-react'
 
 import {
-  cilBell,
-  cilCalculator,
-  cilChartPie,
-  cilCursor,
   cilDescription,
-  cilDrop,
-  cilNotes,
-  cilPencil,
-  cilPuzzle,
-  cilSpeedometer,
+  cilNoteAdd,
+  cilHome,
   cilStar,
   cilMedicalCross,
   cibFurryNetwork,
   cilClipboard,
-  cilCalendar,
   cilGroup,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
@@ -25,25 +17,29 @@ import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 const _nav = [
   {
     component: CNavItem,
-    name: 'Dashboard',
+    name: 'Inicio',
     to: '/dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
+    icon: <CIcon icon={cilHome} customClassName="nav-icon" />,
+    // badge: {
+    //   color: 'info',
+    //   text: 'NEW',
+    // },
+  },
+  {
+    component: CNavItem,
+    name: 'Inventario',
+    to: '/pages/inventory',
+    icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />,
+    // badge: {
+    //   color: 'info',
+    //   text: 'NEW',
+    // },
   },
   {
     component: CNavTitle,
     name: 'Interes',
   },
   
-  {
-    component: CNavItem,
-    name: 'Citas',
-    to: '/theme/colors',
-    icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
-  },
   {
     component: CNavGroup,
     name: 'Empleados',
@@ -167,47 +163,14 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Consulta',
-        to: '/buttons/buttons',
+        name: 'Agregar Cita',
+        to: '/pages/date',
       },
       {
         component: CNavItem,
-        name: 'Servicio de  Baño',
+        name: 'Ver mis Citas',
         to: '/buttons/button-groups',
       },
-      {
-        component: CNavItem,
-        name: 'Servicio de Peluqueria',
-        to: '/buttons/dropdowns',
-      },
-    ],
-  },
-  {
-    component: CNavGroup,
-    name: 'Inventario',
-    to: '/buttons',
-    icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'Medicamentos',
-        to: '/buttons/buttons',
-      },
-      {
-        component: CNavItem,
-        name: 'Alimentos',
-        to: '/buttons/button-groups',
-      },
-      {
-        component: CNavItem,
-        name: 'Accesorios',
-        to: '/buttons/dropdowns',
-      },
-      /*{
-        component: CNavItem,
-        name: 'Mis Mascotas',
-        to: '/buttons/buttons',
-      },*/
     ],
   },
   /*{
