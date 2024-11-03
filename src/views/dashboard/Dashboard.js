@@ -1,6 +1,4 @@
 import React from 'react'
-import classNames from 'classnames'
-
 import {
   CAvatar,
   CButton,
@@ -21,26 +19,13 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
-  cibCcAmex,
-  cibCcApplePay,
-  cibCcMastercard,
-  cibCcPaypal,
-  cibCcStripe,
-  cibCcVisa,
-  cibGoogle,
-  cibFacebook,
-  cibLinkedin,
-  cifBr,
-  cifEs,
-  cifFr,
-  cifIn,
-  cifPl,
-  cifUs,
-  cibTwitter,
   cilCloudDownload,
   cilPeople,
   cilUser,
   cilUserFemale,
+  cilDog,
+  cilCat,
+  cilMedicalCross,
 } from '@coreui/icons'
 
 import WidgetsBrand from '../widgets/WidgetsBrand'
@@ -49,35 +34,35 @@ import MainChart from './MainChart'
 
 const Dashboard = () => {
   const progressExample = [
-    { title: 'Consultas', value: '29.703 Users', percent: 40, color: 'success' },
-    { title: 'Baños', value: '24.093 Users', percent: 20, color: 'info' },
-    { title: 'Cortes', value: '78.706 Views', percent: 60, color: 'warning' },
-    { title: 'Nuevas Mascotas', value: '22.123 Users', percent: 80, color: 'danger' },
-    { title: 'Citas Agendadas', value: 'Average Rate', percent: 40.15, color: 'primary' },
+    { title: 'Consultas', value: '293 Mascotas', percent: 40, color: 'success' },
+    { title: 'Vacunaciones', value: '123 Mascotas', percent: 20, color: 'info' },
+    { title: 'Cirugías', value: '78 Procedimientos', percent: 60, color: 'warning' },
+    { title: 'Nuevos Pacientes', value: '45 Mascotas', percent: 80, color: 'danger' },
+    { title: 'Citas Agendadas', value: 'Promedio Diario', percent: 40.15, color: 'primary' },
   ]
 
   const progressGroupExample1 = [
-    { title: 'Monday', value1: 34, value2: 78 },
-    { title: 'Tuesday', value1: 56, value2: 94 },
-    { title: 'Wednesday', value1: 12, value2: 67 },
-    { title: 'Thursday', value1: 43, value2: 91 },
-    { title: 'Friday', value1: 22, value2: 73 },
-    { title: 'Saturday', value1: 53, value2: 82 },
-    { title: 'Sunday', value1: 9, value2: 69 },
+    { title: 'Lunes', value1: 34, value2: 78 },
+    { title: 'Martes', value1: 56, value2: 94 },
+    { title: 'Miércoles', value1: 12, value2: 67 },
+    { title: 'Jueves', value1: 43, value2: 91 },
+    { title: 'Viernes', value1: 22, value2: 73 },
+    { title: 'Sábado', value1: 53, value2: 82 },
+    { title: 'Domingo', value1: 9, value2: 69 },
   ]
 
   const progressGroupExample2 = [
-    { title: 'Male', icon: cilUser, value: 53 },
-    { title: 'Female', icon: cilUserFemale, value: 43 },
+    { title: 'Perros', icon: cilDog, value: 53 },
+    { title: 'Gatos', icon: cilCat, value: 43 },
+    { title: 'Otros', icon: cilMedicalCross, value: 4 },
   ]
 
   const progressGroupExample3 = [
-    { title: 'Organic Search', icon: cibGoogle, percent: 56, value: '191,235' },
-    { title: 'Facebook', icon: cibFacebook, percent: 15, value: '51,223' },
-    { title: 'Twitter', icon: cibTwitter, percent: 11, value: '37,564' },
-    { title: 'LinkedIn', icon: cibLinkedin, percent: 8, value: '27,319' },
+    { title: 'Consultas Generales', icon: cilMedicalCross, percent: 56, value: '191' },
+    { title: 'Vacunaciones', icon: cilMedicalCross, percent: 15, value: '51' },
+    { title: 'Cirugías', icon: cilMedicalCross, percent: 11, value: '37' },
+    { title: 'Emergencias', icon: cilMedicalCross, percent: 8, value: '27' },
   ]
-
 
   return (
     <>
@@ -87,21 +72,21 @@ const Dashboard = () => {
           <CRow>
             <CCol sm={5}>
               <h4 id="traffic" className="card-title mb-0">
-                Movimientos
+                Actividad de la Clínica
               </h4>
-              <div className="small text-body-secondary">January - July 2023</div>
+              <div className="small text-body-secondary">Enero - Julio 2023</div>
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
               <CButton color="primary" className="float-end">
                 <CIcon icon={cilCloudDownload} />
               </CButton>
               <CButtonGroup className="float-end me-3">
-                {['Day', 'Month', 'Year'].map((value) => (
+                {['Día', 'Mes', 'Año'].map((value) => (
                   <CButton
                     color="outline-secondary"
                     key={value}
                     className="mx-0"
-                    active={value === 'Month'}
+                    active={value === 'Mes'}
                   >
                     {value}
                   </CButton>
@@ -112,22 +97,14 @@ const Dashboard = () => {
           <MainChart />
         </CCardBody>
         <CCardFooter>
-          <CRow
-            xs={{ cols: 1, gutter: 4 }}
-            sm={{ cols: 2 }}
-            lg={{ cols: 4 }}
-            xl={{ cols: 5 }}
-            className="mb-2 text-center"
-          >
-            {progressExample.map((item, index, items) => (
+          <CRow className="text-center">
+            {progressExample.map((item, index) => (
               <CCol
-                className={classNames({
-                  'd-none d-xl-block': index + 1 === items.length,
-                })}
+                className="mb-sm-2 mb-0"
                 key={index}
               >
                 <div className="text-body-secondary">{item.title}</div>
-                <div className="fw-semibold text-truncate">
+                <div className="fw-semibold">
                   {item.value} ({item.percent}%)
                 </div>
                 <CProgress thin className="mt-2" color={item.color} value={item.percent} />
@@ -140,23 +117,23 @@ const Dashboard = () => {
       <CRow>
         <CCol xs>
           <CCard className="mb-4">
-            <CCardHeader>Traffic {' & '} Sales</CCardHeader>
+            <CCardHeader>Estadísticas de la Clínica</CCardHeader>
             <CCardBody>
               <CRow>
                 <CCol xs={12} md={6} xl={6}>
                   <CRow>
                     <CCol xs={6}>
                       <div className="border-start border-start-4 border-start-info py-1 px-3">
-                        <div className="text-body-secondary text-truncate small">New Clients</div>
-                        <div className="fs-5 fw-semibold">9,123</div>
+                        <div className="text-body-secondary text-truncate small">Nuevos Pacientes</div>
+                        <div className="fs-5 fw-semibold">123</div>
                       </div>
                     </CCol>
                     <CCol xs={6}>
                       <div className="border-start border-start-4 border-start-danger py-1 px-3 mb-3">
                         <div className="text-body-secondary text-truncate small">
-                          Recurring Clients
+                          Pacientes Recurrentes
                         </div>
-                        <div className="fs-5 fw-semibold">22,643</div>
+                        <div className="fs-5 fw-semibold">643</div>
                       </div>
                     </CCol>
                   </CRow>
@@ -177,14 +154,14 @@ const Dashboard = () => {
                   <CRow>
                     <CCol xs={6}>
                       <div className="border-start border-start-4 border-start-warning py-1 px-3 mb-3">
-                        <div className="text-body-secondary text-truncate small">Pageviews</div>
-                        <div className="fs-5 fw-semibold">78,623</div>
+                        <div className="text-body-secondary text-truncate small">Citas Totales</div>
+                        <div className="fs-5 fw-semibold">786</div>
                       </div>
                     </CCol>
                     <CCol xs={6}>
                       <div className="border-start border-start-4 border-start-success py-1 px-3 mb-3">
-                        <div className="text-body-secondary text-truncate small">Organic</div>
-                        <div className="fs-5 fw-semibold">49,123</div>
+                        <div className="text-body-secondary text-truncate small">Vacunaciones</div>
+                        <div className="fs-5 fw-semibold">491</div>
                       </div>
                     </CCol>
                   </CRow>
@@ -223,9 +200,6 @@ const Dashboard = () => {
                   ))}
                 </CCol>
               </CRow>
-
-              <br />
-
             </CCardBody>
           </CCard>
         </CCol>
