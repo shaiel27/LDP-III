@@ -54,8 +54,14 @@ export default function RegistrationForm() {
               </CFormSelect>
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="inputStartDate">Fecha de Inicio</CFormLabel>
+              <CFormLabel htmlFor="inputStartDate">Fecha de Nacimiento</CFormLabel>
               <CFormInput type="date" id="inputStartDate" />
+            </CCol>
+          </CRow>
+          <CRow className="mb-3">
+            <CCol md={6}>
+              <CFormLabel htmlFor="inputPhoto">Foto Personal</CFormLabel>
+              <CFormInput type="file" id="inputPhoto" accept="image/*" />
             </CCol>
           </CRow>
           <CRow className="mb-3">
