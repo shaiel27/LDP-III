@@ -15,11 +15,11 @@ import {
   CButton,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilPaw, cilCalendar, cilClock, cilMedicalCross } from '@coreui/icons'
+import { cilPaw, cilCalendar, cilClock, cilMedicalCross, } from '@coreui/icons'
 
 // Sample data for ongoing appointments
 const sampleAppointments = [
-  { id: 1, pet: 'Max', time: '10:00', status: 'Pendiente', type: 'Consulta' },
+  { id: 1, pet: 'Max',date:'2023-12-12', time: '10:00', status: 'Pendiente', type: 'Consulta' },
   { id: 2, pet: 'Luna', date: '2023-06-16', time: '14:30', status: 'Confirmada', type: 'Vacunación' },
   { id: 3, pet: 'Rocky', date: '2023-06-17', time: '11:00', status: 'En Proceso', type: 'Cirugía' },
 ]
@@ -28,7 +28,6 @@ const mydates = () => {
   const [appointments, setAppointments] = useState(sampleAppointments)
 
   const getStatusBadge = (status) => {
-    status = 1
     switch (status) {
       case 'Pendientes':
         return <CBadge color="warning">Pendiente</CBadge>
@@ -59,7 +58,7 @@ const mydates = () => {
                   <CTableHeaderCell className="text-center">
                     <CIcon icon={cilCalendar} />
                   </CTableHeaderCell>
-                  < className="text-center">
+                  <CTableHeaderCell className="text-center">
                     <CIcon icon={cilClock} />
                   </CTableHeaderCell>
                   <CTableHeaderCell>Tipo</CTableHeaderCell>

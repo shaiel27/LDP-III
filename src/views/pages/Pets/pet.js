@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   CCard,
   CCardBody,
@@ -18,7 +18,15 @@ import {
 } from '@coreui/react'
 
 // Datos de ejemplo
-const petData = []
+const petData = [
+  {name: 'Max', species: 'Perro', breed: 'labarador', age: 10, owner: 'Shaiel',
+    record:{
+      date: '2023-01-12',
+      description: 'Fisura en la pata',
+      vet: 'Carlos Gomez'
+    }
+   }, 
+]
 
 export default function PetRecords() {
   const [selectedPet, setSelectedPet] = useState(null)
@@ -56,7 +64,7 @@ export default function PetRecords() {
           </CCardHeader>
           <CCardBody>
             {selectedPet ? (
-              <PetDetails pet={petData.find((p) => p.id === selectedPet)} />
+              <PetDetails pet={petData.find((p) => p.id = selectedPet)} />
             ) : (
               <p>Selecciona una mascota para ver sus detalles.</p>
             )}
@@ -67,8 +75,8 @@ export default function PetRecords() {
   )
 }
 
-function PetDetails({ pet }) {
-  const [showHistory, setShowHistory] = useState(false)
+function PetDetails({ pet  }) {
+  const [showHistory, setShowHistory] = useState(null)
 
   return (
     <>
