@@ -16,7 +16,6 @@ import {
   CTableHeaderCell,
   CTableRow,
   CWidgetStatsF,
-  CLink,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -34,7 +33,6 @@ import {
   cifUs,
   cilPeople,
   cilPaw,
-  cilArrowRight,
   cilMedicalCross,
 } from '@coreui/icons'
 
@@ -156,7 +154,9 @@ export default function VetWorkersDashboard() {
       <CRow>
         <CCol xs>
           <CCard className="mb-4">
-            <CCardHeader>Desempeño del personal veterinario</CCardHeader>
+            <CCardHeader>
+              <strong>Desempeño del personal veterinario</strong>
+              </CCardHeader>
             <CCardBody>
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead className="text-nowrap">

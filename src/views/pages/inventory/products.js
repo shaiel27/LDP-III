@@ -68,7 +68,7 @@ export default function InventoryManagement() {
         <CCol>
           <CCard className="mb-4">
             <CCardHeader>
-              <strong>Agregar nuevo producto</strong>
+              <strong >Agregar nuevo producto</strong>
             </CCardHeader>
             <CCardBody>
               <CForm onSubmit={handleSubmit}>
@@ -150,6 +150,7 @@ export default function InventoryManagement() {
           <h2 className="mb-4">Inventario</h2>
         </CCol>
       </CRow>
+      
 
       <CRow>
         {products.map((product) => (
