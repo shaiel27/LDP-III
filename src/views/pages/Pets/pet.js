@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   CCard,
   CCardBody,
@@ -12,39 +12,13 @@ import {
   CBadge,
   CTable,
   CTableHead,
-  CTableRow,
   CTableHeaderCell,
   CTableBody,
   CTableDataCell,
 } from '@coreui/react'
 
 // Datos de ejemplo
-const petData = [
-  {
-    id: 1,
-    name: 'Max',
-    species: 'Perro',
-    breed: 'Labrador',
-    age: 5,
-    owner: 'Juan Pérez',
-    medicalHistory: [
-      { date: '2023-05-15', description: 'Vacunación anual', vet: 'Dra. García' },
-      { date: '2023-02-10', description: 'Tratamiento para pulgas', vet: 'Dr. Rodríguez' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Luna',
-    species: 'Gato',
-    breed: 'Siamés',
-    age: 3,
-    owner: 'María López',
-    medicalHistory: [
-      { date: '2023-06-01', description: 'Esterilización', vet: 'Dra. Martínez' },
-      { date: '2023-03-20', description: 'Revisión dental', vet: 'Dr. Sánchez' },
-    ],
-  },
-]
+const petData = []
 
 export default function PetRecords() {
   const [selectedPet, setSelectedPet] = useState(null)
