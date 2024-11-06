@@ -244,6 +244,7 @@ export default function VetWorkersDashboard() {
                 value={selectedEmployee.stats.vaccinationsGiven.toString()}
               />
             </CCol>
+            
             <CCol xs={6}>
               <CWidgetStatsF
                 className="mb-3"
@@ -275,6 +276,27 @@ export default function VetWorkersDashboard() {
               />
             </CCol>
           </CRow>
+          <CRow>
+            <CCol xs={6}>
+              <CWidgetStatsF
+                className="mb-3"
+                color="info"
+                icon={<CIcon icon={cilPaw} height={24} />}
+                title="Clientes satisfechos"
+                value={selectedEmployee.stats.clientSatisfaction}
+              />
+            </CCol>
+            <CCol xs={6}>
+              <CWidgetStatsF
+                className="mb-3"
+                color="primary"
+                icon={<CIcon icon={cilMedicalCross} height={24} />}
+                title="Próximas citas"
+                value={selectedEmployee.stats.upcomingAppointments.toString()}
+              />
+            </CCol>
+          </CRow>
+          
         </>
       )}
     </>
