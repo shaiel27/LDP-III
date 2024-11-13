@@ -1,6 +1,5 @@
 import React from 'react'
 import {
-  CAvatar,
   CButton,
   CButtonGroup,
   CCard,
@@ -10,26 +9,14 @@ import {
   CCol,
   CProgress,
   CRow,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
   cilCloudDownload,
-  cilPeople,
-  cilUser,
-  cilUserFemale,
   cilDog,
   cilCat,
   cilMedicalCross,
 } from '@coreui/icons'
-
-import WidgetsBrand from '../widgets/WidgetsBrand'
-import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import MainChart from './MainChart'
 
 const Dashboard = () => {

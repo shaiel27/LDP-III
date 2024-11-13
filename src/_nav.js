@@ -54,8 +54,8 @@ const _nav = [
     component: CNavItem,
     name: 'Inventario',
     to: '/pages/inventory',
-    icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />,
-    // badge: {
+    icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />
+        // badge: {
     //   color: 'info',
     //   text: 'NEW',
     // },
