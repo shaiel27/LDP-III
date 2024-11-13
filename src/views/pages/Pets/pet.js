@@ -12,7 +12,6 @@ import {
   CBadge,
   CTable,
   CTableHead,
-  CTableRow,
   CTableHeaderCell,
   CTableBody,
   CTableDataCell,
@@ -20,30 +19,13 @@ import {
 
 // Datos de ejemplo
 const petData = [
-  {
-    id: 1,
-    name: 'Max',
-    species: 'Perro',
-    breed: 'Labrador',
-    age: 5,
-    owner: 'Juan Pérez',
-    medicalHistory: [
-      { date: '2023-05-15', description: 'Vacunación anual', vet: 'Dra. García' },
-      { date: '2023-02-10', description: 'Tratamiento para pulgas', vet: 'Dr. Rodríguez' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Luna',
-    species: 'Gato',
-    breed: 'Siamés',
-    age: 3,
-    owner: 'María López',
-    medicalHistory: [
-      { date: '2023-06-01', description: 'Esterilización', vet: 'Dra. Martínez' },
-      { date: '2023-03-20', description: 'Revisión dental', vet: 'Dr. Sánchez' },
-    ],
-  },
+  {name: 'Max', species: 'Perro', breed: 'labarador', age: 10, owner: 'Shaiel',
+    record:{
+      date: '2023-01-12',
+      description: 'Fisura en la pata',
+      vet: 'Carlos Gomez'
+    }
+   }, 
 ]
 
 export default function PetRecords() {
@@ -82,7 +64,7 @@ export default function PetRecords() {
           </CCardHeader>
           <CCardBody>
             {selectedPet ? (
-              <PetDetails pet={petData.find((p) => p.id === selectedPet)} />
+              <PetDetails pet={petData.find((p) => p.id = selectedPet)} />
             ) : (
               <p>Selecciona una mascota para ver sus detalles.</p>
             )}
@@ -93,8 +75,8 @@ export default function PetRecords() {
   )
 }
 
-function PetDetails({ pet }) {
-  const [showHistory, setShowHistory] = useState(false)
+function PetDetails({ pet  }) {
+  const [showHistory, setShowHistory] = useState(null)
 
   return (
     <>

@@ -60,6 +60,12 @@ const _nav = [
     //   text: 'NEW',
     // },
   },
+  {
+    component: CNavItem,
+    name: 'Prueba',
+    to: '/pages/prueba',
+    icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />,
+  },
   
   
   {
