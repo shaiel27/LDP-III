@@ -29,10 +29,10 @@ const mydates = () => {
 
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'Pendientes':
-        return <CBadge color="warning">Pendientes</CBadge>
-      case 'Confirmadas':
-        return <CBadge color="success">Confirmadas</CBadge>
+      case 'Pendiente':
+        return <CBadge color="warning">Pendiente</CBadge>
+      case 'Confirmada':
+        return <CBadge color="success">Confirmada</CBadge>
       case 'En Proceso':
         return <CBadge color="info">En Proceso</CBadge>
       default:
