@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CCard,
   CCardHeader,
@@ -16,29 +16,62 @@ import {
   CModalHeader,
   CModalTitle,
   CModalBody,
-  CModalFooter
+  CModalFooter,
+  CFormSelect
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilPlus, cilPencil, cilTrash } from '@coreui/icons'
+
+// Asumimos que el ID del usuario actual está disponible
+const CURRENT_USER_ID = "1" // Esto debería venir de tu sistema de autenticación
 
 export default function RegisterPets() {
   const [mascotas, setMascotas] = useState([])
   const [mascotaEditando, setMascotaEditando] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
 
-  const AddPet = (event) => {
+  useEffect(() => {
+    fetchPets()
+  }, [])
+
+  const fetchPets = async () => {
+    try {
+      const response = await fetch(`http://localhost:3004/pets?ownerId=${CURRENT_USER_ID}`)
+      const data = await response.json()
+      setMascotas(data)
+    } catch (error) {
+      console.error('Error fetching pets:', error)
+    }
+  }
+
+  const AddPet = async (event) => {
     event.preventDefault()
     const formData = new FormData(event.target)
     const nuevaMascota = {
-      id: Date.now(),
-      nombre: formData.get('nombre'),
-      especie: formData.get('especie'),
-      raza: formData.get('raza'),
-      edad: Number(formData.get('edad')),
-      propietario: formData.get('propietario'),
+      name: formData.get('nombre'),
+      species: formData.get('especie'),
+      breed: formData.get('raza'),
+      birthDate: formData.get('fechaNacimiento'),
+      color: formData.get('color'),
+      weight: Number(formData.get('peso')),
+      ownerId: CURRENT_USER_ID,
+      medicalHistory: []
     }
-    setMascotas([...mascotas, nuevaMascota])
-    setModalVisible(false)
+    try {
+      const response = await fetch('http://localhost:3004/pets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(nuevaMascota),
+      })
+      if (response.ok) {
+        fetchPets()
+        setModalVisible(false)
+      }
+    } catch (error) {
+      console.error('Error adding pet:', error)
+    }
   }
 
   const editarMascota = (mascota) => {
@@ -46,30 +79,66 @@ export default function RegisterPets() {
     setModalVisible(true)
   }
 
-  const actualizarMascota = (event) => {
+  const actualizarMascota = async (event) => {
     event.preventDefault()
     const formData = new FormData(event.target)
     const mascotaActualizada = {
       id: mascotaEditando.id,
-      nombre: formData.get('nombre'),
-      especie: formData.get('especie'),
-      raza: formData.get('raza'),
-      edad: Number(formData.get('edad')),
-      propietario: formData.get('propietario'),
+      name: formData.get('nombre'),
+      species: formData.get('especie'),
+      breed: formData.get('raza'),
+      birthDate: formData.get('fechaNacimiento'),
+      color: formData.get('color'),
+      weight: Number(formData.get('peso')),
+      ownerId: CURRENT_USER_ID,
+      medicalHistory: mascotaEditando.medicalHistory
     }
-    setMascotas(mascotas.map(m => m.id === mascotaActualizada.id ? mascotaActualizada : m))
-    setMascotaEditando(null)
-    setModalVisible(false)
+    try {
+      const response = await fetch(`http://localhost:3004/pets/${mascotaActualizada.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(mascotaActualizada),
+      })
+      if (response.ok) {
+        fetchPets()
+        setMascotaEditando(null)
+        setModalVisible(false)
+      }
+    } catch (error) {
+      console.error('Error updating pet:', error)
+    }
   }
 
-  const eliminarMascota = (id) => {
-    setMascotas(mascotas.filter(m => m.id !== id))
+  const eliminarMascota = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3004/pets/${id}`, {
+        method: 'DELETE',
+      })
+      if (response.ok) {
+        fetchPets()
+      }
+    } catch (error) {
+      console.error('Error deleting pet:', error)
+    }
+  }
+
+  const calcularEdad = (fechaNacimiento) => {
+    const hoy = new Date()
+    const nacimiento = new Date(fechaNacimiento)
+    let edad = hoy.getFullYear() - nacimiento.getFullYear()
+    const mes = hoy.getMonth() - nacimiento.getMonth()
+    if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+      edad--
+    }
+    return edad
   }
 
   return (
     <CCard className="mx-auto" style={{ maxWidth: '100vw' }}>
       <CCardHeader>
-        <h2 className="mb-0">Registro de Mascotas</h2>
+        <h2 className="mb-0">Mis Mascotas</h2>
       </CCardHeader>
       <CCardBody>
         <CButton color="primary" onClick={() => setModalVisible(true)} className="mb-3">
@@ -84,18 +153,20 @@ export default function RegisterPets() {
               <CTableHeaderCell scope="col">Especie</CTableHeaderCell>
               <CTableHeaderCell scope="col">Raza</CTableHeaderCell>
               <CTableHeaderCell scope="col">Edad</CTableHeaderCell>
-              <CTableHeaderCell scope="col">Propietario</CTableHeaderCell>
+              <CTableHeaderCell scope="col">Color</CTableHeaderCell>
+              <CTableHeaderCell scope="col">Peso (kg)</CTableHeaderCell>
               <CTableHeaderCell scope="col">Acciones</CTableHeaderCell>
             </CTableRow>
           </CTableHead>
           <CTableBody>
             {mascotas.map((mascota) => (
               <CTableRow key={mascota.id}>
-                <CTableDataCell>{mascota.nombre}</CTableDataCell>
-                <CTableDataCell>{mascota.especie}</CTableDataCell>
-                <CTableDataCell>{mascota.raza}</CTableDataCell>
-                <CTableDataCell>{mascota.edad}</CTableDataCell>
-                <CTableDataCell>{mascota.propietario}</CTableDataCell>
+                <CTableDataCell>{mascota.name}</CTableDataCell>
+                <CTableDataCell>{mascota.species}</CTableDataCell>
+                <CTableDataCell>{mascota.breed}</CTableDataCell>
+                <CTableDataCell>{calcularEdad(mascota.birthDate)} años</CTableDataCell>
+                <CTableDataCell>{mascota.color}</CTableDataCell>
+                <CTableDataCell>{mascota.weight}</CTableDataCell>
                 <CTableDataCell>
                   <CButton color="info" variant="ghost" size="sm" onClick={() => editarMascota(mascota)} className="me-2">
                     <CIcon icon={cilPencil} size="sm" />
@@ -120,7 +191,7 @@ export default function RegisterPets() {
                 id="nombre"
                 name="nombre"
                 label="Nombre"
-                defaultValue={mascotaEditando?.nombre}
+                defaultValue={mascotaEditando?.name}
                 required
                 className="mb-3"
               />
@@ -129,7 +200,7 @@ export default function RegisterPets() {
                 id="especie"
                 name="especie"
                 label="Especie"
-                defaultValue={mascotaEditando?.especie}
+                defaultValue={mascotaEditando?.species}
                 required
                 className="mb-3"
               />
@@ -138,25 +209,34 @@ export default function RegisterPets() {
                 id="raza"
                 name="raza"
                 label="Raza"
-                defaultValue={mascotaEditando?.raza}
+                defaultValue={mascotaEditando?.breed}
                 required
                 className="mb-3"
               />
               <CFormInput
-                type="number"
-                id="edad"
-                name="edad"
-                label="Edad"
-                defaultValue={mascotaEditando?.edad}
+                type="date"
+                id="fechaNacimiento"
+                name="fechaNacimiento"
+                label="Fecha de Nacimiento"
+                defaultValue={mascotaEditando?.birthDate}
                 required
                 className="mb-3"
               />
               <CFormInput
                 type="text"
-                id="propietario"
-                name="propietario"
-                label="Propietario"
-                defaultValue={mascotaEditando?.propietario}
+                id="color"
+                name="color"
+                label="Color"
+                defaultValue={mascotaEditando?.color}
+                required
+                className="mb-3"
+              />
+              <CFormInput
+                type="number"
+                id="peso"
+                name="peso"
+                label="Peso (kg)"
+                defaultValue={mascotaEditando?.weight}
                 required
                 className="mb-3"
               />

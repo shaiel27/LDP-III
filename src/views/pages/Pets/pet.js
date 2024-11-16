@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CCard,
   CCardBody,
@@ -18,36 +18,38 @@ import {
   CTableDataCell,
 } from '@coreui/react'
 
-// Datos de ejemplo
-const petData = [
-  {
-    id: 1,
-    name: 'Max',
-    species: 'Perro',
-    breed: 'Labrador',
-    age: 5,
-    owner: 'Juan Pérez',
-    medicalHistory: [
-      { date: '2023-05-15', description: 'Vacunación anual', vet: 'Dra. García' },
-      { date: '2023-02-10', description: 'Tratamiento para pulgas', vet: 'Dr. Rodríguez' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Luna',
-    species: 'Gato',
-    breed: 'Siamés',
-    age: 3,
-    owner: 'María López',
-    medicalHistory: [
-      { date: '2023-06-01', description: 'Esterilización', vet: 'Dra. Martínez' },
-      { date: '2023-03-20', description: 'Revisión dental', vet: 'Dr. Sánchez' },
-    ],
-  },
-]
+// Asumimos que el ID del usuario actual está disponible
+const CURRENT_USER_ID = "1" // Esto debería venir de tu sistema de autenticación
 
 export default function PetRecords() {
+  const [petData, setPetData] = useState([])
   const [selectedPet, setSelectedPet] = useState(null)
+  const [workers, setWorkers] = useState([])
+
+  useEffect(() => {
+    fetchPets()
+    fetchWorkers()
+  }, [])
+
+  const fetchPets = async () => {
+    try {
+      const response = await fetch(`http://localhost:3004/pets?ownerId=${CURRENT_USER_ID}`)
+      const data = await response.json()
+      setPetData(data)
+    } catch (error) {
+      console.error('Error fetching pets:', error)
+    }
+  }
+
+  const fetchWorkers = async () => {
+    try {
+      const response = await fetch('http://localhost:3004/workers')
+      const data = await response.json()
+      setWorkers(data)
+    } catch (error) {
+      console.error('Error fetching workers:', error)
+    }
+  }
 
   return (
     <CRow>
@@ -82,7 +84,7 @@ export default function PetRecords() {
           </CCardHeader>
           <CCardBody>
             {selectedPet ? (
-              <PetDetails pet={petData.find((p) => p.id === selectedPet)} />
+              <PetDetails pet={petData.find((p) => p.id === selectedPet)} workers={workers} />
             ) : (
               <p>Selecciona una mascota para ver sus detalles.</p>
             )}
@@ -93,8 +95,24 @@ export default function PetRecords() {
   )
 }
 
-function PetDetails({ pet }) {
+function PetDetails({ pet, workers }) {
   const [showHistory, setShowHistory] = useState(false)
+
+  const getVetName = (workerId) => {
+    const worker = workers.find(w => w.id === workerId)
+    return worker ? worker.user.name : 'Desconocido'
+  }
+
+  const calcularEdad = (fechaNacimiento) => {
+    const hoy = new Date()
+    const nacimiento = new Date(fechaNacimiento)
+    let edad = hoy.getFullYear() - nacimiento.getFullYear()
+    const mes = hoy.getMonth() - nacimiento.getMonth()
+    if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+      edad--
+    }
+    return edad
+  }
 
   return (
     <>
@@ -120,13 +138,19 @@ function PetDetails({ pet }) {
         <CCol sm={3}>
           <strong>Edad:</strong>
         </CCol>
-        <CCol sm={9}>{pet.age} años</CCol>
+        <CCol sm={9}>{calcularEdad(pet.birthDate)} años</CCol>
       </CRow>
       <CRow className="mb-3">
         <CCol sm={3}>
-          <strong>Dueño:</strong>
+          <strong>Color:</strong>
         </CCol>
-        <CCol sm={9}>{pet.owner}</CCol>
+        <CCol sm={9}>{pet.color}</CCol>
+      </CRow>
+      <CRow className="mb-3">
+        <CCol sm={3}>
+          <strong>Peso:</strong>
+        </CCol>
+        <CCol sm={9}>{pet.weight} kg</CCol>
       </CRow>
       <CRow className="mb-3">
         <CCol>
@@ -149,7 +173,7 @@ function PetDetails({ pet }) {
               <CTableRow key={index}>
                 <CTableDataCell>{record.date}</CTableDataCell>
                 <CTableDataCell>{record.description}</CTableDataCell>
-                <CTableDataCell>{record.vet}</CTableDataCell>
+                <CTableDataCell>{getVetName(record.workerId)}</CTableDataCell>
               </CTableRow>
             ))}
           </CTableBody>

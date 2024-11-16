@@ -7,7 +7,7 @@
         "status": "success"
       },
       "user": {
-        "name": "Yiorgos Avraamu",
+        "name": "Yiorgos Avraamu2",
         "new": true,
         "registered": "Jan 1, 2023",
         "email": "yiorgos.avraamu@example.com",
@@ -151,7 +151,7 @@
   ],
   "appointments": [
     {
-      "id": 1,
+      "id": "1",
       "pet": "Max",
       "date": "2023-12-12",
       "time": "10:00",
@@ -161,7 +161,7 @@
       "description": "Chequeo general anual para Max."
     },
     {
-      "id": 2,
+      "id": "2",
       "pet": "Luna",
       "date": "2023-06-16",
       "time": "14:30",
@@ -169,6 +169,66 @@
       "type": "Vacunación",
       "workerId": "2304",
       "description": "Vacuna anual contra la rabia para Luna."
+    }
+  ],
+   "pets": [
+    {
+      "id": "1",
+      "name": "Max",
+      "species": "Perro",
+      "breed": "Labrador",
+      "birthDate": "2018-05-15",
+      "color": "blanco y negro",
+      "weight": 30,
+      "ownerId": "1",
+      "medicalHistory": [
+        {
+          "date": "2023-05-15",
+          "description": "Vacunación anual",
+          "workerId": "cb35"
+        },
+        {
+          "date": "2023-02-10",
+          "description": "Tratamiento para pulgas",
+          "workerId": "2304"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Luna",
+      "species": "Gato",
+      "breed": "Siamés",
+      "birthDate": "2020-03-20",
+      "color": "Blanco y marrón",
+      "weight": 4,
+      "ownerId": "1",
+      "medicalHistory": [
+        {
+          "date": "2023-06-01",
+          "description": "Esterilización",
+          "workerId": "f95b"
+        },
+        {
+          "date": "2023-03-20",
+          "description": "Revisión dental",
+          "workerId": "cb35"
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "name": "Juan Pérez",
+      "email": "juan.perez@example.com",
+      "phone": "+1 (555) 123-4567"
+    },
+    {
+      "id": "2",
+      "name": "María López",
+      "email": "maria.lopez@example.com",
+      "phone": "+1 (555) 987-6543"
     }
   ]
 }
