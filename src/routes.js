@@ -2,7 +2,7 @@ import { element } from 'prop-types';
 import React from 'react';
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
-const Workers = React.lazy(() => import('./views/trabajador/Workers'));
+const VetWorkersDashboard = React.lazy(() => import('./views/trabajador/Workers'));
 const RegisterPets = React.lazy(() => import('./views/pages/Addpet/Addpet'));
 const WorkersSchedule = React.lazy(() => import('./views/pages/Schedule/Schedule'));
 const RegistrationForm = React.lazy(() => import('./views/pages/AddWorker/FormWorker'));
@@ -16,7 +16,7 @@ const PaymentAdminModule = React.lazy (() => import ('./views/pages/payments/Pay
 const routes = [
   { path: '/', exact: true, name: 'Home', element: Dashboard },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/workers', name: 'Workers', element: Workers },
+  { path: '/workers', name: 'Workers', element: VetWorkersDashboard },
   { path: '/pages/addpet', name: 'AddPet', element: RegisterPets },
   { path: '/pages/schedule', name: 'Schedule', element: WorkersSchedule },
   { path: '/pages/addworker', name: 'FormWorker', element: RegistrationForm },

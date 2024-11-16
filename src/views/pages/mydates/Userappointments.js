@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CCard,
   CCardBody,
@@ -13,19 +13,30 @@ import {
   CTableRow,
   CBadge,
   CButton,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilPaw, cilCalendar, cilClock, cilMedicalCross, } from '@coreui/icons'
+import { cilPaw, cilCalendar, cilClock, cilUser, cilNotes } from '@coreui/icons'
 
-// Sample data for ongoing appointments
-const sampleAppointments = [
-  { id: 1, pet: 'Max',date:'2023-12-12', time: '10:00', status: 'Pendiente', type: 'Consulta' },
-  { id: 2, pet: 'Luna', date: '2023-06-16', time: '14:30', status: 'Confirmada', type: 'Vacunación' },
-  { id: 3, pet: 'Rocky', date: '2023-06-17', time: '11:00', status: 'En Proceso', type: 'Cirugía' },
-]
+const MyDates = () => {
+  const [appointments, setAppointments] = useState([])
+  const [workers, setWorkers] = useState([])
+  const [selectedAppointment, setSelectedAppointment] = useState(null)
+  const [showModal, setShowModal] = useState(false)
 
-const mydates = () => {
-  const [appointments, setAppointments] = useState(sampleAppointments)
+  useEffect(() => {
+    Promise.all([
+      fetch('http://localhost:3004/appointments').then(res => res.json()),
+      fetch('http://localhost:3004/workers').then(res => res.json())
+    ]).then(([appointmentsData, workersData]) => {
+      setAppointments(appointmentsData)
+      setWorkers(workersData)
+    }).catch(error => console.error('Error fetching data:', error))
+  }, [])
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -38,6 +49,12 @@ const mydates = () => {
       default:
         return <CBadge color="secondary">{status}</CBadge>
     }
+  }
+
+  const handleShowDetails = (appointment) => {
+    const worker = workers.find(w => w.id === appointment.workerId)
+    setSelectedAppointment({ ...appointment, doctor: worker ? worker.user.name : 'Unknown' })
+    setShowModal(true)
   }
 
   return (
@@ -88,7 +105,12 @@ const mydates = () => {
                       <div>{getStatusBadge(appointment.status)}</div>
                     </CTableDataCell>
                     <CTableDataCell>
-                      <CButton color="primary" variant="outline" size="sm">
+                      <CButton 
+                        color="primary" 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleShowDetails(appointment)}
+                      >
                         Ver Detalles
                       </CButton>
                     </CTableDataCell>
@@ -99,8 +121,32 @@ const mydates = () => {
           </CCardBody>
         </CCard>
       </CCol>
+
+      <CModal visible={showModal} onClose={() => setShowModal(false)}>
+        <CModalHeader closeButton>
+          <CModalTitle>Detalles de la Cita</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          {selectedAppointment && (
+            <div>
+              <p><CIcon icon={cilPaw} /> Mascota: {selectedAppointment.pet}</p>
+              <p><CIcon icon={cilCalendar} /> Fecha: {selectedAppointment.date}</p>
+              <p><CIcon icon={cilClock} /> Hora: {selectedAppointment.time}</p>
+              <p><CIcon icon={cilUser} /> Doctor: {selectedAppointment.doctor}</p>
+              <p><CIcon icon={cilNotes} /> Descripción: {selectedAppointment.description}</p>
+              <p>Tipo: {selectedAppointment.type}</p>
+              <p>Estado: {getStatusBadge(selectedAppointment.status)}</p>
+            </div>
+          )}
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setShowModal(false)}>
+            Cerrar
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </CRow>
   )
 }
 
-export default mydates
+export default MyDates

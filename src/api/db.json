@@ -1,0 +1,174 @@
+{
+  "workers": [
+    {
+      "id": "cb35",
+      "avatar": {
+        "src": "avatar1",
+        "status": "success"
+      },
+      "user": {
+        "name": "Yiorgos Avraamu",
+        "new": true,
+        "registered": "Jan 1, 2023",
+        "email": "yiorgos.avraamu@example.com",
+        "phone": "+1 (555) 123-1011",
+        "birthDate": "1985-03-15",
+        "address": "123 Main St, New York, NY 10001, USA"
+      },
+      "country": {
+        "name": "USA",
+        "flag": "cifUs"
+      },
+      "usage": {
+        "value": 50,
+        "period": "Jun 11, 2023 - Jul 10, 2023",
+        "color": "success"
+      },
+      "payment": {
+        "name": "General Practice",
+        "icon": "cibCcMastercard"
+      },
+      "activity": "10 sec ago",
+      "stats": {
+        "patientsSeen": 309,
+        "surgeriesPerformed": 42,
+        "vaccinationsGiven": 156,
+        "emergencyCases": 23,
+        "clientSatisfaction": "95.8%",
+        "upcomingAppointments": 28
+      }
+    },
+    {
+      "id": "2304",
+      "avatar": {
+        "src": "avatar2",
+        "status": "danger"
+      },
+      "user": {
+        "name": "Avram Tarasios",
+        "new": false,
+        "registered": "Jan 1, 2023",
+        "email": "avram.tarasios@example.com",
+        "phone": "+55 (11) 98765-4321",
+        "birthDate": "1990-07-22",
+        "address": "456 Rua Augusta, São Paulo, SP 01305-000, Brazil"
+      },
+      "country": {
+        "name": "Brazil",
+        "flag": "cifBr"
+      },
+      "usage": {
+        "value": 22,
+        "period": "Jun 11, 2023 - Jul 10, 2023",
+        "color": "info"
+      },
+      "payment": {
+        "name": "Orthopedics",
+        "icon": "cibCcVisa"
+      },
+      "activity": "5 minutes ago",
+      "stats": {
+        "patientsSeen": 245,
+        "surgeriesPerformed": 78,
+        "vaccinationsGiven": 92,
+        "emergencyCases": 15,
+        "clientSatisfaction": "94.2%",
+        "upcomingAppointments": 22
+      }
+    },
+    {
+      "id": "f95b",
+      "avatar": {
+        "src": "avatar3",
+        "status": "warning"
+      },
+      "user": {
+        "name": "Quintin Ed",
+        "new": true,
+        "registered": "Jan 1, 2023",
+        "email": "quintin.ed@example.com",
+        "phone": "+91 98765 43210",
+        "birthDate": "1988-11-30",
+        "address": "789 MG Road, Bangalore, Karnataka 560001, India"
+      },
+      "country": {
+        "name": "India",
+        "flag": "cifIn"
+      },
+      "usage": {
+        "value": 74,
+        "period": "Jun 11, 2023 - Jul 10, 2023",
+        "color": "warning"
+      },
+      "payment": {
+        "name": "Dentistry",
+        "icon": "cibCcStripe"
+      },
+      "activity": "1 hour ago",
+      "stats": {
+        "patientsSeen": 187,
+        "surgeriesPerformed": 56,
+        "vaccinationsGiven": 78,
+        "emergencyCases": 9,
+        "clientSatisfaction": "96.5%",
+        "upcomingAppointments": 19
+      }
+    }
+  ],
+  "inventory": [
+    {
+      "name": "Dog Food",
+      "category": "Food",
+      "price": 29.99,
+      "quantity": 46,
+      "image": "/placeholder.svg?height=100&width=100",
+      "id": "1"
+    },
+    {
+      "id": "2",
+      "name": "Cat Food",
+      "category": "Food",
+      "price": 24.99,
+      "quantity": 40,
+      "image": "/placeholder.svg?height=100&width=100"
+    },
+    {
+      "id": "3",
+      "name": "Flea Treatment",
+      "category": "Medication",
+      "price": 15.99,
+      "quantity": 100,
+      "image": "/placeholder.svg?height=100&width=100"
+    },
+    {
+      "id": "4",
+      "name": "Dog Collar",
+      "category": "Accessory",
+      "price": 9.99,
+      "quantity": 30,
+      "image": "/placeholder.svg?height=100&width=100"
+    }
+  ],
+  "appointments": [
+    {
+      "id": 1,
+      "pet": "Max",
+      "date": "2023-12-12",
+      "time": "10:00",
+      "status": "Pendiente",
+      "type": "Consulta",
+      "workerId": "cb35",
+      "description": "Chequeo general anual para Max."
+    },
+    {
+      "id": 2,
+      "pet": "Luna",
+      "date": "2023-06-16",
+      "time": "14:30",
+      "status": "Confirmada",
+      "type": "Vacunación",
+      "workerId": "2304",
+      "description": "Vacuna anual contra la rabia para Luna."
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CAvatar,
   CCard,
@@ -16,6 +16,15 @@ import {
   CTableHeaderCell,
   CTableRow,
   CWidgetStatsF,
+  CButton,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
+  CForm,
+  CFormInput,
+  CFormSelect,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -34,119 +43,127 @@ import {
   cilPeople,
   cilPaw,
   cilMedicalCross,
+  cilPencil,
+  cilTrash,
+  cilEnvelopeClosed,
+  cilPhone,
+  cilCalendar,
+  cilLocationPin,
 } from '@coreui/icons'
 
-import avatar1 from 'src/assets/images/avatars/1.jpg'
-import avatar2 from 'src/assets/images/avatars/2.jpg'
-import avatar3 from 'src/assets/images/avatars/3.jpg'
-import avatar4 from 'src/assets/images/avatars/4.jpg'
-import avatar5 from 'src/assets/images/avatars/5.jpg'
-import avatar6 from 'src/assets/images/avatars/6.jpg'
+const avatarMap = {
+  avatar1: 'https://api.dicebear.com/7.x/initials/svg?seed=YA',
+  avatar2: 'https://api.dicebear.com/7.x/initials/svg?seed=AT',
+  avatar3: 'https://api.dicebear.com/7.x/initials/svg?seed=QE',
+  avatar4: 'https://api.dicebear.com/7.x/initials/svg?seed=EK',
+  avatar5: 'https://api.dicebear.com/7.x/initials/svg?seed=SB',
+  avatar6: 'https://api.dicebear.com/7.x/initials/svg?seed=FD',
+}
 
-const tableExample = [
-  {
-    avatar: { src: avatar1, status: 'success' },
-    user: { name: 'Yiorgos Avraamu', new: true, registered: 'Jan 1, 2023' },
-    country: { name: 'USA', flag: cifUs },
-    usage: { value: 50, period: 'Jun 11, 2023 - Jul 10, 2023', color: 'success' },
-    payment: { name: 'General Practice', icon: cibCcMastercard },
-    activity: '10 sec ago',
-    stats: {
-      patientsSeen: 309,
-      surgeriesPerformed: 42,
-      vaccinationsGiven: 156,
-      emergencyCases: 23,
-      clientSatisfaction: '95.8%',
-      upcomingAppointments: 28
-    }
-  },
-  {
-    avatar: { src: avatar2, status: 'danger' },
-    user: { name: 'Avram Tarasios', new: false, registered: 'Jan 1, 2023' },
-    country: { name: 'Brazil', flag: cifBr },
-    usage: { value: 22, period: 'Jun 11, 2023 - Jul 10, 2023', color: 'info' },
-    payment: { name: 'Orthopedics', icon: cibCcVisa },
-    activity: '5 minutes ago',
-    stats: {
-      patientsSeen: 245,
-      surgeriesPerformed: 78,
-      vaccinationsGiven: 92,
-      emergencyCases: 15,
-      clientSatisfaction: '94.2%',
-      upcomingAppointments: 22
-    }
-  },
-  {
-    avatar: { src: avatar3, status: 'warning' },
-    user: { name: 'Quintin Ed', new: true, registered: 'Jan 1, 2023' },
-    country: { name: 'India', flag: cifIn },
-    usage: { value: 74, period: 'Jun 11, 2023 - Jul 10, 2023', color: 'warning' },
-    payment: { name: 'Dentistry', icon: cibCcStripe },
-    activity: '1 hour ago',
-    stats: {
-      patientsSeen: 187,
-      surgeriesPerformed: 56,
-      vaccinationsGiven: 78,
-      emergencyCases: 9,
-      clientSatisfaction: '96.5%',
-      upcomingAppointments: 19
-    }
-  },
-  {
-    avatar: { src: avatar4, status: 'secondary' },
-    user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2023' },
-    country: { name: 'France', flag: cifFr },
-    usage: { value: 98, period: 'Jun 11, 2023 - Jul 10, 2023', color: 'danger' },
-    payment: { name: 'Cardiology', icon: cibCcPaypal },
-    activity: 'Last month',
-    stats: {
-      patientsSeen: 276,
-      surgeriesPerformed: 34,
-      vaccinationsGiven: 112,
-      emergencyCases: 31,
-      clientSatisfaction: '93.7%',
-      upcomingAppointments: 25
-    }
-  },
-  {
-    avatar: { src: avatar5, status: 'success' },
-    user: { name: 'Shaiel Becerra', new: true, registered: 'Jan 1, 2023' },
-    country: { name: 'Spain', flag: cifEs },
-    usage: { value: 22, period: 'Jun 12, 2023 - Jul 10, 2023', color: 'primary' },
-    payment: { name: 'Neurology', icon: cibCcApplePay },
-    activity: 'Last week',
-    stats: {
-      patientsSeen: 198,
-      surgeriesPerformed: 28,
-      vaccinationsGiven: 87,
-      emergencyCases: 18,
-      clientSatisfaction: '97.1%',
-      upcomingAppointments: 16
-    }
-  },
-  {
-    avatar: { src: avatar6, status: 'danger' },
-    user: { name: 'Friderik Dávid', new: true, registered: 'Jan 1, 2023' },
-    country: { name: 'Poland', flag: cifPl },
-    usage: { value: 43, period: 'Jun 11, 2023 - Jul 10, 2023', color: 'success' },
-    payment: { name: 'Dermatology', icon: cibCcAmex },
-    activity: 'Last week',
-    stats: {
-      patientsSeen: 231,
-      surgeriesPerformed: 19,
-      vaccinationsGiven: 134,
-      emergencyCases: 7,
-      clientSatisfaction: '98.3%',
-      upcomingAppointments: 31
-    }
-  },
-]
+const countryFlagMap = {
+  USA: cifUs,
+  Brazil: cifBr,
+  India: cifIn,
+  France: cifFr,
+  Spain: cifEs,
+  Poland: cifPl,
+}
+
+const paymentIconMap = {
+  'General Practice': cibCcMastercard,
+  'Orthopedics': cibCcVisa,
+  'Dentistry': cibCcStripe,
+  'Cardiology': cibCcPaypal,
+  'Neurology': cibCcApplePay,
+  'Dermatology': cibCcAmex,
+}
 
 export default function VetWorkersDashboard() {
-  const [selectedEmployee, setSelectedEmployee] = useState(null)
+  const [workers, setWorkers] = useState([])
+  const [selectedWorker, setSelectedWorker] = useState(null)
+  const [editingWorker, setEditingWorker] = useState(null)
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false)
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
 
-  const handleRowClick = (employee) => {
-    setSelectedEmployee(employee)
+  useEffect(() => {
+    fetchWorkers()
+  }, [])
+
+  const fetchWorkers = async () => {
+    try {
+      const response = await fetch('http://localhost:3004/workers')
+      const data = await response.json()
+      setWorkers(data)
+    } catch (error) {
+      console.error('Error loading data:', error)
+    }
+  }
+
+  const handleRowClick = (worker) => {
+    setSelectedWorker(worker)
+  }
+
+  const handleEdit = (e, worker) => {
+    e.stopPropagation()
+    setEditingWorker({ ...worker })
+    setIsEditModalVisible(true)
+  }
+
+  const handleDelete = (e, worker) => {
+    e.stopPropagation()
+    setEditingWorker(worker)
+    setIsDeleteModalVisible(true)
+  }
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const response = await fetch(`http://localhost:3004/workers/${editingWorker.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editingWorker),
+      })
+      if (response.ok) {
+        setIsEditModalVisible(false)
+        fetchWorkers()
+      } else {
+        console.error('Failed to update worker')
+      }
+    } catch (error) {
+      console.error('Error updating worker:', error)
+    }
+  }
+
+  const handleDeleteConfirm = async () => {
+    try {
+      const response = await fetch(`http://localhost:3004/workers/${editingWorker.id}`, {
+        method: 'DELETE',
+      })
+      if (response.ok) {
+        setIsDeleteModalVisible(false)
+        fetchWorkers()
+        if (selectedWorker && selectedWorker.id === editingWorker.id) {
+          setSelectedWorker(null)
+        }
+      } else {
+        console.error('Failed to delete worker')
+      }
+    } catch (error) {
+      console.error('Error deleting worker:', error)
+    }
+  }
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setEditingWorker(prev => ({
+      ...prev,
+      user: {
+        ...prev.user,
+        [name]: value
+      }
+    }))
   }
 
   return (
@@ -156,7 +173,7 @@ export default function VetWorkersDashboard() {
           <CCard className="mb-4">
             <CCardHeader>
               <strong>Desempeño del personal veterinario</strong>
-              </CCardHeader>
+            </CCardHeader>
             <CCardBody>
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead className="text-nowrap">
@@ -165,26 +182,22 @@ export default function VetWorkersDashboard() {
                       <CIcon icon={cilPeople} />
                     </CTableHeaderCell>
                     <CTableHeaderCell className="bg-body-tertiary">Empleado</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary text-center">Direccion</CTableHeaderCell>
                     <CTableHeaderCell className="bg-body-tertiary">Pacientes atendidos</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary text-center">Especializacion</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">Ultima actividad</CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary">Última actividad</CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary text-center">Acciones</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {tableExample.map((item, index) => (
+                  {workers.map((item, index) => (
                     <CTableRow key={index} onClick={() => handleRowClick(item)} style={{ cursor: 'pointer' }}>
                       <CTableDataCell className="text-center">
-                        <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
+                        <CAvatar size="md" src={avatarMap[item.avatar.src]} status={item.avatar.status} />
                       </CTableDataCell>
                       <CTableDataCell>
                         <div>{item.user.name}</div>
                         <div className="small text-body-secondary text-nowrap">
-                          <span>{item.user.new ? 'New' : 'Experienced'}</span> | Se unio: {item.user.registered}
+                          <span>{item.user.new ? 'Nuevo' : 'Experimentado'}</span> | Se unió: {item.user.registered}
                         </div>
-                      </CTableDataCell>
-                      <CTableDataCell className="text-center">
-                        <CIcon size="xl" icon={item.country.flag} title={item.country.name} />
                       </CTableDataCell>
                       <CTableDataCell>
                         <div className="d-flex justify-content-between text-nowrap">
@@ -195,12 +208,17 @@ export default function VetWorkersDashboard() {
                         </div>
                         <CProgress thin color={item.usage.color} value={item.usage.value} />
                       </CTableDataCell>
-                      <CTableDataCell className="text-center">
-                        {item.payment.name}
-                      </CTableDataCell>
                       <CTableDataCell>
-                        <div className="small text-body-secondary text-nowrap">Ultima actividad</div>
+                        <div className="small text-body-secondary text-nowrap">Última actividad</div>
                         <div className="fw-semibold text-nowrap">{item.activity}</div>
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <CButton color="primary" variant="ghost" size="sm" className="me-2" onClick={(e) => handleEdit(e, item)}>
+                          <CIcon icon={cilPencil} size="sm" />
+                        </CButton>
+                        <CButton color="danger" variant="ghost" size="sm" onClick={(e) => handleDelete(e, item)}>
+                          <CIcon icon={cilTrash} size="sm" />
+                        </CButton>
                       </CTableDataCell>
                     </CTableRow>
                   ))}
@@ -211,94 +229,203 @@ export default function VetWorkersDashboard() {
         </CCol>
       </CRow>
       
-      {selectedEmployee && (
+      {selectedWorker && (
         <>
           <CRow>
-            <CCol xs={6}>
+            <CCol xs={12}>
+              <CCard className="mb-4">
+                <CCardHeader>
+                  <strong>Detalles del empleado: {selectedWorker.user.name}</strong>
+                </CCardHeader>
+                <CCardBody>
+                  <CRow>
+                    <CCol md={6}>
+                      <p><strong>País:</strong> {selectedWorker.country.name}</p>
+                      <p><strong>Especialización:</strong> {selectedWorker.payment.name}</p>
+                      <p><strong>Estado:</strong> {selectedWorker.user.new ? 'Nuevo' : 'Experimentado'}</p>
+                      <p><strong>Fecha de registro:</strong> {selectedWorker.user.registered}</p>
+                      <p><CIcon icon={cilEnvelopeClosed} className="me-2" /><strong>Email:</strong> {selectedWorker.user.email}</p>
+                      <p><CIcon icon={cilPhone} className="me-2" /><strong>Teléfono:</strong> {selectedWorker.user.phone}</p>
+                    </CCol>
+                    <CCol md={6}>
+                      <p><strong>Última actividad:</strong> {selectedWorker.activity}</p>
+                      <p><strong>Periodo de uso:</strong> {selectedWorker.usage.period}</p>
+                      <p><strong>Pacientes atendidos:</strong> {selectedWorker.usage.value}</p>
+                      <p><strong>Rendimiento:</strong> <CProgress thin color={selectedWorker.usage.color} value={selectedWorker.usage.value} /></p>
+                      <p><CIcon icon={cilCalendar} className="me-2" /><strong>Fecha de nacimiento:</strong> {selectedWorker.user.birthDate}</p>
+                      <p><CIcon icon={cilLocationPin} className="me-2" /><strong>Dirección:</strong> {selectedWorker.user.address}</p>
+                    </CCol>
+                  </CRow>
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol xs={6} sm={4} lg={3.5}>
               <CWidgetStatsF
                 className="mb-3"
                 color="primary"
                 icon={<CIcon icon={cilPaw} height={24} />}
-                title="Total de Pacientes atentidos"
-                value={selectedEmployee.stats.patientsSeen.toString()}
+                title="Pacientes atendidos"
+                value={selectedWorker.stats.patientsSeen.toString()}
               />
             </CCol>
-            <CCol xs={6}>
+            <CCol xs={6} sm={4} lg={3.5}>
               <CWidgetStatsF
                 className="mb-3"
                 color="warning"
                 icon={<CIcon icon={cilMedicalCross} height={26} />}
                 title="Cirugías realizadas"
-                value={selectedEmployee.stats.surgeriesPerformed.toString()}
+                value={selectedWorker.stats.surgeriesPerformed.toString()}
               />
             </CCol>
-          </CRow>
-          <CRow>
-            <CCol xs={6}>
+            <CCol xs={6} sm={4} lg={3.5}>
               <CWidgetStatsF
                 className="mb-3"
                 color="success"
                 icon={<CIcon icon={cilPaw} height={24} />}
-                padding={false}
                 title="Vacunas administradas"
-                value={selectedEmployee.stats.vaccinationsGiven.toString()}
+                value={selectedWorker.stats.vaccinationsGiven.toString()}
               />
             </CCol>
-            
-            <CCol xs={6}>
+          </CRow>
+          <CRow>
+            <CCol xs={6} sm={4} lg={3.5}>
               <CWidgetStatsF
                 className="mb-3"
                 color="danger"
                 icon={<CIcon icon={cilMedicalCross} height={26} />}
-                padding={false}
                 title="Casos de emergencia"
-                value={selectedEmployee.stats.emergencyCases.toString()}
+                value={selectedWorker.stats.emergencyCases.toString()}
               />
             </CCol>
-          </CRow>
-          <CRow>
-            <CCol xs={6}>
+            <CCol xs={6} sm={4} lg={3.5}>
               <CWidgetStatsF
                 className="mb-3"
                 color="info"
                 icon={<CIcon icon={cilPaw} height={24} />}
-                title="Clientes satisfechos"
-                value={selectedEmployee.stats.clientSatisfaction}
+                title="Satisfacción del cliente"
+                value={selectedWorker.stats.clientSatisfaction}
               />
             </CCol>
-            <CCol xs={6}>
+            <CCol xs={6} sm={4} lg={3.5}>
               <CWidgetStatsF
                 className="mb-3"
                 color="primary"
                 icon={<CIcon icon={cilMedicalCross} height={24} />}
                 title="Próximas citas"
-                value={selectedEmployee.stats.upcomingAppointments.toString()}
+                value={selectedWorker.stats.upcomingAppointments.toString()}
               />
             </CCol>
           </CRow>
-          <CRow>
-            <CCol xs={6}>
-              <CWidgetStatsF
-                className="mb-3"
-                color="info"
-                icon={<CIcon icon={cilPaw} height={24} />}
-                title="Clientes satisfechos"
-                value={selectedEmployee.stats.clientSatisfaction}
-              />
-            </CCol>
-            <CCol xs={6}>
-              <CWidgetStatsF
-                className="mb-3"
-                color="primary"
-                icon={<CIcon icon={cilMedicalCross} height={24} />}
-                title="Próximas citas"
-                value={selectedEmployee.stats.upcomingAppointments.toString()}
-              />
-            </CCol>
-          </CRow>
-          
         </>
       )}
+
+      <CModal visible={isEditModalVisible} onClose={() => setIsEditModalVisible(false)}>
+        <CModalHeader>
+          <CModalTitle>Editar Empleado</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CForm onSubmit={handleEditSubmit}>
+            <CFormInput
+              type="text"
+              id="name"
+              name="name"
+              label="Nombre"
+              value={editingWorker?.user.name || ''}
+              onChange={handleInputChange}
+              className="mb-3"
+            />
+            <CFormInput
+              type="email"
+              id="email"
+              name="email"
+              label="Email"
+              value={editingWorker?.user.email || ''}
+              onChange={handleInputChange}
+              className="mb-3"
+            />
+            <CFormInput
+              type="tel"
+              id="phone"
+              name="phone"
+              label="Teléfono"
+              value={editingWorker?.user.phone || ''}
+              onChange={handleInputChange}
+              className="mb-3"
+            />
+            <CFormInput
+              type="date"
+              id="birthDate"
+              name="birthDate"
+              label="Fecha de nacimiento"
+              value={editingWorker?.user.birthDate || ''}
+              onChange={handleInputChange}
+              className="mb-3"
+            />
+            <CFormInput
+              type="text"
+              id="address"
+              name="address"
+              label="Dirección"
+              value={editingWorker?.user.address || ''}
+              onChange={handleInputChange}
+              className="mb-3"
+            />
+            <CFormSelect
+              id="country"
+              name="country"
+              label="País"
+              value={editingWorker?.country.name || ''}
+              onChange={(e) => setEditingWorker(prev => ({ ...prev, country: { ...prev.country, name: e.target.value } }))}
+              className="mb-3"
+            >
+              <option value="">Seleccionar País</option>
+              {Object.keys(countryFlagMap).map(country => (
+                <option key={country} value={country}>{country}</option>
+              ))}
+            </CFormSelect>
+            <CFormSelect
+              id="specialization"
+              name="specialization"
+              label="Especialización"
+              value={editingWorker?.payment.name || ''}
+              onChange={(e) => setEditingWorker(prev => ({ ...prev, payment: { ...prev.payment, name: e.target.value } }))}
+              className="mb-3"
+            >
+              <option value="">Seleccionar Especialización</option>
+              {Object.keys(paymentIconMap).map(specialization => (
+                <option key={specialization} value={specialization}>{specialization}</option>
+              ))}
+            </CFormSelect>
+            <CModalFooter>
+              <CButton color="secondary" onClick={() => setIsEditModalVisible(false)}>
+                Cancelar
+              </CButton>
+              <CButton color="primary" type="submit">
+                Guardar Cambios
+              </CButton>
+            </CModalFooter>
+          </CForm>
+        </CModalBody>
+      </CModal>
+
+      <CModal visible={isDeleteModalVisible} onClose={() => setIsDeleteModalVisible(false)}>
+        <CModalHeader>
+          <CModalTitle>Confirmar Eliminación</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          ¿Está seguro de que desea eliminar al empleado {editingWorker?.user.name}?
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setIsDeleteModalVisible(false)}>
+            Cancelar
+          </CButton>
+          <CButton color="danger" onClick={handleDeleteConfirm}>
+            Eliminar
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </>
   )
 }
