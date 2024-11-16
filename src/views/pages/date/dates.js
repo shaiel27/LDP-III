@@ -11,10 +11,11 @@ import {
   CFormTextarea,
   CFormLabel,
   CButton,
-  CAlert
+  CAlert,
+  CSpinner
 } from '@coreui/react'
 
-export default function AppointmentRequest() {
+const AppointmentRequest = () => {
   const [pets, setPets] = useState([])
   const [workers, setWorkers] = useState([])
   const [formData, setFormData] = useState({
@@ -27,16 +28,47 @@ export default function AppointmentRequest() {
     status: 'Pendiente'
   })
   const [message, setMessage] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    // Fetch pets and workers data
-    Promise.all([
-      fetch('http://localhost:3004/pets').then(res => res.json()),
-      fetch('http://localhost:3004/workers').then(res => res.json())
-    ]).then(([petsData, workersData]) => {
-      setPets(petsData)
-      setWorkers(workersData)
-    }).catch(error => console.error('Error fetching data:', error))
+    const fetchData = async () => {
+      setIsLoading(true)
+      setError(null)
+      try {
+        // Simulating getting the current user ID from a token or context
+        const currentUserId = localStorage.getItem('currentUserId') || '1'
+
+        const [petsResponse, workersResponse, usersResponse] = await Promise.all([
+          fetch('http://localhost:3004/pets'),
+          fetch('http://localhost:3004/workers'),
+          fetch(`http://localhost:3004/users/${currentUserId}`)
+        ])
+
+        if (!petsResponse.ok || !workersResponse.ok || !usersResponse.ok) {
+          throw new Error('Error al obtener los datos')
+        }
+
+        const [petsData, workersData, userData] = await Promise.all([
+          petsResponse.json(),
+          workersResponse.json(),
+          usersResponse.json()
+        ])
+
+        // Filter pets for the current user
+        const userPets = petsData.filter(pet => pet.ownerId === currentUserId)
+
+        setPets(userPets)
+        setWorkers(workersData)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+        setError('Hubo un problema al cargar los datos. Por favor, intente de nuevo.')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchData()
   }, [])
 
   const handleInputChange = (e) => {
@@ -49,20 +81,25 @@ export default function AppointmentRequest() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+    setMessage(null)
     
-    // Basic form validation
     if (!formData.petId || !formData.type || !formData.date || !formData.time) {
       setMessage({ type: 'danger', content: 'Por favor, complete todos los campos requeridos.' })
+      setIsLoading(false)
       return
     }
 
     try {
+      const currentUserId = localStorage.getItem('currentUserId') || '1'
       const selectedPet = pets.find(pet => pet.id === formData.petId)
       const appointmentData = {
         ...formData,
-        id: Date.now().toString(), // Generate a unique ID
-        pet: selectedPet.name, // Include the pet's name
-        workerId: formData.workerId || null, // Set to null if no worker is selected
+        id: Date.now().toString(),
+        pet: selectedPet.name,
+        status: 'Pendiente',
+        ownerId: currentUserId
       }
 
       const response = await fetch('http://localhost:3004/appointments', {
@@ -89,8 +126,22 @@ export default function AppointmentRequest() {
       }
     } catch (error) {
       console.error('Error:', error)
-      setMessage({ type: 'danger', content: 'Hubo un error al solicitar la cita. Por favor, inténtelo de nuevo.' })
+      setError('Hubo un error al solicitar la cita. Por favor, inténtelo de nuevo.')
+    } finally {
+      setIsLoading(false)
     }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <CSpinner color="primary" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return <CAlert color="danger">{error}</CAlert>
   }
 
   return (
@@ -125,8 +176,8 @@ export default function AppointmentRequest() {
                   <CFormSelect id="type" value={formData.type} onChange={handleInputChange} required>
                     <option value="">Selecciona un Servicio</option>
                     <option value="Consulta">Consulta</option>
-                    <option value="Baño">Baño</option>
-                    <option value="Peluquería">Peluquería</option>
+                    <option value="Vacunación">Vacunación</option>
+                    <option value="Cirugía">Cirugía</option>
                   </CFormSelect>
                 </CCol>
                 <CCol md={6}>
@@ -166,8 +217,8 @@ export default function AppointmentRequest() {
 
               <CRow>
                 <CCol>
-                  <CButton color="primary" type="submit" className="mt-3">
-                    Hacer solicitud
+                  <CButton color="primary" type="submit" className="mt-3" disabled={isLoading}>
+                    {isLoading ? <CSpinner size="sm" /> : 'Hacer solicitud'}
                   </CButton>
                 </CCol>
               </CRow>
@@ -178,3 +229,5 @@ export default function AppointmentRequest() {
     </CRow>
   )
 }
+
+export default AppointmentRequest

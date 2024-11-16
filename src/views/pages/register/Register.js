@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -7,26 +8,95 @@ import {
   CContainer,
   CForm,
   CFormInput,
-  CFormTextarea,
   CInputGroup,
   CInputGroupText,
   CRow,
-  CImage,
+  CFormSelect,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser, cilEnvelopeClosed, cilPhone, cilLocationPin, cilImage } from '@coreui/icons'
+import {
+  cilUser,
+  cilLockLocked,
+  cilEnvelopeClosed,
+  cilPhone,
+  cilLocationPin,
+  cilCalendar,
+  cilGlobeAlt,
+  cilBriefcase,
+  cilLanguage,
+  cilPeople,
+} from '@coreui/icons'
 
 const Register = () => {
-  const [profilePicture, setProfilePicture] = useState(null)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    phone: '',
+    address: '',
+    country: '',
+    birthDate: '',
+    gender: '',
+    occupation: '',
+    preferredLanguage: '',
+    emergencyContact: {
+      name: '',
+      relationship: '',
+      phone: '',
+    },
+  })
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setProfilePicture(reader.result)
+  const navigate = useNavigate()
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    if (name.includes('.')) {
+      const [parent, child] = name.split('.')
+      setFormData(prevState => ({
+        ...prevState,
+        [parent]: {
+          ...prevState[parent],
+          [child]: value
+        }
+      }))
+    } else {
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: value
+      }))
+    }
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match')
+      return
+    }
+
+    try {
+      const response = await fetch('http://localhost:3004/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          userType: 'client',
+          profilePicture: '/placeholder.svg?height=150&width=150',
+          joinDate: new Date().toISOString().split('T')[0],
+        }),
+      })
+
+      if (response.ok) {
+        navigate('/login')
+      } else {
+        throw new Error('Registration failed')
       }
-      reader.readAsDataURL(file)
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Registration failed. Please try again.')
     }
   }
 
@@ -34,104 +104,234 @@ const Register = () => {
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
-          <CCol md={9} lg={7} xl={6}>
-            <CCard className="mx-4 shadow-lg">
+          <CCol md={12} lg={10} xl={8}>
+            <CCard className="mx-4">
               <CCardBody className="p-4">
-                <CForm>
-                  <h1 className="text-center mb-4">Registro</h1>
-                  <p className="text-center text-body-secondary mb-4">Crea tu cuenta</p>
-                  
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilUser} />
-                    </CInputGroupText>
-                    <CFormInput placeholder="Nombre" autoComplete="given-name" />
-                  </CInputGroup>
-                  
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilUser} />
-                    </CInputGroupText>
-                    <CFormInput placeholder="Apellido" autoComplete="family-name" />
-                  </CInputGroup>
-                  
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilUser} />
-                    </CInputGroupText>
-                    <CFormInput placeholder="Nombre de usuario" autoComplete="username" />
-                  </CInputGroup>
-                  
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilEnvelopeClosed} />
-                    </CInputGroupText>
-                    <CFormInput placeholder="Correo electrónico" autoComplete="email" type="email" />
-                  </CInputGroup>
-                  
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilPhone} />
-                    </CInputGroupText>
-                    <CFormInput placeholder="Teléfono" autoComplete="tel" type="tel" />
-                  </CInputGroup>
-                  
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilLocationPin} />
-                    </CInputGroupText>
-                    <CFormTextarea placeholder="Dirección" rows={3} />
-                  </CInputGroup>
-                  
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilLockLocked} />
-                    </CInputGroupText>
-                    <CFormInput
-                      type="password"
-                      placeholder="Contraseña"
-                      autoComplete="new-password"
-                    />
-                  </CInputGroup>
-                  
-                  <CInputGroup className="mb-4">
-                    <CInputGroupText>
-                      <CIcon icon={cilLockLocked} />
-                    </CInputGroupText>
-                    <CFormInput
-                      type="password"
-                      placeholder="Repetir contraseña"
-                      autoComplete="new-password"
-                    />
-                  </CInputGroup>
-                  
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilImage} />
-                    </CInputGroupText>
-                    <CFormInput
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                    />
-                  </CInputGroup>
-                  
-                  {profilePicture && (
-                    <div className="text-center mb-3">
-                      <CImage 
-                        rounded
-                        thumbnail
-                        src={profilePicture} 
-                        alt="Vista previa de foto de perfil" 
-                        width={150} 
-                        className="mt-3"
-                      />
-                    </div>
-                  )}
-                  
-                  <div className="d-grid">
-                    <CButton color="primary" size="lg">Crear Cuenta</CButton>
-                  </div>
+                <CForm onSubmit={handleSubmit}>
+                  <h1 className="mb-4 text-center">Register</h1>
+                  <p className="text-medium-emphasis text-center mb-4">Create your account</p>
+                  <CRow>
+                    <CCol md={6}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilUser} />
+                        </CInputGroupText>
+                        <CFormInput
+                          placeholder="Full Name"
+                          autoComplete="name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          required
+                        />
+                      </CInputGroup>
+                    </CCol>
+                    <CCol md={6}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilEnvelopeClosed} />
+                        </CInputGroupText>
+                        <CFormInput
+                          type="email"
+                          placeholder="Email"
+                          autoComplete="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          required
+                        />
+                      </CInputGroup>
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol md={6}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilLockLocked} />
+                        </CInputGroupText>
+                        <CFormInput
+                          type="password"
+                          placeholder="Password"
+                          autoComplete="new-password"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          required
+                        />
+                      </CInputGroup>
+                    </CCol>
+                    <CCol md={6}>
+                      <CInputGroup className="mb-4">
+                        <CInputGroupText>
+                          <CIcon icon={cilLockLocked} />
+                        </CInputGroupText>
+                        <CFormInput
+                          type="password"
+                          placeholder="Repeat password"
+                          autoComplete="new-password"
+                          name="confirmPassword"
+                          value={formData.confirmPassword}
+                          onChange={handleChange}
+                          required
+                        />
+                      </CInputGroup>
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol md={6}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilPhone} />
+                        </CInputGroupText>
+                        <CFormInput
+                          placeholder="Phone"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
+                        />
+                      </CInputGroup>
+                    </CCol>
+                    <CCol md={6}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilGlobeAlt} />
+                        </CInputGroupText>
+                        <CFormInput
+                          placeholder="Country"
+                          name="country"
+                          value={formData.country}
+                          onChange={handleChange}
+                        />
+                      </CInputGroup>
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol md={12}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilLocationPin} />
+                        </CInputGroupText>
+                        <CFormInput
+                          placeholder="Address"
+                          name="address"
+                          value={formData.address}
+                          onChange={handleChange}
+                        />
+                      </CInputGroup>
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol md={6}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilCalendar} />
+                        </CInputGroupText>
+                        <CFormInput
+                          type="date"
+                          placeholder="Birth Date"
+                          name="birthDate"
+                          value={formData.birthDate}
+                          onChange={handleChange}
+                        />
+                      </CInputGroup>
+                    </CCol>
+                    <CCol md={6}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilUser} />
+                        </CInputGroupText>
+                        <CFormSelect
+                          name="gender"
+                          value={formData.gender}
+                          onChange={handleChange}
+                        >
+                          <option value="">Select Gender</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Other">Other</option>
+                        </CFormSelect>
+                      </CInputGroup>
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol md={6}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilBriefcase} />
+                        </CInputGroupText>
+                        <CFormInput
+                          placeholder="Occupation"
+                          name="occupation"
+                          value={formData.occupation}
+                          onChange={handleChange}
+                        />
+                      </CInputGroup>
+                    </CCol>
+                    <CCol md={6}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilLanguage} />
+                        </CInputGroupText>
+                        <CFormInput
+                          placeholder="Preferred Language"
+                          name="preferredLanguage"
+                          value={formData.preferredLanguage}
+                          onChange={handleChange}
+                        />
+                      </CInputGroup>
+                    </CCol>
+                  </CRow>
+                  <h5 className="mt-4 mb-3">Emergency Contact</h5>
+                  <CRow>
+                    <CCol md={6}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilUser} />
+                        </CInputGroupText>
+                        <CFormInput
+                          placeholder="Emergency Contact Name"
+                          name="emergencyContact.name"
+                          value={formData.emergencyContact.name}
+                          onChange={handleChange}
+                        />
+                      </CInputGroup>
+                    </CCol>
+                    <CCol md={6}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilPeople} />
+                        </CInputGroupText>
+                        <CFormInput
+                          placeholder="Emergency Contact Relationship"
+                          name="emergencyContact.relationship"
+                          value={formData.emergencyContact.relationship}
+                          onChange={handleChange}
+                        />
+                      </CInputGroup>
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol md={6}>
+                      <CInputGroup className="mb-4">
+                        <CInputGroupText>
+                          <CIcon icon={cilPhone} />
+                        </CInputGroupText>
+                        <CFormInput
+                          placeholder="Emergency Contact Phone"
+                          name="emergencyContact.phone"
+                          value={formData.emergencyContact.phone}
+                          onChange={handleChange}
+                        />
+                      </CInputGroup>
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol xs={12}>
+                      <div className="d-grid">
+                        <CButton color="success" type="submit">Create Account</CButton>
+                      </div>
+                    </CCol>
+                  </CRow>
                 </CForm>
               </CCardBody>
             </CCard>

@@ -22,21 +22,24 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilPlus, cilPencil, cilTrash } from '@coreui/icons'
 
-// Asumimos que el ID del usuario actual está disponible
-const CURRENT_USER_ID = "1" // Esto debería venir de tu sistema de autenticación
-
 export default function RegisterPets() {
   const [mascotas, setMascotas] = useState([])
   const [mascotaEditando, setMascotaEditando] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
+  const [currentUserId, setCurrentUserId] = useState(null)
 
   useEffect(() => {
-    fetchPets()
+    const token = localStorage.getItem('token')
+    if (token) {
+      const userId = token.split('-')[2] // Assuming token format is 'dummy-token-userId'
+      setCurrentUserId(userId)
+      fetchPets(userId)
+    }
   }, [])
 
-  const fetchPets = async () => {
+  const fetchPets = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:3004/pets?ownerId=${CURRENT_USER_ID}`)
+      const response = await fetch(`http://localhost:3004/pets?ownerId=${userId}`)
       const data = await response.json()
       setMascotas(data)
     } catch (error) {
@@ -54,7 +57,7 @@ export default function RegisterPets() {
       birthDate: formData.get('fechaNacimiento'),
       color: formData.get('color'),
       weight: Number(formData.get('peso')),
-      ownerId: CURRENT_USER_ID,
+      ownerId: currentUserId,
       medicalHistory: []
     }
     try {
@@ -66,7 +69,7 @@ export default function RegisterPets() {
         body: JSON.stringify(nuevaMascota),
       })
       if (response.ok) {
-        fetchPets()
+        fetchPets(currentUserId)
         setModalVisible(false)
       }
     } catch (error) {
@@ -90,7 +93,7 @@ export default function RegisterPets() {
       birthDate: formData.get('fechaNacimiento'),
       color: formData.get('color'),
       weight: Number(formData.get('peso')),
-      ownerId: CURRENT_USER_ID,
+      ownerId: currentUserId,
       medicalHistory: mascotaEditando.medicalHistory
     }
     try {
@@ -102,7 +105,7 @@ export default function RegisterPets() {
         body: JSON.stringify(mascotaActualizada),
       })
       if (response.ok) {
-        fetchPets()
+        fetchPets(currentUserId)
         setMascotaEditando(null)
         setModalVisible(false)
       }
@@ -117,7 +120,7 @@ export default function RegisterPets() {
         method: 'DELETE',
       })
       if (response.ok) {
-        fetchPets()
+        fetchPets(currentUserId)
       }
     } catch (error) {
       console.error('Error deleting pet:', error)

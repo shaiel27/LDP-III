@@ -18,6 +18,8 @@ import {
   CModalTitle,
   CModalBody,
   CModalFooter,
+  CSpinner,
+  CAlert
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilPaw, cilCalendar, cilClock, cilUser, cilNotes } from '@coreui/icons'
@@ -27,15 +29,45 @@ const MyDates = () => {
   const [workers, setWorkers] = useState([])
   const [selectedAppointment, setSelectedAppointment] = useState(null)
   const [showModal, setShowModal] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    Promise.all([
-      fetch('http://localhost:3004/appointments').then(res => res.json()),
-      fetch('http://localhost:3004/workers').then(res => res.json())
-    ]).then(([appointmentsData, workersData]) => {
-      setAppointments(appointmentsData)
-      setWorkers(workersData)
-    }).catch(error => console.error('Error fetching data:', error))
+    const fetchData = async () => {
+      setIsLoading(true)
+      setError(null)
+      try {
+        // Simulating getting the current user ID from a token or context
+        const currentUserId = localStorage.getItem('currentUserId') || '1'
+
+        const [appointmentsResponse, workersResponse] = await Promise.all([
+          fetch('http://localhost:3004/appointments'),
+          fetch('http://localhost:3004/workers')
+        ])
+
+        if (!appointmentsResponse.ok || !workersResponse.ok) {
+          throw new Error('Error al obtener los datos')
+        }
+
+        const [appointmentsData, workersData] = await Promise.all([
+          appointmentsResponse.json(),
+          workersResponse.json()
+        ])
+
+        // Filter appointments for the current user
+        const userAppointments = appointmentsData.filter(appointment => appointment.ownerId === currentUserId)
+
+        setAppointments(userAppointments)
+        setWorkers(workersData)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+        setError('Hubo un problema al cargar los datos. Por favor, intente de nuevo.')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchData()
   }, [])
 
   const getStatusBadge = (status) => {
@@ -53,8 +85,20 @@ const MyDates = () => {
 
   const handleShowDetails = (appointment) => {
     const worker = workers.find(w => w.id === appointment.workerId)
-    setSelectedAppointment({ ...appointment, doctor: worker ? worker.user.name : 'Unknown' })
+    setSelectedAppointment({ ...appointment, doctor: worker ? worker.user.name : 'No asignado' })
     setShowModal(true)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <CSpinner color="primary" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return <CAlert color="danger">{error}</CAlert>
   }
 
   return (
@@ -62,62 +106,66 @@ const MyDates = () => {
       <CCol>
         <CCard className="mb-4">
           <CCardHeader>
-            <h2 className="text-center">Mis Citas en Proceso</h2>
+            <h2 className="text-center">Mis Citas</h2>
           </CCardHeader>
           <CCardBody>
-            <CTable align="middle" className="mb-0 border" hover responsive>
-              <CTableHead color="light">
-                <CTableRow>
-                  <CTableHeaderCell className="text-center">
-                    <CIcon icon={cilPaw} />
-                  </CTableHeaderCell>
-                  <CTableHeaderCell>Mascota</CTableHeaderCell>
-                  <CTableHeaderCell className="text-center">
-                    <CIcon icon={cilCalendar} />
-                  </CTableHeaderCell>
-                  <CTableHeaderCell className="text-center">
-                    <CIcon icon={cilClock} />
-                  </CTableHeaderCell>
-                  <CTableHeaderCell>Tipo</CTableHeaderCell>
-                  <CTableHeaderCell>Estado</CTableHeaderCell>
-                  <CTableHeaderCell>Acciones</CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {appointments.map((appointment, index) => (
-                  <CTableRow v-for="item in tableItems" key={index}>
-                    <CTableDataCell className="text-center">
-                      <CIcon icon={cilPaw} size="xl" />
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <div>{appointment.pet}</div>
-                    </CTableDataCell>
-                    <CTableDataCell className="text-center">
-                      <div>{appointment.date}</div>
-                    </CTableDataCell>
-                    <CTableDataCell className="text-center">
-                      <div>{appointment.time}</div>
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <div>{appointment.type}</div>
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <div>{getStatusBadge(appointment.status)}</div>
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <CButton 
-                        color="primary" 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleShowDetails(appointment)}
-                      >
-                        Ver Detalles
-                      </CButton>
-                    </CTableDataCell>
+            {appointments.length === 0 ? (
+              <CAlert color="info">No tienes citas programadas en este momento.</CAlert>
+            ) : (
+              <CTable align="middle" className="mb-0 border" hover responsive>
+                <CTableHead color="light">
+                  <CTableRow>
+                    <CTableHeaderCell className="text-center">
+                      <CIcon icon={cilPaw} />
+                    </CTableHeaderCell>
+                    <CTableHeaderCell>Mascota</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">
+                      <CIcon icon={cilCalendar} />
+                    </CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">
+                      <CIcon icon={cilClock} />
+                    </CTableHeaderCell>
+                    <CTableHeaderCell>Tipo</CTableHeaderCell>
+                    <CTableHeaderCell>Estado</CTableHeaderCell>
+                    <CTableHeaderCell>Acciones</CTableHeaderCell>
                   </CTableRow>
-                ))}
-              </CTableBody>
-            </CTable>
+                </CTableHead>
+                <CTableBody>
+                  {appointments.map((appointment, index) => (
+                    <CTableRow v-for="item in tableItems" key={index}>
+                      <CTableDataCell className="text-center">
+                        <CIcon icon={cilPaw} size="xl" />
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <div>{appointment.pet}</div>
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <div>{appointment.date}</div>
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <div>{appointment.time}</div>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <div>{appointment.type}</div>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <div>{getStatusBadge(appointment.status)}</div>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <CButton 
+                          color="primary" 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleShowDetails(appointment)}
+                        >
+                          Ver Detalles
+                        </CButton>
+                      </CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+            )}
           </CCardBody>
         </CCard>
       </CCol>

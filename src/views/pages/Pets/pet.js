@@ -18,22 +18,25 @@ import {
   CTableDataCell,
 } from '@coreui/react'
 
-// Asumimos que el ID del usuario actual está disponible
-const CURRENT_USER_ID = "1" // Esto debería venir de tu sistema de autenticación
-
 export default function PetRecords() {
   const [petData, setPetData] = useState([])
   const [selectedPet, setSelectedPet] = useState(null)
   const [workers, setWorkers] = useState([])
+  const [currentUserId, setCurrentUserId] = useState(null)
 
   useEffect(() => {
-    fetchPets()
-    fetchWorkers()
+    const token = localStorage.getItem('token')
+    if (token) {
+      const userId = token.split('-')[2] // Assuming token format is 'dummy-token-userId'
+      setCurrentUserId(userId)
+      fetchPets(userId)
+      fetchWorkers()
+    }
   }, [])
 
-  const fetchPets = async () => {
+  const fetchPets = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:3004/pets?ownerId=${CURRENT_USER_ID}`)
+      const response = await fetch(`http://localhost:3004/pets?ownerId=${userId}`)
       const data = await response.json()
       setPetData(data)
     } catch (error) {

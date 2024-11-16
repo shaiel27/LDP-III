@@ -171,7 +171,7 @@
       "description": "Vacuna anual contra la rabia para Luna."
     }
   ],
-   "pets": [
+  "pets": [
     {
       "id": "1",
       "name": "Max",
@@ -215,6 +215,68 @@
           "workerId": "cb35"
         }
       ]
+    },
+    {
+      "id": "3",
+      "name": "Rocky",
+      "species": "Perro",
+      "breed": "Bulldog",
+      "birthDate": "2019-11-10",
+      "color": "Marrón",
+      "weight": 25,
+      "ownerId": "2",
+      "medicalHistory": [
+        {
+          "date": "2023-07-05",
+          "description": "Vacunación anual",
+          "workerId": "cb35"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Milo",
+      "species": "Gato",
+      "breed": "Persa",
+      "birthDate": "2021-01-15",
+      "color": "Blanco",
+      "weight": 3.5,
+      "ownerId": "3",
+      "medicalHistory": [
+        {
+          "date": "2023-08-20",
+          "description": "Desparasitación",
+          "workerId": "2304"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Bella",
+      "species": "Perro",
+      "breed": "Golden Retriever",
+      "birthDate": "2017-09-03",
+      "color": "Dorado",
+      "weight": 28,
+      "ownerId": "4",
+      "medicalHistory": [
+        {
+          "date": "2023-09-10",
+          "description": "Revisión general",
+          "workerId": "f95b"
+        }
+      ]
+    },
+    {
+      "id": "d4f9",
+      "name": "zeus",
+      "species": "perro",
+      "breed": "labrador",
+      "birthDate": "2024-11-04",
+      "color": "negro",
+      "weight": 10,
+      "ownerId": "3",
+      "medicalHistory": []
     }
   ],
   "users": [
@@ -222,13 +284,86 @@
       "id": "1",
       "name": "Juan Pérez",
       "email": "juan.perez@example.com",
-      "phone": "+1 (555) 123-4567"
+      "phone": "+34 123 456 789",
+      "address": "Calle Mayor 123, Madrid, España",
+      "password": "hashedpassword123",
+      "profilePicture": "/placeholder.svg?height=150&width=150",
+      "userType": "client",
+      "country": "España",
+      "birthDate": "1985-05-15",
+      "gender": "Male",
+      "occupation": "Ingeniero de Software",
+      "emergencyContact": {
+        "name": "María Pérez",
+        "relationship": "Esposa",
+        "phone": "+34 987 654 321"
+      },
+      "preferredLanguage": "Español",
+      "joinDate": "2023-01-01"
     },
     {
       "id": "2",
-      "name": "María López",
-      "email": "maria.lopez@example.com",
-      "phone": "+1 (555) 987-6543"
+      "name": "Ana García",
+      "email": "ana.garcia@example.com",
+      "phone": "+34 234 567 890",
+      "address": "Avenida Diagonal 456, Barcelona, España",
+      "password": "hashedpassword456",
+      "profilePicture": "/placeholder.svg?height=150&width=150",
+      "userType": "admin",
+      "country": "España",
+      "birthDate": "1990-08-22",
+      "gender": "Female",
+      "occupation": "Gerente de Proyectos",
+      "emergencyContact": {
+        "name": "Carlos García",
+        "relationship": "Hermano",
+        "phone": "+34 876 543 210"
+      },
+      "preferredLanguage": "Catalán",
+      "joinDate": "2023-02-15"
+    },
+    {
+      "id": "3",
+      "name": "Luisa Martínez",
+      "email": "luisa.martinez@example.com",
+      "phone": "+34 345 678 901",
+      "address": "Plaza del Sol 789, Valencia, España",
+      "password": "hashedpassword789",
+      "profilePicture": "/placeholder.svg?height=150&width=150",
+      "userType": "client",
+      "country": "España",
+      "birthDate": "1988-11-30",
+      "gender": "Female",
+      "occupation": "Médico",
+      "emergencyContact": {
+        "name": "Pedro Martínez",
+        "relationship": "Padre",
+        "phone": "+34 765 432 109"
+      },
+      "preferredLanguage": "Español",
+      "joinDate": "2023-03-10"
+    },
+    {
+      "id": "2fb9",
+      "name": "shaiel becerra",
+      "email": "shaielbecerra@gmail.com",
+      "password": "1234",
+      "confirmPassword": "1234",
+      "phone": "04247719428",
+      "address": "luxemburgo",
+      "country": "Alemania",
+      "birthDate": "2024-11-16",
+      "gender": "Male",
+      "occupation": "",
+      "preferredLanguage": "",
+      "emergencyContact": {
+        "name": "shaiel becerra",
+        "relationship": "1234",
+        "phone": "shaielbecerra@gmail.com"
+      },
+      "userType": "client",
+      "profilePicture": "/placeholder.svg?height=150&width=150",
+      "joinDate": "2024-11-16"
     }
   ]
 }
