@@ -46,3 +46,43 @@
 .container-fluid .dropdown-item{
    color: #12372A!important
 }
+.login{
+    background-image: url('../../src/assets/images/Perro.jpg');
+    background-position: center;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+.bg-distortion {
+    background: rgba(255, 255, 255, 0.2); 
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    padding: 20px; 
+  }
+  .bg-distortion:hover{
+    background: rgba(255, 255, 255, 0.2); 
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    padding: 20px; 
+}
+.bg-distortion:active{
+    background: rgba(255, 255, 255, 0.2); 
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    padding: 20px; 
+}
+.bg-distortion:focus{
+    background: rgba(255, 255, 255, 0.2); 
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    padding: 20px; 
+}
+.register{
+    background-image: url('../../src/assets/images/dal.jpg');
+    background-position: center;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}

@@ -26,6 +26,7 @@ import { cilPaw, cilCalendar, cilClock, cilUser, cilNotes } from '@coreui/icons'
 
 const MyDates = () => {
   const [appointments, setAppointments] = useState([])
+  const [pets, setPets] = useState([])
   const [workers, setWorkers] = useState([])
   const [selectedAppointment, setSelectedAppointment] = useState(null)
   const [showModal, setShowModal] = useState(false)
@@ -37,28 +38,42 @@ const MyDates = () => {
       setIsLoading(true)
       setError(null)
       try {
-        // Simulating getting the current user ID from a token or context
-        const currentUserId = localStorage.getItem('currentUserId') || '1'
-
-        const [appointmentsResponse, workersResponse] = await Promise.all([
-          fetch('http://localhost:3004/appointments'),
-          fetch('http://localhost:3004/workers')
-        ])
-
-        if (!appointmentsResponse.ok || !workersResponse.ok) {
-          throw new Error('Error al obtener los datos')
+        const token = localStorage.getItem('token')
+        if (!token) {
+          throw new Error('No token found')
         }
+        const userId = token.split('-')[2] // Assuming token format is 'dummy-token-userId'
 
-        const [appointmentsData, workersData] = await Promise.all([
-          appointmentsResponse.json(),
-          workersResponse.json()
-        ])
+        // First fetch user's pets
+        const petsResponse = await fetch(`http://localhost:3004/pets?ownerId=${userId}`)
+        if (!petsResponse.ok) {
+          throw new Error('Error al obtener las mascotas')
+        }
+        const petsData = await petsResponse.json()
+        setPets(petsData)
 
-        // Filter appointments for the current user
-        const userAppointments = appointmentsData.filter(appointment => appointment.ownerId === currentUserId)
+        // Then fetch all appointments
+        const appointmentsResponse = await fetch('http://localhost:3004/appointments')
+        if (!appointmentsResponse.ok) {
+          throw new Error('Error al obtener las citas')
+        }
+        const allAppointments = await appointmentsResponse.json()
+        
+        // Filter appointments to only include those matching user's pets
+        const userPetIds = petsData.map(pet => pet.id)
+        const filteredAppointments = allAppointments.filter(appointment => 
+          userPetIds.includes(appointment.petId)
+        )
+        setAppointments(filteredAppointments)
 
-        setAppointments(userAppointments)
+        // Fetch workers
+        const workersResponse = await fetch('http://localhost:3004/workers')
+        if (!workersResponse.ok) {
+          throw new Error('Error al obtener los trabajadores')
+        }
+        const workersData = await workersResponse.json()
         setWorkers(workersData)
+
       } catch (error) {
         console.error('Error fetching data:', error)
         setError('Hubo un problema al cargar los datos. Por favor, intente de nuevo.')
@@ -83,9 +98,19 @@ const MyDates = () => {
     }
   }
 
+  const getPetName = (petId) => {
+    const pet = pets.find(p => p.id === petId)
+    return pet ? pet.name : 'Mascota no encontrada'
+  }
+
   const handleShowDetails = (appointment) => {
     const worker = workers.find(w => w.id === appointment.workerId)
-    setSelectedAppointment({ ...appointment, doctor: worker ? worker.user.name : 'No asignado' })
+    const pet = pets.find(p => p.id === appointment.petId)
+    setSelectedAppointment({ 
+      ...appointment, 
+      doctor: worker ? worker.user.name : 'No asignado',
+      petName: pet ? pet.name : 'Mascota no encontrada'
+    })
     setShowModal(true)
   }
 
@@ -132,12 +157,12 @@ const MyDates = () => {
                 </CTableHead>
                 <CTableBody>
                   {appointments.map((appointment, index) => (
-                    <CTableRow v-for="item in tableItems" key={index}>
+                    <CTableRow key={index}>
                       <CTableDataCell className="text-center">
                         <CIcon icon={cilPaw} size="xl" />
                       </CTableDataCell>
                       <CTableDataCell>
-                        <div>{appointment.pet}</div>
+                        <div>{getPetName(appointment.petId)}</div>
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         <div>{appointment.date}</div>
@@ -177,7 +202,7 @@ const MyDates = () => {
         <CModalBody>
           {selectedAppointment && (
             <div>
-              <p><CIcon icon={cilPaw} /> Mascota: {selectedAppointment.pet}</p>
+              <p><CIcon icon={cilPaw} /> Mascota: {selectedAppointment.petName}</p>
               <p><CIcon icon={cilCalendar} /> Fecha: {selectedAppointment.date}</p>
               <p><CIcon icon={cilClock} /> Hora: {selectedAppointment.time}</p>
               <p><CIcon icon={cilUser} /> Doctor: {selectedAppointment.doctor}</p>

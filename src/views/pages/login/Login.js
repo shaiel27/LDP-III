@@ -30,8 +30,8 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3004/users');
-      const users = await response.json();
+      const usersResponse = await fetch('http://localhost:3004/users');
+      const users = await usersResponse.json();
       const user = users.find(u => u.email === email && u.password === password);
 
       if (user) {
@@ -39,7 +39,17 @@ const Login = () => {
         localStorage.setItem('userType', user.userType);
         navigate('/dashboard');
       } else {
-        setError('Invalid email or password');
+        const workersResponse = await fetch('http://localhost:3004/workers');
+        const workers = await workersResponse.json();
+        const worker = workers.find(w => w.user.email === email && w.user.password === password);
+
+        if (worker) {
+          localStorage.setItem('token', 'dummy-token-' + worker.id);
+          localStorage.setItem('userType', 'worker');
+          navigate('/worker-dashboard');
+        } else {
+          setError('Invalid email or password');
+        }
       }
     } catch (error) {
       setError('An error occurred. Please try again.');
@@ -49,41 +59,43 @@ const Login = () => {
   };
 
   return (
-    <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
+    <div className=" min-vh-100 d-flex flex-row align-items-center login">
       <CContainer>
-        <CRow className="justify-content-center">
+        <CRow className="justify-content-center ">
           <CCol md={8}>
             <CCardGroup>
-              <CCard className="p-4">
+              <CCard className="p-4 bg-distortion">
                 <CCardBody>
                   <CForm onSubmit={handleLogin}>
                     <h1>Login</h1>
                     <p className="text-medium-emphasis">Sign In to your account</p>
                     {error && <CAlert color="danger">{error}</CAlert>}
-                    <CInputGroup className="mb-3">
-                      <CInputGroupText>
+                    <CInputGroup className="mb-3 ">
+                      <CInputGroupText className='bg-distortion'>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
                       <CFormInput
-                        type="email"
+                        type="email bg-distortion"
                         placeholder="Email"
                         autoComplete="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        className='bg-distortion'
                       />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
-                      <CInputGroupText>
+                      <CInputGroupText className='bg-distortion'>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
-                        type="password"
+                        type="password bg-distortion"
                         placeholder="Password"
                         autoComplete="current-password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        className='bg-distortion'
                       />
                     </CInputGroup>
                     <CRow>
@@ -101,7 +113,7 @@ const Login = () => {
                   </CForm>
                 </CCardBody>
               </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
+              <CCard className=" py-5 bg-distortion " style={{ width: '44%' }}>
                 <CCardBody className="text-center">
                   <div>
                     <h2>Sign up</h2>

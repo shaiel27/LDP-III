@@ -7,13 +7,26 @@
         "status": "success"
       },
       "user": {
-        "name": "Yiorgos Avraamu2",
+        "name": "Yiorgos Avraamu",
         "new": true,
         "registered": "Jan 1, 2023",
         "email": "yiorgos.avraamu@example.com",
+        "password": "securePass123",
         "phone": "+1 (555) 123-1011",
         "birthDate": "1985-03-15",
-        "address": "123 Main St, New York, NY 10001, USA"
+        "address": "123 Main St, New York, NY 10001, USA",
+        "country": "USA",
+        "gender": "Male",
+        "occupation": "Veterinarian",
+        "preferredLanguage": "English",
+        "emergencyContact": {
+          "name": "Maria Avraamu",
+          "relationship": "Spouse",
+          "phone": "+1 (555) 123-1012"
+        },
+        "userType": "employee",
+        "profilePicture": "/placeholder.svg?height=150&width=150",
+        "joinDate": "2023-01-01"
       },
       "country": {
         "name": "USA",
@@ -36,139 +49,184 @@
         "emergencyCases": 23,
         "clientSatisfaction": "95.8%",
         "upcomingAppointments": 28
-      }
-    },
-    {
-      "id": "2304",
-      "avatar": {
-        "src": "avatar2",
-        "status": "danger"
       },
-      "user": {
-        "name": "Avram Tarasios",
-        "new": false,
-        "registered": "Jan 1, 2023",
-        "email": "avram.tarasios@example.com",
-        "phone": "+55 (11) 98765-4321",
-        "birthDate": "1990-07-22",
-        "address": "456 Rua Augusta, São Paulo, SP 01305-000, Brazil"
-      },
-      "country": {
-        "name": "Brazil",
-        "flag": "cifBr"
-      },
-      "usage": {
-        "value": 22,
-        "period": "Jun 11, 2023 - Jul 10, 2023",
-        "color": "info"
-      },
-      "payment": {
-        "name": "Orthopedics",
-        "icon": "cibCcVisa"
-      },
-      "activity": "5 minutes ago",
-      "stats": {
-        "patientsSeen": 245,
-        "surgeriesPerformed": 78,
-        "vaccinationsGiven": 92,
-        "emergencyCases": 15,
-        "clientSatisfaction": "94.2%",
-        "upcomingAppointments": 22
+      "specialty": "General Practice",
+      "licenseNumber": "VET123456",
+      "yearsOfExperience": 10,
+      "education": [
+        {
+          "degree": "Doctor of Veterinary Medicine",
+          "institution": "Cornell University",
+          "year": 2013
+        }
+      ],
+      "certifications": [
+        "American Board of Veterinary Practitioners",
+        "Fear Free Certified Professional"
+      ],
+      "schedule": {
+        "monday": "9:00 AM - 5:00 PM",
+        "tuesday": "9:00 AM - 5:00 PM",
+        "wednesday": "9:00 AM - 5:00 PM",
+        "thursday": "9:00 AM - 5:00 PM",
+        "friday": "9:00 AM - 5:00 PM",
+        "saturday": "10:00 AM - 2:00 PM",
+        "sunday": "Closed"
       }
     },
     {
       "id": "f95b",
       "avatar": {
-        "src": "avatar3",
+        "src": "avatar2",
         "status": "warning"
       },
       "user": {
-        "name": "Quintin Ed",
-        "new": true,
-        "registered": "Jan 1, 2023",
-        "email": "quintin.ed@example.com",
-        "phone": "+91 98765 43210",
-        "birthDate": "1988-11-30",
-        "address": "789 MG Road, Bangalore, Karnataka 560001, India"
+        "name": "Estavan Lykos",
+        "new": false,
+        "registered": "Feb 15, 2023",
+        "email": "estavan.lykos@example.com",
+        "password": "securePass456",
+        "phone": "+1 (555) 234-5678",
+        "birthDate": "1990-07-22",
+        "address": "456 Elm St, Los Angeles, CA 90001, USA",
+        "country": "USA",
+        "gender": "Male",
+        "occupation": "Veterinary Surgeon",
+        "preferredLanguage": "English",
+        "emergencyContact": {
+          "name": "Sophia Lykos",
+          "relationship": "Sister",
+          "phone": "+1 (555) 876-5432"
+        },
+        "userType": "worker",
+        "profilePicture": "/placeholder.svg?height=150&width=150",
+        "joinDate": "2023-02-15",
+        "id": "f95b"
       },
       "country": {
-        "name": "India",
-        "flag": "cifIn"
+        "name": "USA",
+        "flag": "cifUs"
       },
       "usage": {
-        "value": 74,
+        "value": 70,
         "period": "Jun 11, 2023 - Jul 10, 2023",
         "color": "warning"
       },
       "payment": {
-        "name": "Dentistry",
+        "name": "Surgery",
+        "icon": "cibCcVisa"
+      },
+      "activity": "5 minutes ago",
+      "stats": {
+        "patientsSeen": 187,
+        "surgeriesPerformed": 76,
+        "vaccinationsGiven": 92,
+        "emergencyCases": 15,
+        "clientSatisfaction": "93.2%",
+        "upcomingAppointments": 19
+      },
+      "specialty": "Surgery",
+      "licenseNumber": "VET789012",
+      "yearsOfExperience": 8,
+      "education": [
+        {
+          "degree": "Doctor of Veterinary Medicine",
+          "institution": "University of California, Davis",
+          "year": 2015
+        }
+      ],
+      "certifications": [
+        "American College of Veterinary Surgeons",
+        "Advanced Trauma Life Support"
+      ],
+      "schedule": {
+        "monday": "8:00 AM - 4:00 PM",
+        "tuesday": "8:00 AM - 4:00 PM",
+        "wednesday": "8:00 AM - 4:00 PM",
+        "thursday": "8:00 AM - 4:00 PM",
+        "friday": "8:00 AM - 4:00 PM",
+        "saturday": "On call",
+        "sunday": "On call"
+      }
+    },
+    {
+      "id": "2304",
+      "avatar": {
+        "src": "avatar3",
+        "status": "success"
+      },
+      "user": {
+        "name": "Sophia Chen",
+        "new": false,
+        "registered": "Mar 10, 2023",
+        "email": "sophia.chen@example.com",
+        "password": "securePass789",
+        "phone": "+1 (555) 987-6543",
+        "birthDate": "1988-11-30",
+        "address": "789 Oak St, Chicago, IL 60601, USA",
+        "country": "USA",
+        "gender": "Female",
+        "occupation": "Veterinary Dermatologist",
+        "preferredLanguage": "English",
+        "emergencyContact": {
+          "name": "Michael Chen",
+          "relationship": "Brother",
+          "phone": "+1 (555) 321-6789"
+        },
+        "userType": "employee",
+        "profilePicture": "/placeholder.svg?height=150&width=150",
+        "joinDate": "2023-03-10"
+      },
+      "country": {
+        "name": "USA",
+        "flag": "cifUs"
+      },
+      "usage": {
+        "value": 60,
+        "period": "Jun 11, 2023 - Jul 10, 2023",
+        "color": "info"
+      },
+      "payment": {
+        "name": "Dermatology",
         "icon": "cibCcStripe"
       },
       "activity": "1 hour ago",
       "stats": {
-        "patientsSeen": 187,
-        "surgeriesPerformed": 56,
-        "vaccinationsGiven": 78,
-        "emergencyCases": 9,
-        "clientSatisfaction": "96.5%",
-        "upcomingAppointments": 19
+        "patientsSeen": 256,
+        "surgeriesPerformed": 18,
+        "vaccinationsGiven": 203,
+        "emergencyCases": 31,
+        "clientSatisfaction": "97.5%",
+        "upcomingAppointments": 35
+      },
+      "specialty": "Dermatology",
+      "licenseNumber": "VET345678",
+      "yearsOfExperience": 12,
+      "education": [
+        {
+          "degree": "Doctor of Veterinary Medicine",
+          "institution": "University of Pennsylvania",
+          "year": 2011
+        },
+        {
+          "degree": "Residency in Veterinary Dermatology",
+          "institution": "Ohio State University",
+          "year": 2014
+        }
+      ],
+      "certifications": [
+        "American College of Veterinary Dermatology",
+        "International Society of Veterinary Dermatopathology"
+      ],
+      "schedule": {
+        "monday": "9:00 AM - 5:00 PM",
+        "tuesday": "9:00 AM - 5:00 PM",
+        "wednesday": "9:00 AM - 5:00 PM",
+        "thursday": "9:00 AM - 5:00 PM",
+        "friday": "9:00 AM - 3:00 PM",
+        "saturday": "Closed",
+        "sunday": "Closed"
       }
-    }
-  ],
-  "inventory": [
-    {
-      "name": "Dog Food",
-      "category": "Food",
-      "price": 29.99,
-      "quantity": 46,
-      "image": "/placeholder.svg?height=100&width=100",
-      "id": "1"
-    },
-    {
-      "id": "2",
-      "name": "Cat Food",
-      "category": "Food",
-      "price": 24.99,
-      "quantity": 40,
-      "image": "/placeholder.svg?height=100&width=100"
-    },
-    {
-      "id": "3",
-      "name": "Flea Treatment",
-      "category": "Medication",
-      "price": 15.99,
-      "quantity": 100,
-      "image": "/placeholder.svg?height=100&width=100"
-    },
-    {
-      "id": "4",
-      "name": "Dog Collar",
-      "category": "Accessory",
-      "price": 9.99,
-      "quantity": 30,
-      "image": "/placeholder.svg?height=100&width=100"
-    }
-  ],
-  "appointments": [
-    {
-      "id": "1",
-      "pet": "Max",
-      "date": "2023-12-12",
-      "time": "10:00",
-      "status": "Pendiente",
-      "type": "Consulta",
-      "workerId": "cb35",
-      "description": "Chequeo general anual para Max."
-    },
-    {
-      "id": "2",
-      "pet": "Luna",
-      "date": "2023-06-16",
-      "time": "14:30",
-      "status": "Confirmada",
-      "type": "Vacunación",
-      "workerId": "2304",
-      "description": "Vacuna anual contra la rabia para Luna."
     }
   ],
   "pets": [
@@ -364,6 +422,142 @@
       "userType": "client",
       "profilePicture": "/placeholder.svg?height=150&width=150",
       "joinDate": "2024-11-16"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "apt001",
+      "workerId": "cb35",
+      "petId": "1",
+      "date": "2023-07-15",
+      "time": "09:00",
+      "type": "General Checkup",
+      "status": "Completed",
+      "description": "Annual health examination for Max"
+    },
+    {
+      "id": "apt002",
+      "workerId": "cb35",
+      "petId": "2",
+      "date": "2023-07-20",
+      "time": "14:30",
+      "type": "Vaccination",
+      "status": "Pending",
+      "description": "Rabies vaccination for Luna"
+    },
+    {
+      "id": "apt003",
+      "workerId": "f95b",
+      "petId": "1",
+      "date": "2023-07-16",
+      "time": "11:00",
+      "type": "Surgery",
+      "status": "Completed",
+      "description": "Tooth extraction for Max"
+    },
+    {
+      "id": "apt004",
+      "workerId": "f95b",
+      "petId": "2",
+      "date": "2023-07-22",
+      "time": "10:00",
+      "type": "Surgery",
+      "status": "Pending",
+      "description": "Spay procedure for Luna"
+    },
+    {
+      "id": "apt005",
+      "workerId": "2304",
+      "petId": "1",
+      "date": "2023-07-17",
+      "time": "15:00",
+      "type": "Dermatology",
+      "status": "Completed",
+      "description": "Skin allergy treatment for Max"
+    },
+    {
+      "id": "apt006",
+      "workerId": "2304",
+      "petId": "2",
+      "date": "2023-07-21",
+      "time": "16:30",
+      "type": "Dermatology",
+      "status": "Pending",
+      "description": "Follow-up for Luna's skin condition"
+    },
+    {
+      "id": "apt007",
+      "workerId": "cb35",
+      "petId": "1",
+      "date": "2023-07-18",
+      "time": "13:00",
+      "type": "Nutrition Consultation",
+      "status": "Completed",
+      "description": "Diet plan for Max's weight management"
+    },
+    {
+      "id": "apt008",
+      "workerId": "cb35",
+      "petId": "2",
+      "date": "2023-07-23",
+      "time": "11:30",
+      "type": "Nutrition Consultation",
+      "status": "Pending",
+      "description": "Dietary advice for Luna"
+    },
+    {
+      "id": "apt009",
+      "workerId": "f95b",
+      "petId": "1",
+      "date": "2023-07-19",
+      "time": "10:30",
+      "type": "Surgery",
+      "status": "Completed",
+      "description": "Post-operative check for Max"
+    },
+    {
+      "id": "apt010",
+      "workerId": "2304",
+      "petId": "2",
+      "date": "2023-07-24",
+      "time": "14:00",
+      "type": "Dermatology",
+      "status": "Pending",
+      "description": "Allergy testing for Luna"
+    }
+  ],
+  "inventory": [
+    {
+      "name": "Dog Food",
+      "category": "Food",
+      "price": 29.99,
+      "quantity": 46,
+      "image": "/placeholder.svg?height=100&width=100",
+      "id": "1"
+    },
+    {
+      "id": "2",
+      "name": "Cat Food",
+      "category": "Food",
+      "price": 24.99,
+      "quantity": 40,
+      "image": "/placeholder.svg?height=100&width=100"
+    },
+    {
+      "id": "3",
+      "name": "Flea Treatment",
+      "category": "Medication",
+      "price": 15.99,
+      "quantity": 100,
+      "image": "/placeholder.svg?height=100&width=100"
+    },
+    {
+      "id": "4",
+      "name": "Dog Collar",
+      "category": "Accessory",
+      "price": 9.99,
+      "quantity": 30,
+      "image": "/placeholder.svg?height=100&width=100"
     }
   ]
 }

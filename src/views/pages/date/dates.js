@@ -36,29 +36,27 @@ const AppointmentRequest = () => {
       setIsLoading(true)
       setError(null)
       try {
-        // Simulating getting the current user ID from a token or context
-        const currentUserId = localStorage.getItem('currentUserId') || '1'
+        const token = localStorage.getItem('token')
+        if (!token) {
+          throw new Error('No token found')
+        }
+        const userId = token.split('-')[2] // Assuming token format is 'dummy-token-userId'
 
-        const [petsResponse, workersResponse, usersResponse] = await Promise.all([
-          fetch('http://localhost:3004/pets'),
-          fetch('http://localhost:3004/workers'),
-          fetch(`http://localhost:3004/users/${currentUserId}`)
+        const [petsResponse, workersResponse] = await Promise.all([
+          fetch(`http://localhost:3004/pets?ownerId=${userId}`),
+          fetch('http://localhost:3004/workers')
         ])
 
-        if (!petsResponse.ok || !workersResponse.ok || !usersResponse.ok) {
+        if (!petsResponse.ok || !workersResponse.ok) {
           throw new Error('Error al obtener los datos')
         }
 
-        const [petsData, workersData, userData] = await Promise.all([
+        const [petsData, workersData] = await Promise.all([
           petsResponse.json(),
-          workersResponse.json(),
-          usersResponse.json()
+          workersResponse.json()
         ])
 
-        // Filter pets for the current user
-        const userPets = petsData.filter(pet => pet.ownerId === currentUserId)
-
-        setPets(userPets)
+        setPets(petsData)
         setWorkers(workersData)
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -92,14 +90,15 @@ const AppointmentRequest = () => {
     }
 
     try {
-      const currentUserId = localStorage.getItem('currentUserId') || '1'
+      const token = localStorage.getItem('token')
+      const userId = token.split('-')[2]
       const selectedPet = pets.find(pet => pet.id === formData.petId)
       const appointmentData = {
         ...formData,
         id: Date.now().toString(),
         pet: selectedPet.name,
-        status: 'Pendiente',
-        ownerId: currentUserId
+        ownerId: userId,
+        status: 'Pendiente'
       }
 
       const response = await fetch('http://localhost:3004/appointments', {

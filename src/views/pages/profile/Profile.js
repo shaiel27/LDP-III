@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -11,7 +13,6 @@ import {
   CForm,
   CFormInput,
   CFormSelect,
-  CFormTextarea,
   CInputGroup,
   CInputGroupText,
   CSpinner,
@@ -38,7 +39,7 @@ import {
   cilLanguage,
 } from '@coreui/icons'
 
-const Profile = () => {
+export default function Profile() {
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -52,6 +53,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       const token = localStorage.getItem('token')
+      const userType = localStorage.getItem('userType')
       if (!token) {
         navigate('/login')
         return
@@ -59,10 +61,19 @@ const Profile = () => {
 
       try {
         const userId = token.split('-')[2]
-        const response = await fetch(`http://localhost:3004/users/${userId}`)
+        let response
+
+        if (userType === 'worker') {
+          response = await fetch(`http://localhost:3004/workers/${userId}`)
+        } else {
+          response = await fetch(`http://localhost:3004/users/${userId}`)
+        }
 
         if (response.ok) {
-          const userData = await response.json()
+          let userData = await response.json()
+          if (userType === 'worker') {
+            userData = { ...userData.user, id: userData.id, userType: 'worker' }
+          }
           setUser(userData)
           setEditedUser(userData)
         } else {
@@ -103,13 +114,28 @@ const Profile = () => {
   const handleSave = async () => {
     setIsSaving(true)
     try {
-      const response = await fetch(`http://localhost:3004/users/${user.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(editedUser),
-      })
+      const userType = localStorage.getItem('userType')
+      let response
+
+      if (userType === 'worker') {
+        const workerData = await fetch(`http://localhost:3004/workers/${user.id}`).then(res => res.json())
+        const updatedWorkerData = { ...workerData, user: editedUser }
+        response = await fetch(`http://localhost:3004/workers/${user.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedWorkerData),
+        })
+      } else {
+        response = await fetch(`http://localhost:3004/users/${user.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(editedUser),
+        })
+      }
 
       if (response.ok) {
         setUser(editedUser)
@@ -564,5 +590,3 @@ const Profile = () => {
     </div>
   )
 }
-
-export default Profile

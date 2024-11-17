@@ -1,5 +1,4 @@
 import React from 'react'
-import  CIconSvg from '@coreui/icons-react'
 import CIcon from '@coreui/icons-react'
 
 import {
@@ -14,25 +13,22 @@ import {
   cilUserPlus,
   cilUser,
   cilCreditCard,
+  cilBriefcase,
+  cilCalendar,
+  cilPeople,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
 const _nav = [
   {
     component: CNavTitle,
-    name: 'Explorar',
+    name: 'General',
   },
- 
   {
-    
     component: CNavItem,
     name: 'Inicio',
     to: '/dashboard',
     icon: <CIcon icon={cilHome} customClassName="nav-icon" />,
-    // badge: {
-    //   color: 'info',
-    //   text: 'NEW',
-    // },
   },
   {
     component: CNavItem,
@@ -48,56 +44,68 @@ const _nav = [
   },
   {
     component: CNavTitle,
-    name: 'Gestion',
+    name: 'Administrador',
   },
-  {
-    component: CNavItem,
-    name: 'Inventario',
-    to: '/pages/inventory',
-    icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />
-        // badge: {
-    //   color: 'info',
-    //   text: 'NEW',
-    // },
-  },
-  
   {
     component: CNavGroup,
-    name: 'Empleados',
-    to: '/Workers',
-    icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
+    name: 'Gestión',
+    icon: <CIcon icon={cilBriefcase} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'Mis empleados',
-        to: '/Workers',
+        name: 'Inventario',
+        to: '/pages/inventory',
+        icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />
       },
       {
-        component: CNavItem,
-        name: 'Añadir Empleados',
-        to: '/pages/AddWorker'
+        component: CNavGroup,
+        name: 'Empleados',
+        icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
+        items: [
+          {
+            component: CNavItem,
+            name: 'Mis empleados',
+            to: '/Workers',
+          },
+          {
+            component: CNavItem,
+            name: 'Añadir Empleados',
+            to: '/pages/AddWorker'
+          },
+          {
+            component: CNavItem,
+            name: 'Horarios',
+            to: '/pages/Schedule',
+          },
+          {
+            component: CNavItem,
+            name: 'Pagos',
+            to: '/pages/payments',
+            icon: <CIcon icon={cilCreditCard} customClassName="nav-icon" />,
+          },
+        ]
       },
-      {
-        component: CNavItem,
-        name: 'Horarios',
-        to: '/pages/Schedule',
-      },
-      {
-        component: CNavItem,
-        name: 'Citas y consultas',
-        to: '/pages/workerInfo',
-      },
-      {
-        component: CNavItem,
-        name: 'Pagos',
-        to: '/pages/payments',
-        icon: <CIcon icon={cilCreditCard} customClassName="nav-icon" />,
-      },
-    ]  
+    ]
   },
   {
     component: CNavTitle,
-    name: 'Usuarios',
+    name: 'Empleado',
+  },
+  {
+    component: CNavGroup,
+    name: 'Gestión de Trabajo',
+    icon: <CIcon icon={cilCalendar} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Mis Citas',
+        to: '/pages/workerInfo',
+      },
+    ]
+  },
+  {
+    component: CNavTitle,
+    name: 'Usuario',
   },
   {
     component: CNavGroup,
@@ -110,17 +118,11 @@ const _nav = [
         name: 'Agregar Mascotas',
         to: 'pages/Addpet',
       },
-      /*{
-        component: CNavItem,
-        name: 'Agregar Mascotas',
-        to: '/base/accordion',
-      },*/
       {
         component: CNavItem,
         name: 'Mis Mascotas',
         to: 'pages/Pets',
       },
-      
     ],
   },
   {
@@ -138,25 +140,6 @@ const _nav = [
         component: CNavItem,
         name: 'Ver mis Citas',
         to: 'pages/mydates',
-      },
-    ],
-  },
-  
-  {
-    component: CNavGroup,
-    name: 'Pages',
-    icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
-    items: [
-      
-      {
-        component: CNavItem,
-        name: 'Error 404',
-        to: '/404',
-      },
-      {
-        component: CNavItem,
-        name: 'Error 500',
-        to: '/500',
       },
     ],
   },

@@ -101,34 +101,36 @@ const Register = () => {
   }
 
   return (
-    <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
+    <div className="register min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
-        <CRow className="justify-content-center">
+        <CRow className="justify-content-center ">
           <CCol md={12} lg={10} xl={8}>
-            <CCard className="mx-4">
+            <CCard className="mx-4 bg-distortion">
               <CCardBody className="p-4">
                 <CForm onSubmit={handleSubmit}>
                   <h1 className="mb-4 text-center">Register</h1>
                   <p className="text-medium-emphasis text-center mb-4">Create your account</p>
                   <CRow>
                     <CCol md={6}>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
+                      <CInputGroup className="mb-3 ">
+                        <CInputGroupText className='bg-distortion' >
                           <CIcon icon={cilUser} />
                         </CInputGroupText>
                         <CFormInput
                           placeholder="Full Name"
                           autoComplete="name"
                           name="name"
+                          type='bg-distortion'
                           value={formData.name}
                           onChange={handleChange}
                           required
+                          className='bg-distortion'
                         />
                       </CInputGroup>
                     </CCol>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText>
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilEnvelopeClosed} />
                         </CInputGroupText>
                         <CFormInput
@@ -139,6 +141,7 @@ const Register = () => {
                           value={formData.email}
                           onChange={handleChange}
                           required
+                          className='bg-distortion'
                         />
                       </CInputGroup>
                     </CCol>
@@ -146,7 +149,7 @@ const Register = () => {
                   <CRow>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText>
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilLockLocked} />
                         </CInputGroupText>
                         <CFormInput
@@ -157,12 +160,13 @@ const Register = () => {
                           value={formData.password}
                           onChange={handleChange}
                           required
+                          className='bg-distortion'
                         />
                       </CInputGroup>
                     </CCol>
                     <CCol md={6}>
                       <CInputGroup className="mb-4">
-                        <CInputGroupText>
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilLockLocked} />
                         </CInputGroupText>
                         <CFormInput
@@ -173,6 +177,7 @@ const Register = () => {
                           value={formData.confirmPassword}
                           onChange={handleChange}
                           required
+                          className='bg-distortion'
                         />
                       </CInputGroup>
                     </CCol>
@@ -180,7 +185,7 @@ const Register = () => {
                   <CRow>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText>
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilPhone} />
                         </CInputGroupText>
                         <CFormInput
@@ -188,12 +193,13 @@ const Register = () => {
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
+                          className='bg-distortion'
                         />
                       </CInputGroup>
                     </CCol>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText>
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilGlobeAlt} />
                         </CInputGroupText>
                         <CFormInput
@@ -201,6 +207,7 @@ const Register = () => {
                           name="country"
                           value={formData.country}
                           onChange={handleChange}
+                          className='bg-distortion'
                         />
                       </CInputGroup>
                     </CCol>
@@ -208,7 +215,7 @@ const Register = () => {
                   <CRow>
                     <CCol md={12}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText>
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilLocationPin} />
                         </CInputGroupText>
                         <CFormInput
@@ -216,6 +223,7 @@ const Register = () => {
                           name="address"
                           value={formData.address}
                           onChange={handleChange}
+                          className='bg-distortion'
                         />
                       </CInputGroup>
                     </CCol>
@@ -223,7 +231,7 @@ const Register = () => {
                   <CRow>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText>
+                        <CInputGroupText className='bg-distortion' >
                           <CIcon icon={cilCalendar} />
                         </CInputGroupText>
                         <CFormInput
@@ -232,18 +240,20 @@ const Register = () => {
                           name="birthDate"
                           value={formData.birthDate}
                           onChange={handleChange}
+                          className='bg-distortion'
                         />
                       </CInputGroup>
                     </CCol>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText>
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilUser} />
                         </CInputGroupText>
                         <CFormSelect
                           name="gender"
                           value={formData.gender}
                           onChange={handleChange}
+                          className='bg-distortion'
                         >
                           <option value="">Select Gender</option>
                           <option value="Male">Male</option>
@@ -256,10 +266,11 @@ const Register = () => {
                   <CRow>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText>
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilBriefcase} />
                         </CInputGroupText>
                         <CFormInput
+                        className='bg-distortion'
                           placeholder="Occupation"
                           name="occupation"
                           value={formData.occupation}
@@ -269,7 +280,7 @@ const Register = () => {
                     </CCol>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText>
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilLanguage} />
                         </CInputGroupText>
                         <CFormInput
@@ -277,6 +288,7 @@ const Register = () => {
                           name="preferredLanguage"
                           value={formData.preferredLanguage}
                           onChange={handleChange}
+                          className='bg-distortion'
                         />
                       </CInputGroup>
                     </CCol>
@@ -285,10 +297,11 @@ const Register = () => {
                   <CRow>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText>
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilUser} />
                         </CInputGroupText>
                         <CFormInput
+                          className='bg-distortion'
                           placeholder="Emergency Contact Name"
                           name="emergencyContact.name"
                           value={formData.emergencyContact.name}
@@ -298,10 +311,11 @@ const Register = () => {
                     </CCol>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText>
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilPeople} />
                         </CInputGroupText>
                         <CFormInput
+                          className='bg-distortion'
                           placeholder="Emergency Contact Relationship"
                           name="emergencyContact.relationship"
                           value={formData.emergencyContact.relationship}
@@ -313,10 +327,11 @@ const Register = () => {
                   <CRow>
                     <CCol md={6}>
                       <CInputGroup className="mb-4">
-                        <CInputGroupText>
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilPhone} />
                         </CInputGroupText>
                         <CFormInput
+                          className='bg-distortion'
                           placeholder="Emergency Contact Phone"
                           name="emergencyContact.phone"
                           value={formData.emergencyContact.phone}
