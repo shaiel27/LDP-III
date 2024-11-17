@@ -630,6 +630,18 @@
       "status": "Pendiente",
       "pet": "Max",
       "ownerId": "1"
+    },
+    {
+      "id": "1731852153242",
+      "petId": "1",
+      "type": "Consulta",
+      "workerId": "cb35",
+      "date": "2023-07-23",
+      "time": "10:02",
+      "description": "cita de chequeo",
+      "status": "Pendiente",
+      "pet": "Max",
+      "ownerId": "1"
     }
   ],
   "inventory": [
