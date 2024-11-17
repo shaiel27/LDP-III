@@ -227,6 +227,78 @@
         "saturday": "Closed",
         "sunday": "Closed"
       }
+    },
+    {
+      "id": "1164",
+      "avatar": {
+        "src": "CoreUI Free React.js Admin Template y 1 página más - Personal_ Microsoft​ Edge 17_11_2024 8_21_37 a. m..png",
+        "status": "success"
+      },
+      "user": {
+        "name": "shaiel becerra",
+        "new": true,
+        "registered": "Nov 17, 2024",
+        "email": "shaielbecerra@gmail.com",
+        "password": "!bsgddg8Fc3LLj:",
+        "phone": "7461453",
+        "birthDate": "2024-11-17",
+        "address": "luxemburgo",
+        "country": "Venezuela",
+        "gender": "Male",
+        "occupation": "Veterinarian",
+        "preferredLanguage": "1",
+        "emergencyContact": {
+          "name": "1234",
+          "relationship": "1",
+          "phone": "1"
+        },
+        "userType": "employee",
+        "profilePicture": "/placeholder.svg?height=150&width=150",
+        "joinDate": "2024-11-17"
+      },
+      "country": {
+        "name": "Venezuela",
+        "flag": "cifVE"
+      },
+      "usage": {
+        "value": 50,
+        "period": "Nov 17 - Dec 17",
+        "color": "success"
+      },
+      "payment": {
+        "name": "General Practice",
+        "icon": "cibCcMastercard"
+      },
+      "activity": "Recently added",
+      "stats": {
+        "patientsSeen": 0,
+        "surgeriesPerformed": 0,
+        "vaccinationsGiven": 0,
+        "emergencyCases": 0,
+        "clientSatisfaction": "0%",
+        "upcomingAppointments": 0
+      },
+      "specialty": "General Practice",
+      "licenseNumber": "1234",
+      "yearsOfExperience": "01",
+      "education": [
+        {
+          "degree": "1",
+          "year": null
+        }
+      ],
+      "certifications": [
+        "1"
+      ],
+      "schedule": {
+        "monday": "2",
+        "tuesday": "2",
+        "wednesday": "2",
+        "thursday": "2",
+        "friday": "2",
+        "saturday": "2",
+        "sunday": "2"
+      }
     }
   ],
   "pets": [
@@ -422,6 +494,28 @@
       "userType": "client",
       "profilePicture": "/placeholder.svg?height=150&width=150",
       "joinDate": "2024-11-16"
+    },
+    {
+      "id": "202c",
+      "name": "shaiel becerra",
+      "email": "shaielbecerra@gmail.com",
+      "password": "D-iQs7:BT9dgZVc",
+      "confirmPassword": "D-iQs7:BT9dgZVc",
+      "phone": "7461453",
+      "address": "luxemburgo",
+      "country": "Venezuela",
+      "birthDate": "2024-11-17",
+      "gender": "Male",
+      "occupation": "1",
+      "preferredLanguage": "español",
+      "emergencyContact": {
+        "name": "1234",
+        "relationship": "1234",
+        "phone": "5551234569"
+      },
+      "userType": "client",
+      "profilePicture": "/placeholder.svg?height=150&width=150",
+      "joinDate": "2024-11-17"
     }
   ],
   "appointments": [
@@ -432,7 +526,7 @@
       "date": "2023-07-15",
       "time": "09:00",
       "type": "General Checkup",
-      "status": "Completed",
+      "status": "Confirmada",
       "description": "Annual health examination for Max"
     },
     {
@@ -442,78 +536,78 @@
       "date": "2023-07-20",
       "time": "14:30",
       "type": "Vaccination",
-      "status": "Pending",
+      "status": "En Proceso",
       "description": "Rabies vaccination for Luna"
     },
     {
       "id": "apt003",
       "workerId": "f95b",
-      "petId": "1",
+      "petId": "3",
       "date": "2023-07-16",
       "time": "11:00",
       "type": "Surgery",
-      "status": "Completed",
+      "status": "Confirmada",
       "description": "Tooth extraction for Max"
     },
     {
       "id": "apt004",
       "workerId": "f95b",
-      "petId": "2",
+      "petId": "d4f9",
       "date": "2023-07-22",
       "time": "10:00",
       "type": "Surgery",
-      "status": "Pending",
+      "status": "Pendiente",
       "description": "Spay procedure for Luna"
     },
     {
       "id": "apt005",
       "workerId": "2304",
-      "petId": "1",
+      "petId": "5",
       "date": "2023-07-17",
       "time": "15:00",
       "type": "Dermatology",
-      "status": "Completed",
+      "status": "Confirmada",
       "description": "Skin allergy treatment for Max"
     },
     {
       "id": "apt006",
       "workerId": "2304",
-      "petId": "2",
+      "petId": "4",
       "date": "2023-07-21",
       "time": "16:30",
       "type": "Dermatology",
-      "status": "Pending",
+      "status": "Pendiente",
       "description": "Follow-up for Luna's skin condition"
     },
     {
       "id": "apt007",
       "workerId": "cb35",
-      "petId": "1",
+      "petId": "5",
       "date": "2023-07-18",
       "time": "13:00",
       "type": "Nutrition Consultation",
-      "status": "Completed",
+      "status": "Confirmada",
       "description": "Diet plan for Max's weight management"
     },
     {
       "id": "apt008",
       "workerId": "cb35",
-      "petId": "2",
+      "petId": "3",
       "date": "2023-07-23",
       "time": "11:30",
       "type": "Nutrition Consultation",
-      "status": "Pending",
+      "status": "Pendiente",
       "description": "Dietary advice for Luna"
     },
     {
       "id": "apt009",
       "workerId": "f95b",
-      "petId": "1",
+      "petId": "d4f9",
       "date": "2023-07-19",
       "time": "10:30",
       "type": "Surgery",
-      "status": "Completed",
-      "description": "Post-operative check for Max"
+      "status": "Confirmada",
+      "description": "Post-operative check for zeus"
     },
     {
       "id": "apt010",
@@ -522,8 +616,20 @@
       "date": "2023-07-24",
       "time": "14:00",
       "type": "Dermatology",
-      "status": "Pending",
+      "status": "Pendiente",
       "description": "Allergy testing for Luna"
+    },
+    {
+      "id": "1731850710186",
+      "petId": "1",
+      "type": "Cirugía",
+      "workerId": "cb35",
+      "date": "2024-11-26",
+      "time": "09:38",
+      "description": "operacion pata",
+      "status": "Pendiente",
+      "pet": "Max",
+      "ownerId": "1"
     }
   ],
   "inventory": [

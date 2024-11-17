@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   CCard,
   CCardBody,
@@ -11,29 +11,65 @@ import {
   CButton,
   CRow,
   CFormTextarea,
-} from '@coreui/react';
+  CAlert,
+} from '@coreui/react'
 
 export default function FormWorker() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    phone: '',
-    birthDate: '',
-    address: '',
-    country: '',
-    gender: '',
-    occupation: 'Veterinarian',
-    preferredLanguage: '',
-    emergencyContactName: '',
-    emergencyContactRelationship: '',
-    emergencyContactPhone: '',
-    avatar: '',
+    id: '',
+    avatar: {
+      src: '',
+      status: 'success'
+    },
+    user: {
+      name: '',
+      new: true,
+      registered: '',
+      email: '',
+      password: '',
+      phone: '',
+      birthDate: '',
+      address: '',
+      country: '',
+      gender: '',
+      occupation: 'Veterinarian',
+      preferredLanguage: '',
+      emergencyContact: {
+        name: '',
+        relationship: '',
+        phone: ''
+      },
+      userType: 'employee',
+      profilePicture: '/placeholder.svg?height=150&width=150',
+      joinDate: ''
+    },
+    country: {
+      name: '',
+      flag: ''
+    },
+    usage: {
+      value: 50,
+      period: '',
+      color: 'success'
+    },
+    payment: {
+      name: '',
+      icon: 'cibCcMastercard'
+    },
+    activity: 'Recently added',
+    stats: {
+      patientsSeen: 0,
+      surgeriesPerformed: 0,
+      vaccinationsGiven: 0,
+      emergencyCases: 0,
+      clientSatisfaction: '0%',
+      upcomingAppointments: 0
+    },
     specialty: '',
     licenseNumber: '',
-    yearsOfExperience: '',
-    education: '',
-    certifications: '',
+    yearsOfExperience: 0,
+    education: [],
+    certifications: [],
     schedule: {
       monday: '',
       tuesday: '',
@@ -41,98 +77,104 @@ export default function FormWorker() {
       thursday: '',
       friday: '',
       saturday: '',
-      sunday: '',
-    },
-  });
+      sunday: ''
+    }
+  })
+
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   const handleChange = (e) => {
-    const { id, value } = e.target;
-    if (id.startsWith('schedule.')) {
-      const day = id.split('.')[1];
-      setFormData(prevState => ({
-        ...prevState,
+    const { id, value, files } = e.target
+    
+    if (id.startsWith('user.')) {
+      const field = id.split('.')[1]
+      setFormData(prev => ({
+        ...prev,
+        user: {
+          ...prev.user,
+          [field]: value
+        }
+      }))
+    } else if (id.startsWith('emergencyContact.')) {
+      const field = id.split('.')[1]
+      setFormData(prev => ({
+        ...prev,
+        user: {
+          ...prev.user,
+          emergencyContact: {
+            ...prev.user.emergencyContact,
+            [field]: value
+          }
+        }
+      }))
+    } else if (id.startsWith('schedule.')) {
+      const day = id.split('.')[1]
+      setFormData(prev => ({
+        ...prev,
         schedule: {
-          ...prevState.schedule,
+          ...prev.schedule,
           [day]: value
         }
-      }));
+      }))
+    } else if (id === 'avatar') {
+      if (files?.[0]) {
+        const file = files[0]
+        setFormData(prev => ({
+          ...prev,
+          avatar: {
+            src: file.name,
+            status: 'success'
+          }
+        }))
+      }
+    } else if (id === 'country') {
+      setFormData(prev => ({
+        ...prev,
+        country: {
+          name: value,
+          flag: `cif${value.slice(0, 2).toUpperCase()}`
+        },
+        user: {
+          ...prev.user,
+          country: value
+        }
+      }))
     } else {
-      setFormData(prevState => ({ ...prevState, [id]: value }));
+      setFormData(prev => ({ ...prev, [id]: value }))
     }
-  };
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
+    setError('')
+    setSuccess('')
 
-    // Validate fields (basic validation, expand as needed)
-    for (const field in formData) {
-      if (typeof formData[field] === 'string' && !formData[field]) {
-        alert(`The field ${field} is required.`);
-        return;
-      }
-    }
-
-    // Format data for API
-    const newWorker = {
-      id: Date.now().toString(),
-      avatar: {
-        src: formData.avatar,
-        status: 'success',
-      },
+    // Prepare the worker data
+    const workerData = {
+      ...formData,
+      id: Date.now().toString().slice(-4),
       user: {
-        name: formData.name,
+        ...formData.user,
         new: true,
-        registered: new Date().toISOString().split('T')[0],
-        email: formData.email,
-        password: formData.password,
-        phone: formData.phone,
-        birthDate: formData.birthDate,
-        address: formData.address,
-        country: formData.country,
-        gender: formData.gender,
-        occupation: formData.occupation,
-        preferredLanguage: formData.preferredLanguage,
-        emergencyContact: {
-          name: formData.emergencyContactName,
-          relationship: formData.emergencyContactRelationship,
-          phone: formData.emergencyContactPhone,
-        },
-        userType: 'employee',
-        profilePicture: formData.avatar || '/placeholder.svg?height=150&width=150',
-        joinDate: new Date().toISOString().split('T')[0],
+        registered: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        joinDate: new Date().toISOString().split('T')[0]
       },
-      country: {
-        name: formData.country,
-        flag: `cif${formData.country.slice(0, 2).toUpperCase()}`,
-      },
-      usage: {
-        value: 0,
-        period: '',
-        color: 'info',
-      },
-      payment: {
-        name: formData.specialty,
-        icon: 'cibCcMastercard',
-      },
-      activity: 'Recently added',
-      stats: {
-        patientsSeen: 0,
-        surgeriesPerformed: 0,
-        vaccinationsGiven: 0,
-        emergencyCases: 0,
-        clientSatisfaction: 'N/A',
-        upcomingAppointments: 0,
-      },
-      specialty: formData.specialty,
-      licenseNumber: formData.licenseNumber,
-      yearsOfExperience: parseInt(formData.yearsOfExperience, 10),
       education: formData.education.split('\n').map(edu => {
-        const [degree, institution, year] = edu.split(',');
-        return { degree: degree.trim(), institution: institution.trim(), year: parseInt(year.trim(), 10) };
+        const [degree, institution, year] = edu.split(',').map(item => item.trim())
+        return { degree, institution, year: parseInt(year) }
       }),
       certifications: formData.certifications.split('\n').map(cert => cert.trim()),
-      schedule: formData.schedule,
-    };
+      payment: {
+        name: formData.specialty,
+        icon: 'cibCcMastercard'
+      },
+      usage: {
+        value: 50,
+        period: `${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`,
+        color: 'success'
+      }
+    }
 
     try {
       const response = await fetch('http://localhost:3004/workers', {
@@ -140,31 +182,67 @@ export default function FormWorker() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newWorker),
-      });
+        body: JSON.stringify(workerData)
+      })
 
       if (response.ok) {
-        alert('Worker registered successfully.');
+        setSuccess('Worker registered successfully')
+        // Reset form
         setFormData({
-          name: '',
-          email: '',
-          password: '',
-          phone: '',
-          birthDate: '',
-          address: '',
-          country: '',
-          gender: '',
-          occupation: 'Veterinarian',
-          preferredLanguage: '',
-          emergencyContactName: '',
-          emergencyContactRelationship: '',
-          emergencyContactPhone: '',
-          avatar: '',
+          id: '',
+          avatar: {
+            src: '',
+            status: 'success'
+          },
+          user: {
+            name: '',
+            new: true,
+            registered: '',
+            email: '',
+            password: '',
+            phone: '',
+            birthDate: '',
+            address: '',
+            country: '',
+            gender: '',
+            occupation: 'Veterinarian',
+            preferredLanguage: '',
+            emergencyContact: {
+              name: '',
+              relationship: '',
+              phone: ''
+            },
+            userType: 'employee',
+            profilePicture: '/placeholder.svg?height=150&width=150',
+            joinDate: ''
+          },
+          country: {
+            name: '',
+            flag: ''
+          },
+          usage: {
+            value: 50,
+            period: '',
+            color: 'success'
+          },
+          payment: {
+            name: '',
+            icon: 'cibCcMastercard'
+          },
+          activity: 'Recently added',
+          stats: {
+            patientsSeen: 0,
+            surgeriesPerformed: 0,
+            vaccinationsGiven: 0,
+            emergencyCases: 0,
+            clientSatisfaction: '0%',
+            upcomingAppointments: 0
+          },
           specialty: '',
           licenseNumber: '',
-          yearsOfExperience: '',
-          education: '',
-          certifications: '',
+          yearsOfExperience: 0,
+          education: [],
+          certifications: [],
           schedule: {
             monday: '',
             tuesday: '',
@@ -172,17 +250,18 @@ export default function FormWorker() {
             thursday: '',
             friday: '',
             saturday: '',
-            sunday: '',
-          },
-        });
+            sunday: ''
+          }
+        })
       } else {
-        alert('Error registering worker.');
+        const errorData = await response.json()
+        setError(errorData.message || 'Failed to register worker')
       }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error connecting to server.');
+    } catch (err) {
+      console.error('Error:', err)
+      setError('Error connecting to server')
     }
-  };
+  }
 
   return (
     <CCard className="mb-4">
@@ -190,25 +269,27 @@ export default function FormWorker() {
         <strong>Veterinary Worker Registration</strong>
       </CCardHeader>
       <CCardBody>
+        {error && <CAlert color="danger">{error}</CAlert>}
+        {success && <CAlert color="success">{success}</CAlert>}
         <CForm onSubmit={handleSubmit}>
           <CRow className="mb-3">
             <CCol md={6}>
-              <CFormLabel htmlFor="name">Full Name</CFormLabel>
+              <CFormLabel htmlFor="user.name">Full Name</CFormLabel>
               <CFormInput
-                id="name"
+                id="user.name"
                 placeholder="Enter full name"
-                value={formData.name}
+                value={formData.user.name}
                 onChange={handleChange}
                 required
               />
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="email">Email</CFormLabel>
+              <CFormLabel htmlFor="user.email">Email</CFormLabel>
               <CFormInput
                 type="email"
-                id="email"
+                id="user.email"
                 placeholder="name@example.com"
-                value={formData.email}
+                value={formData.user.email}
                 onChange={handleChange}
                 required
               />
@@ -216,22 +297,22 @@ export default function FormWorker() {
           </CRow>
           <CRow className="mb-3">
             <CCol md={6}>
-              <CFormLabel htmlFor="password">Password</CFormLabel>
+              <CFormLabel htmlFor="user.password">Password</CFormLabel>
               <CFormInput
                 type="password"
-                id="password"
+                id="user.password"
                 placeholder="Enter password"
-                value={formData.password}
+                value={formData.user.password}
                 onChange={handleChange}
                 required
               />
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="phone">Phone Number</CFormLabel>
+              <CFormLabel htmlFor="user.phone">Phone Number</CFormLabel>
               <CFormInput
-                id="phone"
+                id="user.phone"
                 placeholder="Enter phone number"
-                value={formData.phone}
+                value={formData.user.phone}
                 onChange={handleChange}
                 required
               />
@@ -239,21 +320,21 @@ export default function FormWorker() {
           </CRow>
           <CRow className="mb-3">
             <CCol md={6}>
-              <CFormLabel htmlFor="birthDate">Birth Date</CFormLabel>
+              <CFormLabel htmlFor="user.birthDate">Birth Date</CFormLabel>
               <CFormInput
                 type="date"
-                id="birthDate"
-                value={formData.birthDate}
+                id="user.birthDate"
+                value={formData.user.birthDate}
                 onChange={handleChange}
                 required
               />
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="address">Address</CFormLabel>
+              <CFormLabel htmlFor="user.address">Address</CFormLabel>
               <CFormInput
-                id="address"
+                id="user.address"
                 placeholder="Enter address"
-                value={formData.address}
+                value={formData.user.address}
                 onChange={handleChange}
                 required
               />
@@ -265,16 +346,16 @@ export default function FormWorker() {
               <CFormInput
                 id="country"
                 placeholder="Enter country"
-                value={formData.country}
+                value={formData.country.name}
                 onChange={handleChange}
                 required
               />
             </CCol>
             <CCol md={4}>
-              <CFormLabel htmlFor="gender">Gender</CFormLabel>
+              <CFormLabel htmlFor="user.gender">Gender</CFormLabel>
               <CFormSelect
-                id="gender"
-                value={formData.gender}
+                id="user.gender"
+                value={formData.user.gender}
                 onChange={handleChange}
                 required
               >
@@ -285,11 +366,11 @@ export default function FormWorker() {
               </CFormSelect>
             </CCol>
             <CCol md={4}>
-              <CFormLabel htmlFor="preferredLanguage">Preferred Language</CFormLabel>
+              <CFormLabel htmlFor="user.preferredLanguage">Preferred Language</CFormLabel>
               <CFormInput
-                id="preferredLanguage"
+                id="user.preferredLanguage"
                 placeholder="Enter preferred language"
-                value={formData.preferredLanguage}
+                value={formData.user.preferredLanguage}
                 onChange={handleChange}
                 required
               />
@@ -297,31 +378,31 @@ export default function FormWorker() {
           </CRow>
           <CRow className="mb-3">
             <CCol md={4}>
-              <CFormLabel htmlFor="emergencyContactName">Emergency Contact Name</CFormLabel>
+              <CFormLabel htmlFor="emergencyContact.name">Emergency Contact Name</CFormLabel>
               <CFormInput
-                id="emergencyContactName"
+                id="emergencyContact.name"
                 placeholder="Enter emergency contact name"
-                value={formData.emergencyContactName}
+                value={formData.user.emergencyContact.name}
                 onChange={handleChange}
                 required
               />
             </CCol>
             <CCol md={4}>
-              <CFormLabel htmlFor="emergencyContactRelationship">Emergency Contact Relationship</CFormLabel>
+              <CFormLabel htmlFor="emergencyContact.relationship">Emergency Contact Relationship</CFormLabel>
               <CFormInput
-                id="emergencyContactRelationship"
+                id="emergencyContact.relationship"
                 placeholder="Enter relationship"
-                value={formData.emergencyContactRelationship}
+                value={formData.user.emergencyContact.relationship}
                 onChange={handleChange}
                 required
               />
             </CCol>
             <CCol md={4}>
-              <CFormLabel htmlFor="emergencyContactPhone">Emergency Contact Phone</CFormLabel>
+              <CFormLabel htmlFor="emergencyContact.phone">Emergency Contact Phone</CFormLabel>
               <CFormInput
-                id="emergencyContactPhone"
+                id="emergencyContact.phone"
                 placeholder="Enter emergency contact phone"
-                value={formData.emergencyContactPhone}
+                value={formData.user.emergencyContact.phone}
                 onChange={handleChange}
                 required
               />
@@ -329,12 +410,12 @@ export default function FormWorker() {
           </CRow>
           <CRow className="mb-3">
             <CCol md={6}>
-              <CFormLabel htmlFor="avatar">Profile Picture URL</CFormLabel>
+              <CFormLabel htmlFor="avatar">Profile Picture</CFormLabel>
               <CFormInput
+                type="file"
                 id="avatar"
-                placeholder="Enter profile picture URL"
-                value={formData.avatar}
                 onChange={handleChange}
+                accept="image/*"
               />
             </CCol>
             <CCol md={6}>
@@ -424,5 +505,5 @@ export default function FormWorker() {
         </CForm>
       </CCardBody>
     </CCard>
-  );
+  )
 }
