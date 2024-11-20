@@ -37,6 +37,7 @@ import {
   cilBriefcase,
   cilPeople,
   cilLanguage,
+  cilAccountLogout,
 } from '@coreui/icons'
 
 export default function Profile() {
@@ -152,6 +153,12 @@ export default function Profile() {
     }
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('userType')
+    navigate('/login')
+  }
+
   if (isLoading) {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
@@ -202,16 +209,25 @@ export default function Profile() {
                 alt="Profile"
               />
               {!isEditing && (
-                <CButton
-                  color="primary"
-                  variant="ghost"
-                  className="position-absolute"
-                  style={{ bottom: '-60px', right: '15px' }}
-                  onClick={handleEdit}
-                >
-                  <CIcon icon={cilPencil} className="me-2" />
-                  Edit Profile
-                </CButton>
+                <div className="position-absolute" style={{ bottom: '-60px', right: '15px' }}>
+                  <CButton
+                    color="primary"
+                    variant="ghost"
+                    className="me-2"
+                    onClick={handleEdit}
+                  >
+                    <CIcon icon={cilPencil} className="me-2" />
+                    Edit Profile
+                  </CButton>
+                  <CButton
+                    color="danger"
+                    variant="ghost"
+                    onClick={handleLogout}
+                  >
+                    <CIcon icon={cilAccountLogout} className="me-2" />
+                    Logout
+                  </CButton>
+                </div>
               )}
             </div>
           </CContainer>
