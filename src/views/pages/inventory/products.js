@@ -73,10 +73,8 @@ export default function InventoryManagement() {
 
     setIsUploading(true)
     try {
-      // Aquí deberías implementar la lógica para subir la imagen a tu servidor o servicio de almacenamiento
-      // Este es un ejemplo simulado, reemplázalo con tu lógica real de carga de archivos
-      await new Promise(resolve => setTimeout(resolve, 2000)) // Simula una carga de 2 segundos
-      const imageUrl = URL.createObjectURL(file) // Esto es solo para simular una URL de imagen
+      await new Promise(resolve => setTimeout(resolve, 2000)) 
+      const imageUrl = URL.createObjectURL(file) 
       setIsUploading(false)
       return imageUrl
     } catch (error) {
