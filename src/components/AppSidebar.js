@@ -39,7 +39,7 @@ const AppSidebar = () => {
     >
       <CSidebarHeader className="border-bottom">
         <CSidebarBrand to="/">
-          <CHeaderText className='header-title'>Veterinaria</CHeaderText>
+          <img src="src\assets\images\logo2.png" className='sidebar-brand-full' alt='logo' height={70} width={150}/>
         </CSidebarBrand>
         <CCloseButton
           className="d-lg-none"
