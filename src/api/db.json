@@ -407,6 +407,17 @@
       "weight": 10,
       "ownerId": "3",
       "medicalHistory": []
+    },
+    {
+      "id": "e21b",
+      "name": "oso",
+      "species": "Perro",
+      "breed": "labrador",
+      "birthDate": "2024-11-12",
+      "color": "negro",
+      "weight": 15,
+      "ownerId": "2",
+      "medicalHistory": []
     }
   ],
   "users": [
