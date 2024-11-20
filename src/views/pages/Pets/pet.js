@@ -27,7 +27,7 @@ export default function PetRecords() {
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (token) {
-      const userId = token.split('-')[2] // Assuming token format is 'dummy-token-userId'
+      const userId = token.split('-')[2]
       setCurrentUserId(userId)
       fetchPets(userId)
       fetchWorkers()

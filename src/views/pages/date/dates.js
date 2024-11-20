@@ -40,7 +40,7 @@ const AppointmentRequest = () => {
         if (!token) {
           throw new Error('No token found')
         }
-        const userId = token.split('-')[2] // Assuming token format is 'dummy-token-userId'
+        const userId = token.split('-')[2] 
 
         const [petsResponse, workersResponse] = await Promise.all([
           fetch(`http://localhost:3004/pets?ownerId=${userId}`),

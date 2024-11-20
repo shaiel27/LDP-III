@@ -42,9 +42,9 @@ const MyDates = () => {
         if (!token) {
           throw new Error('No token found')
         }
-        const userId = token.split('-')[2] // Assuming token format is 'dummy-token-userId'
+        const userId = token.split('-')[2] 
 
-        // First fetch user's pets
+        
         const petsResponse = await fetch(`http://localhost:3004/pets?ownerId=${userId}`)
         if (!petsResponse.ok) {
           throw new Error('Error al obtener las mascotas')
