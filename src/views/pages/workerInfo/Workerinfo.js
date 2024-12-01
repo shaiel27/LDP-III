@@ -92,15 +92,16 @@ export default function WorkerInfo() {
     const pet = pets.find(p => p.id === petId)
     return pet ? pet.name : 'Unknown'
   }
-
   const getStatusBadge = (status) => {
     switch (status.toLowerCase()) {
-      case 'completed':
-        return <CBadge color="success">Completed</CBadge>
-      case 'pending':
-        return <CBadge color="warning">Pending</CBadge>
+      case 'confirmada':
+        return <CBadge color="success">Confirmada</CBadge>
+      case 'pendiente':
+        return <CBadge color="warning">Pendiente</CBadge>
+      case 'en proceso':
+        return <CBadge color="info">En proceso</CBadge>
       default:
-        return <CBadge color="info">{status}</CBadge>
+        return <CBadge color="secondary">{status}</CBadge>
     }
   }
 

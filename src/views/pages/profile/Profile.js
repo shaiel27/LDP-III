@@ -181,7 +181,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="bg-light min-vh-100">
+    <CCard className=" min-vh-100">
       <CContainer fluid className="p-0">
         <div className="position-relative mb-4">
           <div 
@@ -211,21 +211,21 @@ export default function Profile() {
               {!isEditing && (
                 <div className="position-absolute" style={{ bottom: '-60px', right: '15px' }}>
                   <CButton
-                    color="primary"
+                    color="secondary"
                     variant="ghost"
                     className="me-2"
                     onClick={handleEdit}
                   >
                     <CIcon icon={cilPencil} className="me-2" />
-                    Edit Profile
+                    Editar Perfil
                   </CButton>
                   <CButton
-                    color="danger"
+                    color="secondary"
                     variant="ghost"
                     onClick={handleLogout}
                   >
                     <CIcon icon={cilAccountLogout} className="me-2" />
-                    Logout
+                    Cerrar Sesion
                   </CButton>
                 </div>
               )}
@@ -249,7 +249,7 @@ export default function Profile() {
                 active={activeTab === 1}
                 onClick={() => setActiveTab(1)}
               >
-                Profile Information
+                Informacion de Perfil
               </CNavLink>
             </CNavItem>
             <CNavItem>
@@ -372,87 +372,14 @@ export default function Profile() {
                               value={editedUser.gender}
                               onChange={handleChange}
                             >
-                              <option value="">Select Gender</option>
-                              <option value="Male">Male</option>
-                              <option value="Female">Female</option>
-                              <option value="Other">Other</option>
+                              <option value="">Seleccionar Genero</option>
+                              <option value="Male">Masculino</option>
+                              <option value="Female">Femenino</option>
+                              <option value="Other">Otro</option>
                             </CFormSelect>
                           </CInputGroup>
                         </CCol>
-                        <CCol md={6}>
-                          <CInputGroup className="mb-3">
-                            <CInputGroupText>
-                              <CIcon icon={cilBriefcase} />
-                            </CInputGroupText>
-                            <CFormInput
-                              name="occupation"
-                              value={editedUser.occupation}
-                              onChange={handleChange}
-                              placeholder="Occupation"
-                            />
-                          </CInputGroup>
-                        </CCol>
                       </CRow>
-
-                      <CRow>
-                        <CCol md={6}>
-                          <CInputGroup className="mb-3">
-                            <CInputGroupText>
-                              <CIcon icon={cilLanguage} />
-                            </CInputGroupText>
-                            <CFormInput
-                              name="preferredLanguage"
-                              value={editedUser.preferredLanguage}
-                              onChange={handleChange}
-                              placeholder="Preferred Language"
-                            />
-                          </CInputGroup>
-                        </CCol>
-                      </CRow>
-
-                      <h5 className="mt-4">Emergency Contact</h5>
-                      <CRow>
-                        <CCol md={4}>
-                          <CInputGroup className="mb-3">
-                            <CInputGroupText>
-                              <CIcon icon={cilUser} />
-                            </CInputGroupText>
-                            <CFormInput
-                              name="emergencyContact.name"
-                              value={editedUser.emergencyContact?.name}
-                              onChange={handleChange}
-                              placeholder="Emergency Contact Name"
-                            />
-                          </CInputGroup>
-                        </CCol>
-                        <CCol md={4}>
-                          <CInputGroup className="mb-3">
-                            <CInputGroupText>
-                              <CIcon icon={cilPeople} />
-                            </CInputGroupText>
-                            <CFormInput
-                              name="emergencyContact.relationship"
-                              value={editedUser.emergencyContact?.relationship}
-                              onChange={handleChange}
-                              placeholder="Relationship"
-                            />
-                          </CInputGroup>
-                        </CCol>
-                        <CCol md={4}>
-                          <CInputGroup className="mb-3">
-                            <CInputGroupText>
-                              <CIcon icon={cilPhone} />
-                            </CInputGroupText>
-                            <CFormInput
-                              name="emergencyContact.phone"
-                              value={editedUser.emergencyContact?.phone}
-                              onChange={handleChange}
-                              placeholder="Emergency Contact Phone"
-                            />
-                          </CInputGroup>
-                        </CCol>
-                      </CRow>
-
                       <CRow className="mt-4">
                         <CCol xs={6}>
                           <CButton color="primary" onClick={handleSave} disabled={isSaving}>
@@ -461,7 +388,7 @@ export default function Profile() {
                         </CCol>
                         <CCol xs={6} className="text-end">
                           <CButton color="secondary" variant="ghost" onClick={handleCancel}>
-                            Cancel
+                            Cancelar
                           </CButton>
                         </CCol>
                       </CRow>
@@ -474,7 +401,7 @@ export default function Profile() {
                     <CRow className="mb-4">
                       <CCol sm={3} className="text-secondary">
                         <CIcon icon={cilUser} className="me-2" />
-                        Full Name
+                        Nombre
                       </CCol>
                       <CCol sm={9}>{user.name}</CCol>
                     </CRow>
@@ -482,7 +409,7 @@ export default function Profile() {
                     <CRow className="mb-4">
                       <CCol sm={3} className="text-secondary">
                         <CIcon icon={cilEnvelopeClosed} className="me-2" />
-                        Email
+                        Correo
                       </CCol>
                       <CCol sm={9}>{user.email}</CCol>
                     </CRow>
@@ -490,7 +417,7 @@ export default function Profile() {
                     <CRow className="mb-4">
                       <CCol sm={3} className="text-secondary">
                         <CIcon icon={cilPhone} className="me-2" />
-                        Phone
+                        Telefono
                       </CCol>
                       <CCol sm={9}>{user.phone}</CCol>
                     </CRow>
@@ -498,7 +425,7 @@ export default function Profile() {
                     <CRow className="mb-4">
                       <CCol sm={3} className="text-secondary">
                         <CIcon icon={cilLocationPin} className="me-2" />
-                        Address
+                        Dirección
                       </CCol>
                       <CCol sm={9}>{user.address}</CCol>
                     </CRow>
@@ -506,7 +433,7 @@ export default function Profile() {
                     <CRow className="mb-4">
                       <CCol sm={3} className="text-secondary">
                         <CIcon icon={cilGlobeAlt} className="me-2" />
-                        Country
+                        Pais
                       </CCol>
                       <CCol sm={9}>{user.country}</CCol>
                     </CRow>
@@ -514,7 +441,7 @@ export default function Profile() {
                     <CRow className="mb-4">
                       <CCol sm={3} className="text-secondary">
                         <CIcon icon={cilCalendar} className="me-2" />
-                        Birth Date
+                        Fecha de Nacimiento
                       </CCol>
                       <CCol sm={9}>{user.birthDate}</CCol>
                     </CRow>
@@ -522,60 +449,19 @@ export default function Profile() {
                     <CRow className="mb-4">
                       <CCol sm={3} className="text-secondary">
                         <CIcon icon={cilUser} className="me-2" />
-                        Gender
+                        Genero
                       </CCol>
                       <CCol sm={9}>{user.gender}</CCol>
                     </CRow>
 
                     <CRow className="mb-4">
                       <CCol sm={3} className="text-secondary">
-                        <CIcon icon={cilBriefcase} className="me-2" />
-                        Occupation
-                      </CCol>
-                      <CCol sm={9}>{user.occupation}</CCol>
-                    </CRow>
-
-                    <CRow className="mb-4">
-                      <CCol sm={3} className="text-secondary">
-                        <CIcon icon={cilLanguage} className="me-2" />
-                        Preferred Language
-                      </CCol>
-                      <CCol sm={9}>{user.preferredLanguage}</CCol>
-                    </CRow>
-
-                    <CRow className="mb-4">
-                      <CCol sm={3} className="text-secondary">
                         <CIcon icon={cilPeople} className="me-2" />
-                        User Type
+                        Tipo de Usuario
                       </CCol>
                       <CCol sm={9}>
                         <CBadge color="primary">{user.userType}</CBadge>
                       </CCol>
-                    </CRow>
-
-                    <h5 className="mt-4">Emergency Contact</h5>
-                    <CRow className="mb-4">
-                      <CCol sm={3} className="text-secondary">
-                        <CIcon icon={cilUser} className="me-2" />
-                        Name
-                      </CCol>
-                      <CCol sm={9}>{user.emergencyContact?.name}</CCol>
-                    </CRow>
-
-                    <CRow className="mb-4">
-                      <CCol sm={3} className="text-secondary">
-                        <CIcon icon={cilPeople} className="me-2" />
-                        Relationship
-                      </CCol>
-                      <CCol sm={9}>{user.emergencyContact?.relationship}</CCol>
-                    </CRow>
-
-                    <CRow className="mb-4">
-                      <CCol sm={3} className="text-secondary">
-                        <CIcon icon={cilPhone} className="me-2" />
-                        Phone
-                      </CCol>
-                      <CCol sm={9}>{user.emergencyContact?.phone}</CCol>
                     </CRow>
                   </CCardBody>
                 </CCard>
@@ -603,6 +489,6 @@ export default function Profile() {
           </CTabContent>
         </CContainer>
       </CContainer>
-    </div>
+    </CCard>
   )
 }

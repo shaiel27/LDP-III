@@ -48,11 +48,11 @@ const Login = () => {
           localStorage.setItem('userType', 'worker');
           navigate('/worker-dashboard');
         } else {
-          setError('Invalid email or password');
+          setError('Correo electrónico o contraseña inválidos');
         }
       }
     } catch (error) {
-      setError('An error occurred. Please try again.');
+      setError('Ocurrió un error. Por favor, inténtalo de nuevo.');
     } finally {
       setIsLoading(false);
     }
@@ -67,8 +67,8 @@ const Login = () => {
               <CCard className="p-4 bg-distortion">
                 <CCardBody>
                   <CForm onSubmit={handleLogin}>
-                    <h1>Login</h1>
-                    <p className="text-medium-emphasis">Sign In to your account</p>
+                    <h1>Iniciar Sesión</h1>
+                    <p className="text-medium-emphasis">Accede a tu cuenta</p>
                     {error && <CAlert color="danger">{error}</CAlert>}
                     <CInputGroup className="mb-3 ">
                       <CInputGroupText className='bg-distortion'>
@@ -76,7 +76,7 @@ const Login = () => {
                       </CInputGroupText>
                       <CFormInput
                         type="email bg-distortion"
-                        placeholder="Email"
+                        placeholder="Correo Electrónico"
                         autoComplete="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -90,7 +90,7 @@ const Login = () => {
                       </CInputGroupText>
                       <CFormInput
                         type="password bg-distortion"
-                        placeholder="Password"
+                        placeholder="Contraseña"
                         autoComplete="current-password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -101,12 +101,12 @@ const Login = () => {
                     <CRow>
                       <CCol xs={6}>
                         <CButton type="submit" color="primary" className="px-4" disabled={isLoading}>
-                          {isLoading ? 'Logging in...' : 'Login'}
+                          {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
                         </CButton>
                       </CCol>
                       <CCol xs={6} className="text-right">
                         <CButton color="link" className="px-0" onClick={() => navigate('/forgot-password')}>
-                          Forgot password?
+                          ¿Olvidaste tu contraseña?
                         </CButton>
                       </CCol>
                     </CRow>
@@ -116,12 +116,12 @@ const Login = () => {
               <CCard className=" py-5 bg-distortion " style={{ width: '44%' }}>
                 <CCardBody className="text-center">
                   <div>
-                    <h2>Sign up</h2>
+                    <h2>Regístrate</h2>
                     <p>
-                      Join our veterinary clinic platform as a client, employee, or admin.
+                      Únete a nuestra plataforma de clínica veterinaria como cliente, empleado o administrador.
                     </p>
                     <CButton color="primary" className="mt-3" active tabIndex={-1} onClick={() => navigate('/register')}>
-                      Register Now!
+                      ¡Regístrate ahora!
                     </CButton>
                   </div>
                 </CCardBody>

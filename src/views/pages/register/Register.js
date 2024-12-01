@@ -71,7 +71,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match')
+      alert('Las contraseñas no coinciden')
       return
     }
 
@@ -92,11 +92,11 @@ const Register = () => {
       if (response.ok) {
         navigate('/login')
       } else {
-        throw new Error('Registration failed')
+        throw new Error('Registro fallido')
       }
     } catch (error) {
       console.error('Error:', error)
-      alert('Registration failed. Please try again.')
+      alert('Registro fallido. Por favor, intente de nuevo.')
     }
   }
 
@@ -108,8 +108,8 @@ const Register = () => {
             <CCard className="mx-4 bg-distortion">
               <CCardBody className="p-4">
                 <CForm onSubmit={handleSubmit}>
-                  <h1 className="mb-4 text-center">Register</h1>
-                  <p className="text-medium-emphasis text-center mb-4">Create your account</p>
+                  <h1 className="mb-4 text-center">Registro</h1>
+                  <p className="text-medium-emphasis text-center mb-4">Crea tu cuenta</p>
                   <CRow>
                     <CCol md={6}>
                       <CInputGroup className="mb-3 ">
@@ -117,7 +117,7 @@ const Register = () => {
                           <CIcon icon={cilUser} />
                         </CInputGroupText>
                         <CFormInput
-                          placeholder="Full Name"
+                          placeholder="Nombre Completo"
                           autoComplete="name"
                           name="name"
                           type='bg-distortion'
@@ -135,7 +135,7 @@ const Register = () => {
                         </CInputGroupText>
                         <CFormInput
                           type="email"
-                          placeholder="Email"
+                          placeholder="Correo Electrónico"
                           autoComplete="email"
                           name="email"
                           value={formData.email}
@@ -154,7 +154,7 @@ const Register = () => {
                         </CInputGroupText>
                         <CFormInput
                           type="password"
-                          placeholder="Password"
+                          placeholder="Contraseña"
                           autoComplete="new-password"
                           name="password"
                           value={formData.password}
@@ -171,7 +171,7 @@ const Register = () => {
                         </CInputGroupText>
                         <CFormInput
                           type="password"
-                          placeholder="Repeat password"
+                          placeholder="Repetir contraseña"
                           autoComplete="new-password"
                           name="confirmPassword"
                           value={formData.confirmPassword}
@@ -189,7 +189,7 @@ const Register = () => {
                           <CIcon icon={cilPhone} />
                         </CInputGroupText>
                         <CFormInput
-                          placeholder="Phone"
+                          placeholder="Teléfono"
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
@@ -203,7 +203,7 @@ const Register = () => {
                           <CIcon icon={cilGlobeAlt} />
                         </CInputGroupText>
                         <CFormInput
-                          placeholder="Country"
+                          placeholder="País"
                           name="country"
                           value={formData.country}
                           onChange={handleChange}
@@ -219,7 +219,7 @@ const Register = () => {
                           <CIcon icon={cilLocationPin} />
                         </CInputGroupText>
                         <CFormInput
-                          placeholder="Address"
+                          placeholder="Dirección"
                           name="address"
                           value={formData.address}
                           onChange={handleChange}
@@ -236,7 +236,7 @@ const Register = () => {
                         </CInputGroupText>
                         <CFormInput
                           type="date"
-                          placeholder="Birth Date"
+                          placeholder="Fecha de Nacimiento"
                           name="birthDate"
                           value={formData.birthDate}
                           onChange={handleChange}
@@ -255,95 +255,25 @@ const Register = () => {
                           onChange={handleChange}
                           className='bg-distortion'
                         >
-                          <option value="">Select Gender</option>
-                          <option value="Male">Male</option>
-                          <option value="Female">Female</option>
-                          <option value="Other">Other</option>
+                          <option value="">Seleccionar Género</option>
+                          <option value="Male">Masculino</option>
+                          <option value="Female">Femenino</option>
+                          <option value="Other">Otro</option>
                         </CFormSelect>
                       </CInputGroup>
                     </CCol>
                   </CRow>
                   <CRow>
                     <CCol md={6}>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion'>
-                          <CIcon icon={cilBriefcase} />
-                        </CInputGroupText>
-                        <CFormInput
-                        className='bg-distortion'
-                          placeholder="Occupation"
-                          name="occupation"
-                          value={formData.occupation}
-                          onChange={handleChange}
-                        />
-                      </CInputGroup>
                     </CCol>
                     <CCol md={6}>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion'>
-                          <CIcon icon={cilLanguage} />
-                        </CInputGroupText>
-                        <CFormInput
-                          placeholder="Preferred Language"
-                          name="preferredLanguage"
-                          value={formData.preferredLanguage}
-                          onChange={handleChange}
-                          className='bg-distortion'
-                        />
-                      </CInputGroup>
-                    </CCol>
-                  </CRow>
-                  <h5 className="mt-4 mb-3">Emergency Contact</h5>
-                  <CRow>
-                    <CCol md={6}>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion'>
-                          <CIcon icon={cilUser} />
-                        </CInputGroupText>
-                        <CFormInput
-                          className='bg-distortion'
-                          placeholder="Emergency Contact Name"
-                          name="emergencyContact.name"
-                          value={formData.emergencyContact.name}
-                          onChange={handleChange}
-                        />
-                      </CInputGroup>
-                    </CCol>
-                    <CCol md={6}>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion'>
-                          <CIcon icon={cilPeople} />
-                        </CInputGroupText>
-                        <CFormInput
-                          className='bg-distortion'
-                          placeholder="Emergency Contact Relationship"
-                          name="emergencyContact.relationship"
-                          value={formData.emergencyContact.relationship}
-                          onChange={handleChange}
-                        />
-                      </CInputGroup>
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol md={6}>
-                      <CInputGroup className="mb-4">
-                        <CInputGroupText className='bg-distortion'>
-                          <CIcon icon={cilPhone} />
-                        </CInputGroupText>
-                        <CFormInput
-                          className='bg-distortion'
-                          placeholder="Emergency Contact Phone"
-                          name="emergencyContact.phone"
-                          value={formData.emergencyContact.phone}
-                          onChange={handleChange}
-                        />
-                      </CInputGroup>
+                     
                     </CCol>
                   </CRow>
                   <CRow>
                     <CCol xs={12}>
                       <div className="d-grid">
-                        <CButton color="success" type="submit">Create Account</CButton>
+                        <CButton color="success" type="submit">Crear Cuenta</CButton>
                       </div>
                     </CCol>
                   </CRow>

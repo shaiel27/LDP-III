@@ -14,7 +14,7 @@ import {
   CAlert,
 } from '@coreui/react'
 
-export default function FormWorker() {
+export default function FormularioTrabajador() {
   const [formData, setFormData] = useState({
     id: '',
     avatar: {
@@ -32,7 +32,7 @@ export default function FormWorker() {
       address: '',
       country: '',
       gender: '',
-      occupation: 'Veterinarian',
+      occupation: 'Veterinario',
       preferredLanguage: '',
       emergencyContact: {
         name: '',
@@ -56,7 +56,7 @@ export default function FormWorker() {
       name: '',
       icon: 'cibCcMastercard'
     },
-    activity: 'Recently added',
+    activity: 'Recientemente añadido',
     stats: {
       patientsSeen: 0,
       surgeriesPerformed: 0,
@@ -157,7 +157,7 @@ export default function FormWorker() {
       user: {
         ...formData.user,
         new: true,
-        registered: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        registered: new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }),
         joinDate: new Date().toISOString().split('T')[0]
       },
       education: formData.education.split('\n').map(edu => {
@@ -171,7 +171,7 @@ export default function FormWorker() {
       },
       usage: {
         value: 50,
-        period: `${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`,
+        period: `${new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} - ${new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}`,
         color: 'success'
       }
     }
@@ -186,7 +186,7 @@ export default function FormWorker() {
       })
 
       if (response.ok) {
-        setSuccess('Worker registered successfully')
+        setSuccess('Trabajador registrado exitosamente')
         // Reset form
         setFormData({
           id: '',
@@ -205,7 +205,7 @@ export default function FormWorker() {
             address: '',
             country: '',
             gender: '',
-            occupation: 'Veterinarian',
+            occupation: 'Veterinario',
             preferredLanguage: '',
             emergencyContact: {
               name: '',
@@ -229,7 +229,7 @@ export default function FormWorker() {
             name: '',
             icon: 'cibCcMastercard'
           },
-          activity: 'Recently added',
+          activity: 'Recientemente añadido',
           stats: {
             patientsSeen: 0,
             surgeriesPerformed: 0,
@@ -255,18 +255,18 @@ export default function FormWorker() {
         })
       } else {
         const errorData = await response.json()
-        setError(errorData.message || 'Failed to register worker')
+        setError(errorData.message || 'Error al registrar el trabajador')
       }
     } catch (err) {
       console.error('Error:', err)
-      setError('Error connecting to server')
+      setError('Error al conectar con el servidor')
     }
   }
 
   return (
     <CCard className="mb-4">
       <CCardHeader>
-        <strong>Veterinary Worker Registration</strong>
+        <strong>Registro de Trabajador Veterinario</strong>
       </CCardHeader>
       <CCardBody>
         {error && <CAlert color="danger">{error}</CAlert>}
@@ -274,21 +274,21 @@ export default function FormWorker() {
         <CForm onSubmit={handleSubmit}>
           <CRow className="mb-3">
             <CCol md={6}>
-              <CFormLabel htmlFor="user.name">Full Name</CFormLabel>
+              <CFormLabel htmlFor="user.name">Nombre Completo</CFormLabel>
               <CFormInput
                 id="user.name"
-                placeholder="Enter full name"
+                placeholder="Ingrese nombre completo"
                 value={formData.user.name}
                 onChange={handleChange}
                 required
               />
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="user.email">Email</CFormLabel>
+              <CFormLabel htmlFor="user.email">Correo Electrónico</CFormLabel>
               <CFormInput
                 type="email"
                 id="user.email"
-                placeholder="name@example.com"
+                placeholder="nombre@ejemplo.com"
                 value={formData.user.email}
                 onChange={handleChange}
                 required
@@ -297,21 +297,21 @@ export default function FormWorker() {
           </CRow>
           <CRow className="mb-3">
             <CCol md={6}>
-              <CFormLabel htmlFor="user.password">Password</CFormLabel>
+              <CFormLabel htmlFor="user.password">Contraseña</CFormLabel>
               <CFormInput
                 type="password"
                 id="user.password"
-                placeholder="Enter password"
+                placeholder="Ingrese contraseña"
                 value={formData.user.password}
                 onChange={handleChange}
                 required
               />
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="user.phone">Phone Number</CFormLabel>
+              <CFormLabel htmlFor="user.phone">Número de Teléfono</CFormLabel>
               <CFormInput
                 id="user.phone"
-                placeholder="Enter phone number"
+                placeholder="Ingrese número de teléfono"
                 value={formData.user.phone}
                 onChange={handleChange}
                 required
@@ -320,7 +320,7 @@ export default function FormWorker() {
           </CRow>
           <CRow className="mb-3">
             <CCol md={6}>
-              <CFormLabel htmlFor="user.birthDate">Birth Date</CFormLabel>
+              <CFormLabel htmlFor="user.birthDate">Fecha de Nacimiento</CFormLabel>
               <CFormInput
                 type="date"
                 id="user.birthDate"
@@ -330,10 +330,10 @@ export default function FormWorker() {
               />
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="user.address">Address</CFormLabel>
+              <CFormLabel htmlFor="user.address">Dirección</CFormLabel>
               <CFormInput
                 id="user.address"
-                placeholder="Enter address"
+                placeholder="Ingrese dirección"
                 value={formData.user.address}
                 onChange={handleChange}
                 required
@@ -342,34 +342,34 @@ export default function FormWorker() {
           </CRow>
           <CRow className="mb-3">
             <CCol md={4}>
-              <CFormLabel htmlFor="country">Country</CFormLabel>
+              <CFormLabel htmlFor="country">País</CFormLabel>
               <CFormInput
                 id="country"
-                placeholder="Enter country"
+                placeholder="Ingrese país"
                 value={formData.country.name}
                 onChange={handleChange}
                 required
               />
             </CCol>
             <CCol md={4}>
-              <CFormLabel htmlFor="user.gender">Gender</CFormLabel>
+              <CFormLabel htmlFor="user.gender">Género</CFormLabel>
               <CFormSelect
                 id="user.gender"
                 value={formData.user.gender}
                 onChange={handleChange}
                 required
               >
-                <option value="">Select gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
+                <option value="">Seleccione género</option>
+                <option value="Male">Masculino</option>
+                <option value="Female">Femenino</option>
+                <option value="Other">Otro</option>
               </CFormSelect>
             </CCol>
             <CCol md={4}>
-              <CFormLabel htmlFor="user.preferredLanguage">Preferred Language</CFormLabel>
+              <CFormLabel htmlFor="user.preferredLanguage">Idioma Preferido</CFormLabel>
               <CFormInput
                 id="user.preferredLanguage"
-                placeholder="Enter preferred language"
+                placeholder="Ingrese idioma preferido"
                 value={formData.user.preferredLanguage}
                 onChange={handleChange}
                 required
@@ -378,30 +378,30 @@ export default function FormWorker() {
           </CRow>
           <CRow className="mb-3">
             <CCol md={4}>
-              <CFormLabel htmlFor="emergencyContact.name">Emergency Contact Name</CFormLabel>
+              <CFormLabel htmlFor="emergencyContact.name">Nombre del Contacto de Emergencia</CFormLabel>
               <CFormInput
                 id="emergencyContact.name"
-                placeholder="Enter emergency contact name"
+                placeholder="Ingrese nombre del contacto de emergencia"
                 value={formData.user.emergencyContact.name}
                 onChange={handleChange}
                 required
               />
             </CCol>
             <CCol md={4}>
-              <CFormLabel htmlFor="emergencyContact.relationship">Emergency Contact Relationship</CFormLabel>
+              <CFormLabel htmlFor="emergencyContact.relationship">Relación con el Contacto de Emergencia</CFormLabel>
               <CFormInput
                 id="emergencyContact.relationship"
-                placeholder="Enter relationship"
+                placeholder="Ingrese relación"
                 value={formData.user.emergencyContact.relationship}
                 onChange={handleChange}
                 required
               />
             </CCol>
             <CCol md={4}>
-              <CFormLabel htmlFor="emergencyContact.phone">Emergency Contact Phone</CFormLabel>
+              <CFormLabel htmlFor="emergencyContact.phone">Teléfono del Contacto de Emergencia</CFormLabel>
               <CFormInput
                 id="emergencyContact.phone"
-                placeholder="Enter emergency contact phone"
+                placeholder="Ingrese teléfono del contacto de emergencia"
                 value={formData.user.emergencyContact.phone}
                 onChange={handleChange}
                 required
@@ -410,7 +410,7 @@ export default function FormWorker() {
           </CRow>
           <CRow className="mb-3">
             <CCol md={6}>
-              <CFormLabel htmlFor="avatar">Profile Picture</CFormLabel>
+              <CFormLabel htmlFor="avatar">Foto de Perfil</CFormLabel>
               <CFormInput
                 type="file"
                 id="avatar"
@@ -419,39 +419,39 @@ export default function FormWorker() {
               />
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="specialty">Specialty</CFormLabel>
+              <CFormLabel htmlFor="specialty">Especialidad</CFormLabel>
               <CFormSelect
                 id="specialty"
                 value={formData.specialty}
                 onChange={handleChange}
                 required
               >
-                <option value="">Select a specialty</option>
-                <option value="General Practice">General Practice</option>
-                <option value="Surgery">Surgery</option>
-                <option value="Dermatology">Dermatology</option>
-                <option value="Nutrition">Nutrition</option>
-                <option value="Groomer">Groomer</option>
+                <option value="">Seleccione una especialidad</option>
+                <option value="General Practice">Práctica General</option>
+                <option value="Surgery">Cirugía</option>
+                <option value="Dermatology">Dermatología</option>
+                <option value="Nutrition">Nutrición</option>
+                <option value="Groomer">Peluquería Canina</option>
               </CFormSelect>
             </CCol>
           </CRow>
           <CRow className="mb-3">
             <CCol md={6}>
-              <CFormLabel htmlFor="licenseNumber">License Number</CFormLabel>
+              <CFormLabel htmlFor="licenseNumber">Número de Licencia</CFormLabel>
               <CFormInput
                 id="licenseNumber"
-                placeholder="Enter license number"
+                placeholder="Ingrese número de licencia"
                 value={formData.licenseNumber}
                 onChange={handleChange}
                 required
               />
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="yearsOfExperience">Years of Experience</CFormLabel>
+              <CFormLabel htmlFor="yearsOfExperience">Años de Experiencia</CFormLabel>
               <CFormInput
                 type="number"
                 id="yearsOfExperience"
-                placeholder="Enter years of experience"
+                placeholder="Ingrese años de experiencia"
                 value={formData.yearsOfExperience}
                 onChange={handleChange}
                 required
@@ -460,10 +460,10 @@ export default function FormWorker() {
           </CRow>
           <CRow className="mb-3">
             <CCol md={6}>
-              <CFormLabel htmlFor="education">Education</CFormLabel>
+              <CFormLabel htmlFor="education">Educación</CFormLabel>
               <CFormTextarea
                 id="education"
-                placeholder="Enter education (Degree, Institution, Year) - One per line"
+                placeholder="Ingrese educación (Título, Institución, Año) - Uno por línea"
                 value={formData.education}
                 onChange={handleChange}
                 rows={3}
@@ -471,10 +471,10 @@ export default function FormWorker() {
               />
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="certifications">Certifications</CFormLabel>
+              <CFormLabel htmlFor="certifications">Certificaciones</CFormLabel>
               <CFormTextarea
                 id="certifications"
-                placeholder="Enter certifications - One per line"
+                placeholder="Ingrese certificaciones - Una por línea"
                 value={formData.certifications}
                 onChange={handleChange}
                 rows={3}
@@ -485,10 +485,10 @@ export default function FormWorker() {
           <CRow className="mb-3">
             {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => (
               <CCol md={3} key={day}>
-                <CFormLabel htmlFor={`schedule.${day}`}>{day.charAt(0).toUpperCase() + day.slice(1)}</CFormLabel>
+                <CFormLabel htmlFor={`schedule.${day}`}>{day === 'monday' ? 'Lunes' : day === 'tuesday' ? 'Martes' : day === 'wednesday' ? 'Miércoles' : day === 'thursday' ? 'Jueves' : day === 'friday' ? 'Viernes' : day === 'saturday' ? 'Sábado' : 'Domingo'}</CFormLabel>
                 <CFormInput
                   id={`schedule.${day}`}
-                  placeholder="e.g. 9:00 AM - 5:00 PM"
+                  placeholder="ej. 9:00 AM - 5:00 PM"
                   value={formData.schedule[day]}
                   onChange={handleChange}
                 />
@@ -498,7 +498,7 @@ export default function FormWorker() {
           <CRow>
             <CCol>
               <CButton color="primary" type="submit">
-                Register Worker
+                Registrar Trabajador
               </CButton>
             </CCol>
           </CRow>
@@ -507,3 +507,4 @@ export default function FormWorker() {
     </CCard>
   )
 }
+
