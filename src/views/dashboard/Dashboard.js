@@ -153,23 +153,6 @@ const Dashboard = () => {
               </h4>
               <div className="small text-body-secondary">Resumen de actividades</div>
             </CCol>
-            <CCol sm={7} className="d-none d-md-block">
-              <CButton color="primary" className="float-end">
-                <CIcon icon={cilCloudDownload} />
-              </CButton>
-              <CButtonGroup className="float-end me-3">
-                {['Día', 'Mes', 'Año'].map((value) => (
-                  <CButton
-                    color="outline-secondary"
-                    key={value}
-                    className="mx-0"
-                    active={value === 'Mes'}
-                  >
-                    {value}
-                  </CButton>
-                ))}
-              </CButtonGroup>
-            </CCol>
           </CRow>
           <MainChart appointments={appointments} />
         </CCardBody>

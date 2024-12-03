@@ -257,7 +257,7 @@ export default function Profile() {
                 active={activeTab === 2}
                 onClick={() => setActiveTab(2)}
               >
-                Account Settings
+                Ajustes
               </CNavLink>
             </CNavItem>
           </CNav>
@@ -471,15 +471,15 @@ export default function Profile() {
             <CTabPane visible={activeTab === 2}>
               <CCard>
                 <CCardBody>
-                  <h4 className="mb-4">Account Settings</h4>
+                  <h4 className="mb-4">Ajustes de la cuenta</h4>
                   <CRow className="mb-4">
                     <CCol sm={3} className="text-secondary">
                       <CIcon icon={cilLockLocked} className="me-2" />
-                      Password
+                      Contraseña
                     </CCol>
                     <CCol sm={9}>
-                      <CButton color="primary" variant="outline">
-                        Change Password
+                      <CButton color="secondary" variant="outline">
+                        Cambiar Contraseña
                       </CButton>
                     </CCol>
                   </CRow>

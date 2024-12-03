@@ -3,9 +3,7 @@ import CIcon from '@coreui/icons-react'
 
 import {
   cilDescription,
-  cilNoteAdd,
   cilHome,
-  cilStar,
   cilMedicalCross,
   cibFurryNetwork,
   cilClipboard,
@@ -15,7 +13,6 @@ import {
   cilCreditCard,
   cilBriefcase,
   cilCalendar,
-  cilPeople,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -71,11 +68,6 @@ const _nav = [
             component: CNavItem,
             name: 'Añadir Empleados',
             to: '/pages/AddWorker'
-          },
-          {
-            component: CNavItem,
-            name: 'Horarios',
-            to: '/pages/Schedule',
           },
           {
             component: CNavItem,

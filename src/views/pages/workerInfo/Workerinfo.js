@@ -144,7 +144,7 @@ export default function WorkerInfo() {
   if (!worker) {
     return (
       <CAlert color="info">
-        Loading worker information...
+        Cargando Informacion del trabajador...
       </CAlert>
     )
   }
@@ -159,7 +159,7 @@ export default function WorkerInfo() {
         )}
         <CCard className="mb-4">
           <CCardHeader>
-            <strong>Worker Information</strong>
+            <h1>Datos del trabajador</h1>
           </CCardHeader>
           <CCardBody>
             <CRow>
@@ -171,23 +171,23 @@ export default function WorkerInfo() {
                 <CListGroup flush>
                   <CListGroupItem>
                     <CIcon icon={cilEnvelopeClosed} className="me-2" />
-                    Email: {worker.user.email}
+                    Correo: {worker.user.email}
                   </CListGroupItem>
                   <CListGroupItem>
                     <CIcon icon={cilPhone} className="me-2" />
-                    Phone: {worker.user.phone}
+                    Telefono: {worker.user.phone}
                   </CListGroupItem>
                   <CListGroupItem>
                     <CIcon icon={cilLocationPin} className="me-2" />
-                    Address: {worker.user.address}
+                    Dirección: {worker.user.address}
                   </CListGroupItem>
                   <CListGroupItem>
                     <CIcon icon={cilBriefcase} className="me-2" />
-                    Specialty: {worker.specialty}
+                    Especialidad: {worker.specialty}
                   </CListGroupItem>
                   <CListGroupItem>
                     <CIcon icon={cilUser} className="me-2" />
-                    License Number: {worker.licenseNumber}
+                    Numero de licencia: {worker.licenseNumber}
                   </CListGroupItem>
                 </CListGroup>
               </CCol>
@@ -197,22 +197,22 @@ export default function WorkerInfo() {
 
         <CCard className="mb-4">
           <CCardHeader>
-            <strong>Work Schedule</strong>
+            <h1>Horario</h1>
             <CButton 
               color="primary" 
               size="sm" 
               className="float-end"
               onClick={() => setShowScheduleModal(true)}
             >
-              <CIcon icon={cilPencil} /> Edit Schedule
+              <CIcon icon={cilPencil} /> Editar Horario
             </CButton>
           </CCardHeader>
           <CCardBody>
             <CTable hover responsive className="table-striped table-bordered">
               <CTableHead>
                 <CTableRow>
-                  <CTableHeaderCell>Day</CTableHeaderCell>
-                  <CTableHeaderCell>Hours</CTableHeaderCell>
+                  <CTableHeaderCell>Dia</CTableHeaderCell>
+                  <CTableHeaderCell>Hora</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
@@ -229,32 +229,32 @@ export default function WorkerInfo() {
 
         <CCard className="mb-4">
           <CCardHeader>
-            <strong>My Appointments</strong>
+            <strong>Mis citas</strong>
           </CCardHeader>
           <CCardBody>
             {appointments.length === 0 ? (
               <CAlert color="info">
-                You have no upcoming appointments.
+                No tiene citas próximas.
               </CAlert>
             ) : (
               <CTable hover responsive className="table-striped table-bordered">
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell className="text-center">
-                      <CIcon icon={cilCalendar} /> Date
+                      <CIcon icon={cilCalendar} /> Cita
                     </CTableHeaderCell>
                     <CTableHeaderCell className="text-center">
-                      <CIcon icon={cilClock} /> Time
+                      <CIcon icon={cilClock} /> Hora
                     </CTableHeaderCell>
                     <CTableHeaderCell className="text-center">
-                      <CIcon icon={cilPeople} /> Pet
+                      <CIcon icon={cilPeople} /> Mascota
                     </CTableHeaderCell>
                     <CTableHeaderCell className="text-center">
-                      <CIcon icon={cilMedicalCross} /> Type
+                      <CIcon icon={cilMedicalCross} /> Tipo
                     </CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">Status</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Estado</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">
-                      <CIcon icon={cilNotes} /> Description
+                      <CIcon icon={cilNotes} /> Descripcion
                     </CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
@@ -280,7 +280,7 @@ export default function WorkerInfo() {
 
       <CModal visible={showScheduleModal} onClose={() => setShowScheduleModal(false)}>
         <CModalHeader>
-          <CModalTitle>Edit Schedule</CModalTitle>
+          <CModalTitle>Editar Horario</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <CForm onSubmit={handleScheduleSubmit}>
@@ -296,7 +296,7 @@ export default function WorkerInfo() {
                 />
               </div>
             ))}
-            <CButton type="submit" color="primary">Save Changes</CButton>
+            <CButton type="submit" color="primary">Guardar Cambios</CButton>
           </CForm>
         </CModalBody>
       </CModal>
