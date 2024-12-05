@@ -156,15 +156,26 @@ export default function VetWorkersDashboard() {
   }
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setEditingWorker(prev => ({
-      ...prev,
-      user: {
-        ...prev.user,
-        [name]: value
-      }
-    }))
-  }
+    const { name, value } = e.target;
+    if (name.startsWith('schedule-')) {
+      const day = name.split('-')[1];
+      setEditingWorker(prev => ({
+        ...prev,
+        schedule: {
+          ...prev.schedule,
+          [day]: value
+        }
+      }));
+    } else {
+      setEditingWorker(prev => ({
+        ...prev,
+        user: {
+          ...prev.user,
+          [name]: value
+        }
+      }));
+    }
+  };
 
   return (
     <>
@@ -318,6 +329,33 @@ export default function VetWorkersDashboard() {
               />
             </CCol>
           </CRow>
+          <CRow className="mt-4">
+            <CCol xs={12}>
+              <CCard>
+                <CCardHeader>
+                  <strong>Horario de trabajo</strong>
+                </CCardHeader>
+                <CCardBody>
+                  <CTable responsive small>
+                    <CTableHead>
+                      <CTableRow>
+                        <CTableHeaderCell>Día</CTableHeaderCell>
+                        <CTableHeaderCell>Horario</CTableHeaderCell>
+                      </CTableRow>
+                    </CTableHead>
+                    <CTableBody>
+                      {Object.entries(selectedWorker.schedule).map(([day, hours]) => (
+                        <CTableRow key={day}>
+                          <CTableDataCell>{day.charAt(0).toUpperCase() + day.slice(1)}</CTableDataCell>
+                          <CTableDataCell>{hours}</CTableDataCell>
+                        </CTableRow>
+                      ))}
+                    </CTableBody>
+                  </CTable>
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
         </>
       )}
 
@@ -398,6 +436,21 @@ export default function VetWorkersDashboard() {
                 <option key={specialization} value={specialization}>{specialization}</option>
               ))}
             </CFormSelect>
+            <div className="mb-3">
+              <h5>Horario de trabajo</h5>
+              {Object.entries(editingWorker?.schedule || {}).map(([day, hours]) => (
+                <CFormInput
+                  key={day}
+                  type="text"
+                  id={`schedule-${day}`}
+                  name={`schedule-${day}`}
+                  label={day.charAt(0).toUpperCase() + day.slice(1)}
+                  value={hours}
+                  onChange={handleInputChange}
+                  className="mb-2"
+                />
+              ))}
+            </div>
             <CModalFooter>
               <CButton color="secondary" onClick={() => setIsEditModalVisible(false)}>
                 Cancelar
@@ -429,3 +482,4 @@ export default function VetWorkersDashboard() {
     </>
   )
 }
+

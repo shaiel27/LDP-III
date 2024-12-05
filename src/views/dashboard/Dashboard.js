@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import {
-  CButton,
-  CButtonGroup,
   CCard,
   CCardBody,
   CCardFooter,
@@ -13,7 +11,6 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
-  cilCloudDownload,
   cilDog,
   cilCat,
   cilMedicalCross,
