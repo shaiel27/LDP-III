@@ -12,6 +12,7 @@ const UserAppointments = React.lazy(() => import('./views/pages/mydates/Userappo
 const EmployeeDashboard = React.lazy(() => import('./views/pages/workerInfo/Workerinfo'))
 const PaymentAdminModule = React.lazy(() => import('./views/pages/payments/Payments'))
 const Profile = React.lazy(() => import('./views/pages/profile/Profile'))
+const UserManagement = React.lazy(() => import('./views/pages/users/Users'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home', element: Dashboard },
@@ -27,6 +28,7 @@ const routes = [
   { path: '/pages/workerInfo', name: 'Employee Dashboard', element: EmployeeDashboard },
   { path: '/pages/payments', name: 'Payment Admin Module', element: PaymentAdminModule },
   { path: '/pages/profile', name: 'Profile', element: Profile },
+  { path: '/pages/users', name: 'User Management', element: UserManagement },
 ]
 
 export default routes

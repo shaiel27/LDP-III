@@ -422,76 +422,34 @@
   ],
   "users": [
     {
-      "id": "1",
+      "id": "9462",
+      "name": "carlos",
+      "email": "carlos@example.com",
+      "password": "uj-MfCHwkWaL9rx",
+      "confirmPassword": "uj-MfCHwkWaL9rx",
+      "phone": "7461453",
+      "address": "luxemburgos",
+      "country": "Venezuela",
+      "birthDate": "2024-12-05",
+      "gender": "Male",
+      "profilePicture": "blob:http://localhost:3000/a986cdf7-6f7f-4835-8637-e8243608d3fb",
+      "userType": "client",
+      "joinDate": "2024-12-05"
+    },
+    {
+      "id": "0183",
       "name": "Juan Pérez",
       "email": "juan.perez@example.com",
-      "phone": "+34 123 456 789",
-      "address": "Calle Mayor 123, Madrid, España",
-      "password": "hashedpassword123",
-      "profilePicture": "/placeholder.svg?height=150&width=150",
-      "userType": "client",
-      "country": "España",
-      "birthDate": "1985-05-15",
-      "gender": "Male",
-      "joinDate": "2023-01-01"
-    },
-    {
-      "id": "2",
-      "name": "Ana García",
-      "email": "ana.garcia@example.com",
-      "phone": "+34 234 567 890",
-      "address": "Avenida Diagonal 456, Barcelona, España",
-      "password": "hashedpassword456",
-      "profilePicture": "/placeholder.svg?height=150&width=150",
-      "userType": "admin",
-      "country": "España",
-      "birthDate": "1990-08-22",
-      "gender": "Female",
-      "joinDate": "2023-02-15"
-    },
-    {
-      "id": "3",
-      "name": "Luisa Martínez",
-      "email": "luisa.martinez@example.com",
-      "phone": "+34 345 678 901",
-      "address": "Plaza del Sol 789, Valencia, España",
-      "password": "hashedpassword789",
-      "profilePicture": "/placeholder.svg?height=150&width=150",
-      "userType": "client",
-      "country": "España",
-      "birthDate": "1988-11-30",
-      "gender": "Female",
-      "joinDate": "2023-03-10"
-    },
-    {
-      "id": "2fb9",
-      "name": "shaiel becerra",
-      "email": "shaielbecerra@gmail.com",
-      "password": "1234",
-      "confirmPassword": "1234",
-      "phone": "04247719428",
-      "address": "luxemburgo",
-      "country": "Alemania",
-      "birthDate": "2024-11-16",
-      "gender": "Male",
-      "userType": "client",
-      "profilePicture": "/placeholder.svg?height=150&width=150",
-      "joinDate": "2024-11-16"
-    },
-    {
-      "id": "202c",
-      "name": "shaiel becerra",
-      "email": "shaielbecerra@gmail.com",
-      "password": "D-iQs7:BT9dgZVc",
-      "confirmPassword": "D-iQs7:BT9dgZVc",
+      "password": "Xr.-PS6GuSYdmCR",
+      "confirmPassword": "Xr.-PS6GuSYdmCR",
       "phone": "7461453",
-      "address": "luxemburgo",
+      "address": "1",
       "country": "Venezuela",
-      "birthDate": "2024-11-17",
-      "gender": "Male",
+      "birthDate": "2024-12-16",
+      "gender": "Female",
+      "profilePicture": "blob:http://localhost:3000/ed59673a-f37b-43c6-8535-586948825c76",
       "userType": "client",
-      "profilePicture": "/placeholder.svg?height=150&width=150",
-      "joinDate": "2024-11-17"
+      "joinDate": "2024-12-06"
     }
   ],
   "appointments": [
@@ -626,7 +584,7 @@
       "category": "Food",
       "price": 29.99,
       "quantity": 46,
-      "image": "/placeholder.svg?height=100&width=100",
+      "image": "src/assets/images/logo1.png",
       "id": "1"
     },
     {
@@ -635,7 +593,7 @@
       "category": "Food",
       "price": 24.99,
       "quantity": 40,
-      "image": "/placeholder.svg?height=100&width=100"
+      "image": "src/assets/images/logo1.png"
     },
     {
       "id": "3",
@@ -643,7 +601,7 @@
       "category": "Medication",
       "price": 15.99,
       "quantity": 100,
-      "image": "/placeholder.svg?height=100&width=100"
+      "image": "src/assets/images/logo1.png"
     },
     {
       "id": "4",
@@ -651,7 +609,7 @@
       "category": "Accessory",
       "price": 9.99,
       "quantity": 30,
-      "image": "/placeholder.svg?height=100&width=100"
+      "image": "src/assets/images/logo1.png"
     }
   ]
 }

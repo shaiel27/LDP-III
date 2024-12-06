@@ -12,6 +12,7 @@ import {
   CInputGroupText,
   CRow,
   CFormSelect,
+  CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -22,9 +23,7 @@ import {
   cilLocationPin,
   cilCalendar,
   cilGlobeAlt,
-  cilBriefcase,
-  cilLanguage,
-  cilPeople,
+  cilImage,
 } from '@coreui/icons'
 
 const Register = () => {
@@ -38,33 +37,45 @@ const Register = () => {
     country: '',
     birthDate: '',
     gender: '',
-    occupation: '',
-    preferredLanguage: '',
-    emergencyContact: {
-      name: '',
-      relationship: '',
-      phone: '',
-    },
+    profilePicture: '',
   })
+  const [file, setFile] = useState(null)
+  const [isUploading, setIsUploading] = useState(false)
 
   const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.')
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }))
+  }
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0])
+    if (e.target.files[0]) {
+      const imageUrl = URL.createObjectURL(e.target.files[0])
       setFormData(prevState => ({
         ...prevState,
-        [parent]: {
-          ...prevState[parent],
-          [child]: value
-        }
+        profilePicture: imageUrl
       }))
-    } else {
-      setFormData(prevState => ({
-        ...prevState,
-        [name]: value
-      }))
+    }
+  }
+
+  const uploadImage = async () => {
+    if (!file) return null
+
+    setIsUploading(true)
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000)) 
+      const imageUrl = URL.createObjectURL(file) 
+      setIsUploading(false)
+      return imageUrl
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      setIsUploading(false)
+      return null
     }
   }
 
@@ -75,18 +86,30 @@ const Register = () => {
       return
     }
 
+    let imageUrl = formData.profilePicture
+
+    if (file) {
+      imageUrl = await uploadImage()
+      if (!imageUrl) {
+        alert('Error al subir la imagen. Por favor, inténtelo de nuevo.')
+        return
+      }
+    }
+
+    const userData = {
+      ...formData,
+      profilePicture: imageUrl || '/placeholder.svg?height=150&width=150',
+      userType: 'client',
+      joinDate: new Date().toISOString().split('T')[0],
+    }
+
     try {
       const response = await fetch('http://localhost:3004/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          userType: 'client',
-          profilePicture: '/placeholder.svg?height=150&width=150',
-          joinDate: new Date().toISOString().split('T')[0],
-        }),
+        body: JSON.stringify(userData),
       })
 
       if (response.ok) {
@@ -103,7 +126,7 @@ const Register = () => {
   return (
     <div className="register min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
-        <CRow className="justify-content-center ">
+        <CRow className="justify-content-center">
           <CCol md={12} lg={10} xl={8}>
             <CCard className="mx-4 bg-distortion">
               <CCardBody className="p-4">
@@ -112,15 +135,14 @@ const Register = () => {
                   <p className="text-medium-emphasis text-center mb-4">Crea tu cuenta</p>
                   <CRow>
                     <CCol md={6}>
-                      <CInputGroup className="mb-3 ">
-                        <CInputGroupText className='bg-distortion' >
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilUser} />
                         </CInputGroupText>
                         <CFormInput
                           placeholder="Nombre Completo"
                           autoComplete="name"
                           name="name"
-                          type='bg-distortion'
                           value={formData.name}
                           onChange={handleChange}
                           required
@@ -231,7 +253,7 @@ const Register = () => {
                   <CRow>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion' >
+                        <CInputGroupText className='bg-distortion'>
                           <CIcon icon={cilCalendar} />
                         </CInputGroupText>
                         <CFormInput
@@ -264,16 +286,40 @@ const Register = () => {
                     </CCol>
                   </CRow>
                   <CRow>
-                    <CCol md={6}>
-                    </CCol>
-                    <CCol md={6}>
-                     
+                    <CCol md={12}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText className='bg-distortion'>
+                          <CIcon icon={cilImage} />
+                        </CInputGroupText>
+                        <CFormInput
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className='bg-distortion'
+                        />
+                      </CInputGroup>
+                      {formData.profilePicture && (
+                        <img 
+                          src={formData.profilePicture} 
+                          alt="Vista previa" 
+                          style={{ maxWidth: '200px', marginTop: '10px', marginBottom: '10px' }} 
+                        />
+                      )}
                     </CCol>
                   </CRow>
                   <CRow>
                     <CCol xs={12}>
                       <div className="d-grid">
-                        <CButton color="success" type="submit">Crear Cuenta</CButton>
+                        <CButton color="success" type="submit" disabled={isUploading}>
+                          {isUploading ? (
+                            <>
+                              <CSpinner size="sm" className="me-2" />
+                              Subiendo imagen...
+                            </>
+                          ) : (
+                            'Crear Cuenta'
+                          )}
+                        </CButton>
                       </div>
                     </CCol>
                   </CRow>
@@ -288,3 +334,4 @@ const Register = () => {
 }
 
 export default Register
+

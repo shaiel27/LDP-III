@@ -75,6 +75,8 @@ export default function Profile() {
           if (userType === 'worker') {
             userData = { ...userData.user, id: userData.id, userType: 'worker' }
           }
+          // Ensure we're using the correct profile picture URL
+          userData.profilePicture = userData.profilePicture || '/placeholder.svg?height=150&width=150'
           setUser(userData)
           setEditedUser(userData)
         } else {
@@ -196,7 +198,7 @@ export default function Profile() {
             <div className="position-relative">
               <CImage
                 rounded
-                src={user.profilePicture || '/placeholder.svg?height=150&width=150'}
+                src={user.profilePicture}
                 width={150}
                 height={150}
                 className="position-absolute profile-image"
