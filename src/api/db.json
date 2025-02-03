@@ -418,6 +418,17 @@
       "weight": 15,
       "ownerId": "2",
       "medicalHistory": []
+    },
+    {
+      "id": "2232",
+      "name": "1",
+      "species": "1",
+      "breed": "1",
+      "birthDate": "2025-01-13",
+      "color": "1",
+      "weight": 1,
+      "ownerId": null,
+      "medicalHistory": []
     }
   ],
   "users": [
@@ -576,6 +587,18 @@
       "status": "Pendiente",
       "pet": "Max",
       "ownerId": "1"
+    },
+    {
+      "id": "1736888294524",
+      "petId": "2232",
+      "type": "Consulta",
+      "workerId": "cb35",
+      "date": "2025-01-14",
+      "time": "17:59",
+      "description": "algo\n",
+      "status": "Pendiente",
+      "pet": "1",
+      "ownerId": "0183"
     }
   ],
   "inventory": [
