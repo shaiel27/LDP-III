@@ -1,6 +1,4 @@
-'use client'
-
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 import {
   CCard,
   CCardBody,
@@ -15,291 +13,345 @@ import {
   CTableRow,
   CAlert,
   CBadge,
-  CListGroup,
-  CListGroupItem,
-  CAvatar,
   CButton,
   CForm,
+  CFormSelect,
   CFormInput,
+  CFormTextarea,
   CModal,
   CModalHeader,
   CModalTitle,
   CModalBody,
   CModalFooter,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { 
-  cilPeople, 
-  cilCalendar, 
-  cilMedicalCross, 
-  cilClock, 
-  cilNotes,
-  cilEnvelopeClosed,
-  cilPhone,
-  cilLocationPin,
-  cilBriefcase,
-  cilUser,
-  cilPencil,
-} from '@coreui/icons'
+} from "@coreui/react"
+import CIcon from "@coreui/icons-react"
+import { cilPeople, cilCalendar, cilMedicalCross, cilClock, cilNotes } from "@coreui/icons"
 
-export default function WorkerInfo() {
+const WorkerInfo = () => {
   const [worker, setWorker] = useState(null)
   const [appointments, setAppointments] = useState([])
-  const [pets, setPets] = useState([])
-  const [error, setError] = useState('')
-  const [showScheduleModal, setShowScheduleModal] = useState(false)
-  const [editedSchedule, setEditedSchedule] = useState({})
-  const [updateMessage, setUpdateMessage] = useState('')
+  const [consultations, setConsultations] = useState([])
+  const [inventory, setInventory] = useState([])
+  const [error, setError] = useState("")
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [selectedAppointment, setSelectedAppointment] = useState(null)
+  const [selectedProducts, setSelectedProducts] = useState([])
+  const [observations, setObservations] = useState("")
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('token')
-        const userType = localStorage.getItem('userType')
-        
-        if (!token || userType !== 'worker') {
-          setError('Unauthorized access')
+        const token = localStorage.getItem("token")
+        if (!token) {
+          setError("No se ha iniciado sesión")
           return
         }
 
-        const workerId = token.split('-')[2]
-        
-        const [workerResponse, appointmentsResponse, petsResponse] = await Promise.all([
+        const workerId = token.split("-")[2] // Asumiendo que el token tiene el formato "worker-token-id"
+
+        const [workerResponse, appointmentsResponse, inventoryResponse] = await Promise.all([
           fetch(`http://localhost:3004/workers/${workerId}`),
           fetch(`http://localhost:3004/appointments?workerId=${workerId}`),
-          fetch('http://localhost:3004/pets')
+          fetch("http://localhost:3004/inventory"),
         ])
 
-        const [workerData, appointmentsData, petsData] = await Promise.all([
+        if (!workerResponse.ok || !appointmentsResponse.ok || !inventoryResponse.ok) {
+          throw new Error("Error al obtener los datos")
+        }
+
+        const [workerData, appointmentsData, inventoryData] = await Promise.all([
           workerResponse.json(),
           appointmentsResponse.json(),
-          petsResponse.json()
+          inventoryResponse.json(),
         ])
 
         setWorker(workerData)
-        setEditedSchedule(workerData.schedule)
-        setAppointments(appointmentsData)
-        setPets(petsData)
+        setAppointments(appointmentsData.filter((apt) => apt.status !== "Completada"))
+        setConsultations(appointmentsData.filter((apt) => apt.status === "Completada"))
+        setInventory(inventoryData)
       } catch (error) {
-        setError('An error occurred while fetching data')
+        setError("Ocurrió un error al cargar los datos")
       }
     }
 
     fetchData()
   }, [])
 
-  const getPetName = (petId) => {
-    const pet = pets.find(p => p.id === petId)
-    return pet ? pet.name : 'Unknown'
+  const handleConfirmAppointment = (appointment) => {
+    setSelectedAppointment(appointment)
+    setSelectedProducts([])
+    setObservations("")
+    setShowConfirmModal(true)
   }
+
+  const handleAddProduct = () => {
+    setSelectedProducts([...selectedProducts, { id: "", quantity: 1 }])
+  }
+
+  const handleProductChange = (index, field, value) => {
+    const updatedProducts = selectedProducts.map((product, i) => {
+      if (i === index) {
+        return { ...product, [field]: value }
+      }
+      return product
+    })
+    setSelectedProducts(updatedProducts)
+  }
+
+  const handleRemoveProduct = (index) => {
+    setSelectedProducts(selectedProducts.filter((_, i) => i !== index))
+  }
+
+  const handleSubmitConsultation = async () => {
+    try {
+      const productsUsed = selectedProducts.map((sp) => {
+        const product = inventory.find((item) => item.id === sp.id)
+        return {
+          id: sp.id,
+          name: product.name,
+          quantity: sp.quantity,
+        }
+      })
+
+      const updatedAppointment = {
+        ...selectedAppointment,
+        status: "Completada",
+        productsUsed,
+        observations,
+      }
+
+      const response = await fetch(`http://localhost:3004/appointments/${selectedAppointment.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedAppointment),
+      })
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar la cita")
+      }
+
+      // Actualizar el inventario
+      for (const product of selectedProducts) {
+        const inventoryItem = inventory.find((item) => item.id === product.id)
+        if (inventoryItem) {
+          await fetch(`http://localhost:3004/inventory/${product.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              quantity: inventoryItem.quantity - product.quantity,
+            }),
+          })
+        }
+      }
+
+      setAppointments(appointments.filter((apt) => apt.id !== selectedAppointment.id))
+      setConsultations([...consultations, updatedAppointment])
+      setShowConfirmModal(false)
+    } catch (error) {
+      setError("Ocurrió un error al confirmar la consulta")
+    }
+  }
+
   const getStatusBadge = (status) => {
-    switch (status.toLowerCase()) {
-      case 'confirmada':
-        return <CBadge color="success">Confirmada</CBadge>
-      case 'pendiente':
+    switch (status) {
+      case "Pendiente":
         return <CBadge color="warning">Pendiente</CBadge>
-      case 'en proceso':
+      case "Confirmada":
+        return <CBadge color="success">Confirmada</CBadge>
+      case "En proceso":
         return <CBadge color="info">En proceso</CBadge>
+      case "Completada":
+        return <CBadge color="primary">Completada</CBadge>
       default:
         return <CBadge color="secondary">{status}</CBadge>
     }
   }
 
-  const handleScheduleChange = (day, value) => {
-    setEditedSchedule(prev => ({ ...prev, [day]: value }))
-  }
-
-  const handleScheduleSubmit = async (e) => {
-    e.preventDefault()
-    try {
-      const response = await fetch(`http://localhost:3004/workers/${worker.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ schedule: editedSchedule }),
-      })
-
-      if (response.ok) {
-        setWorker(prev => ({ ...prev, schedule: editedSchedule }))
-        setShowScheduleModal(false)
-        setUpdateMessage('Schedule updated successfully')
-        setTimeout(() => setUpdateMessage(''), 3000)
-      } else {
-        throw new Error('Failed to update schedule')
-      }
-    } catch (error) {
-      setError('An error occurred while updating the schedule')
-    }
-  }
-
   if (error) {
-    return (
-      <CAlert color="danger">
-        {error}
-      </CAlert>
-    )
+    return <CAlert color="danger">{error}</CAlert>
   }
 
   if (!worker) {
-    return (
-      <CAlert color="info">
-        Cargando Informacion del trabajador...
-      </CAlert>
-    )
+    return <CAlert color="info">Cargando información del trabajador...</CAlert>
   }
 
   return (
     <CRow>
       <CCol xs={12}>
-        {updateMessage && (
-          <CAlert color="success">
-            {updateMessage}
-          </CAlert>
-        )}
         <CCard className="mb-4">
           <CCardHeader>
-            <h1>Datos del trabajador</h1>
+            <h4>Información del Trabajador</h4>
           </CCardHeader>
           <CCardBody>
-            <CRow>
-              <CCol md={4}>
-                <CAvatar src={worker.avatar.src} size="xl" />
-              </CCol>
-              <CCol md={8}>
-                <h2>{worker.user.name}</h2>
-                <CListGroup flush>
-                  <CListGroupItem>
-                    <CIcon icon={cilEnvelopeClosed} className="me-2" />
-                    Correo: {worker.user.email}
-                  </CListGroupItem>
-                  <CListGroupItem>
-                    <CIcon icon={cilPhone} className="me-2" />
-                    Telefono: {worker.user.phone}
-                  </CListGroupItem>
-                  <CListGroupItem>
-                    <CIcon icon={cilLocationPin} className="me-2" />
-                    Dirección: {worker.user.address}
-                  </CListGroupItem>
-                  <CListGroupItem>
-                    <CIcon icon={cilBriefcase} className="me-2" />
-                    Especialidad: {worker.specialty}
-                  </CListGroupItem>
-                  <CListGroupItem>
-                    <CIcon icon={cilUser} className="me-2" />
-                    Numero de licencia: {worker.licenseNumber}
-                  </CListGroupItem>
-                </CListGroup>
-              </CCol>
-            </CRow>
+            <p>
+              <strong>Nombre:</strong> {worker.user.name}
+            </p>
+            <p>
+              <strong>Email:</strong> {worker.user.email}
+            </p>
+            <p>
+              <strong>Especialidad:</strong> {worker.specialty}
+            </p>
           </CCardBody>
         </CCard>
+      </CCol>
 
+      <CCol xs={12}>
         <CCard className="mb-4">
           <CCardHeader>
-            <h1>Horario</h1>
-            <CButton 
-              color="primary" 
-              size="sm" 
-              className="float-end"
-              onClick={() => setShowScheduleModal(true)}
-            >
-              <CIcon icon={cilPencil} /> Editar Horario
-            </CButton>
+            <h4>Citas Pendientes</h4>
           </CCardHeader>
           <CCardBody>
-            <CTable hover responsive className="table-striped table-bordered">
+            <CTable hover responsive>
               <CTableHead>
                 <CTableRow>
-                  <CTableHeaderCell>Dia</CTableHeaderCell>
-                  <CTableHeaderCell>Hora</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">
+                    <CIcon icon={cilCalendar} /> Fecha
+                  </CTableHeaderCell>
+                  <CTableHeaderCell scope="col">
+                    <CIcon icon={cilClock} /> Hora
+                  </CTableHeaderCell>
+                  <CTableHeaderCell scope="col">
+                    <CIcon icon={cilPeople} /> Mascota
+                  </CTableHeaderCell>
+                  <CTableHeaderCell scope="col">
+                    <CIcon icon={cilMedicalCross} /> Tipo
+                  </CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Estado</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">
+                    <CIcon icon={cilNotes} /> Descripción
+                  </CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Acción</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {Object.entries(worker.schedule).map(([day, hours]) => (
-                  <CTableRow key={day}>
-                    <CTableDataCell>{day.charAt(0).toUpperCase() + day.slice(1)}</CTableDataCell>
-                    <CTableDataCell>{hours || 'Closed'}</CTableDataCell>
+                {appointments.map((appointment) => (
+                  <CTableRow key={appointment.id}>
+                    <CTableDataCell>{appointment.date}</CTableDataCell>
+                    <CTableDataCell>{appointment.time}</CTableDataCell>
+                    <CTableDataCell>{appointment.pet}</CTableDataCell>
+                    <CTableDataCell>{appointment.type}</CTableDataCell>
+                    <CTableDataCell>{getStatusBadge(appointment.status)}</CTableDataCell>
+                    <CTableDataCell>{appointment.description}</CTableDataCell>
+                    <CTableDataCell>
+                      <CButton color="primary" size="sm" onClick={() => handleConfirmAppointment(appointment)}>
+                        Confirmar
+                      </CButton>
+                    </CTableDataCell>
                   </CTableRow>
                 ))}
               </CTableBody>
             </CTable>
           </CCardBody>
         </CCard>
+      </CCol>
 
+      <CCol xs={12}>
         <CCard className="mb-4">
           <CCardHeader>
-            <strong>Mis citas</strong>
+            <h4>Consultas Completadas</h4>
           </CCardHeader>
           <CCardBody>
-            {appointments.length === 0 ? (
-              <CAlert color="info">
-                No tiene citas próximas.
-              </CAlert>
-            ) : (
-              <CTable hover responsive className="table-striped table-bordered">
-                <CTableHead>
-                  <CTableRow>
-                    <CTableHeaderCell className="text-center">
-                      <CIcon icon={cilCalendar} /> Cita
-                    </CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">
-                      <CIcon icon={cilClock} /> Hora
-                    </CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">
-                      <CIcon icon={cilPeople} /> Mascota
-                    </CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">
-                      <CIcon icon={cilMedicalCross} /> Tipo
-                    </CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">Estado</CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">
-                      <CIcon icon={cilNotes} /> Descripcion
-                    </CTableHeaderCell>
+            <CTable hover responsive>
+              <CTableHead>
+                <CTableRow>
+                  <CTableHeaderCell scope="col">
+                    <CIcon icon={cilCalendar} /> Fecha
+                  </CTableHeaderCell>
+                  <CTableHeaderCell scope="col">
+                    <CIcon icon={cilPeople} /> Mascota
+                  </CTableHeaderCell>
+                  <CTableHeaderCell scope="col">
+                    <CIcon icon={cilMedicalCross} /> Tipo
+                  </CTableHeaderCell>
+                  <CTableHeaderCell scope="col">
+                    <CIcon icon={cilNotes} /> Descripción
+                  </CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Productos Usados</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Observaciones</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                {consultations.map((consultation) => (
+                  <CTableRow key={consultation.id}>
+                    <CTableDataCell>{consultation.date}</CTableDataCell>
+                    <CTableDataCell>{consultation.pet}</CTableDataCell>
+                    <CTableDataCell>{consultation.type}</CTableDataCell>
+                    <CTableDataCell>{consultation.description}</CTableDataCell>
+                    <CTableDataCell>
+                      {consultation.productsUsed?.map((product) => `${product.name} (${product.quantity})`).join(", ")}
+                    </CTableDataCell>
+                    <CTableDataCell>{consultation.observations}</CTableDataCell>
                   </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  {appointments.map((appointment) => (
-                    <CTableRow key={appointment.id}>
-                      <CTableDataCell className="text-center">{appointment.date}</CTableDataCell>
-                      <CTableDataCell className="text-center">{appointment.time}</CTableDataCell>
-                      <CTableDataCell>{getPetName(appointment.petId)}</CTableDataCell>
-                      <CTableDataCell>{appointment.type}</CTableDataCell>
-                      <CTableDataCell className="text-center">
-                        {getStatusBadge(appointment.status)}
-                      </CTableDataCell>
-                      <CTableDataCell>{appointment.description}</CTableDataCell>
-                    </CTableRow>
-                  ))}
-                </CTableBody>
-              </CTable>
-            )}
+                ))}
+              </CTableBody>
+            </CTable>
           </CCardBody>
         </CCard>
       </CCol>
 
-      <CModal visible={showScheduleModal} onClose={() => setShowScheduleModal(false)}>
+      <CModal visible={showConfirmModal} onClose={() => setShowConfirmModal(false)}>
         <CModalHeader>
-          <CModalTitle>Editar Horario</CModalTitle>
+          <CModalTitle>Confirmar Consulta</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          <CForm onSubmit={handleScheduleSubmit}>
-            {Object.entries(editedSchedule).map(([day, hours]) => (
-              <div key={day} className="mb-3">
-                <CFormInput
-                  type="text"
-                  id={day}
-                  label={day.charAt(0).toUpperCase() + day.slice(1)}
-                  value={hours}
-                  onChange={(e) => handleScheduleChange(day, e.target.value)}
-                  placeholder="e.g. 9:00 AM - 5:00 PM or Closed"
-                />
-              </div>
+          <CForm>
+            <h5>Productos Utilizados</h5>
+            {selectedProducts.map((product, index) => (
+              <CRow key={index} className="mb-3">
+                <CCol xs={6}>
+                  <CFormSelect value={product.id} onChange={(e) => handleProductChange(index, "id", e.target.value)}>
+                    <option value="">Seleccionar producto</option>
+                    {inventory.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </CFormSelect>
+                </CCol>
+                <CCol xs={4}>
+                  <CFormInput
+                    type="number"
+                    value={product.quantity}
+                    onChange={(e) => handleProductChange(index, "quantity", Number.parseInt(e.target.value))}
+                    min="1"
+                  />
+                </CCol>
+                <CCol xs={2}>
+                  <CButton color="danger" onClick={() => handleRemoveProduct(index)}>
+                    X
+                  </CButton>
+                </CCol>
+              </CRow>
             ))}
-            <CButton type="submit" color="primary">Guardar Cambios</CButton>
+            <CButton color="success" onClick={handleAddProduct} className="mb-3">
+              Agregar Producto
+            </CButton>
+            <CFormTextarea
+              id="observations"
+              label="Observaciones"
+              value={observations}
+              onChange={(e) => setObservations(e.target.value)}
+              rows={3}
+            />
           </CForm>
         </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setShowConfirmModal(false)}>
+            Cancelar
+          </CButton>
+          <CButton color="primary" onClick={handleSubmitConsultation}>
+            Confirmar
+          </CButton>
+        </CModalFooter>
       </CModal>
     </CRow>
   )
 }
+
+export default WorkerInfo
+

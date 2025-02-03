@@ -429,6 +429,17 @@
       "weight": 1,
       "ownerId": null,
       "medicalHistory": []
+    },
+    {
+      "id": "0963",
+      "name": "shaiel",
+      "species": "a",
+      "breed": "aa",
+      "birthDate": "2025-02-03",
+      "color": "1",
+      "weight": 123,
+      "ownerId": "cb35",
+      "medicalHistory": []
     }
   ],
   "users": [
@@ -599,6 +610,46 @@
       "status": "Pendiente",
       "pet": "1",
       "ownerId": "0183"
+    },
+    {
+      "id": "1738607038588",
+      "petId": "2232",
+      "type": "Consulta",
+      "workerId": "cb35",
+      "date": "2025-02-02",
+      "time": "14:28",
+      "description": "salud mala",
+      "status": "Completada",
+      "pet": "1",
+      "ownerId": "cb35",
+      "productsUsed": [
+        {
+          "id": "1",
+          "name": "Dog Food",
+          "quantity": 3
+        }
+      ],
+      "observations": "1234"
+    },
+    {
+      "id": "1738607226963",
+      "petId": "0963",
+      "type": "Consulta",
+      "workerId": "cb35",
+      "date": "2025-02-03",
+      "time": "03:27",
+      "description": "nacio",
+      "status": "Completada",
+      "pet": "shaiel",
+      "ownerId": "cb35",
+      "productsUsed": [
+        {
+          "id": "4",
+          "name": "Dog Collar",
+          "quantity": 3
+        }
+      ],
+      "observations": "nacio bien"
     }
   ],
   "inventory": [
@@ -606,7 +657,7 @@
       "name": "Dog Food",
       "category": "Food",
       "price": 29.99,
-      "quantity": 46,
+      "quantity": 43,
       "image": "src/assets/images/logo1.png",
       "id": "1"
     },
@@ -631,7 +682,7 @@
       "name": "Dog Collar",
       "category": "Accessory",
       "price": 9.99,
-      "quantity": 30,
+      "quantity": 27,
       "image": "src/assets/images/logo1.png"
     }
   ]

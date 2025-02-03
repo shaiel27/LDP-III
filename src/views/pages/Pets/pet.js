@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 import {
   CCard,
   CCardBody,
   CCardHeader,
   CCol,
   CRow,
-  CListGroup,
-  CListGroupItem,
-  CButton,
-  CCollapse,
   CBadge,
   CTable,
   CTableHead,
@@ -16,94 +12,109 @@ import {
   CTableHeaderCell,
   CTableBody,
   CTableDataCell,
-} from '@coreui/react'
+  CAlert,
+  CSpinner,
+  CAccordion,
+  CAccordionItem,
+  CAccordionHeader,
+  CAccordionBody,
+} from "@coreui/react"
+import CIcon from "@coreui/icons-react"
+import { cilMedicalCross, cilCalendar, cilUser, cilNotes, cilBasket } from "@coreui/icons"
 
-export default function PetRecords() {
-  const [petData, setPetData] = useState([])
-  const [selectedPet, setSelectedPet] = useState(null)
+const PetRecords = () => {
+  const [pets, setPets] = useState([])
   const [workers, setWorkers] = useState([])
-  const [currentUserId, setCurrentUserId] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      const userId = token.split('-')[2]
-      setCurrentUserId(userId)
-      fetchPets(userId)
-      fetchWorkers()
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token")
+        if (!token) {
+          throw new Error("No se ha iniciado sesión")
+        }
+
+        const userId = token.split("-")[2]
+
+        // Obtener mascotas, trabajadores y citas
+        const [petsResponse, workersResponse, appointmentsResponse] = await Promise.all([
+          fetch(`http://localhost:3004/pets?ownerId=${userId}`),
+          fetch("http://localhost:3004/workers"),
+          fetch(`http://localhost:3004/appointments?ownerId=${userId}&status=Completada`),
+        ])
+
+        if (!petsResponse.ok || !workersResponse.ok || !appointmentsResponse.ok) {
+          throw new Error("Error al obtener los datos")
+        }
+
+        const [petsData, workersData, appointmentsData] = await Promise.all([
+          petsResponse.json(),
+          workersResponse.json(),
+          appointmentsResponse.json(),
+        ])
+
+        // Combinar las citas completadas con el historial médico de las mascotas
+        const updatedPets = petsData.map((pet) => {
+          const petAppointments = appointmentsData.filter((app) => app.petId === pet.id)
+          const updatedMedicalHistory = [
+            ...(pet.medicalHistory || []),
+            ...petAppointments.map((app) => ({
+              date: app.date,
+              description: app.description,
+              productsUsed: app.productsUsed || [],
+              observations: app.observations || "",
+              workerId: app.workerId,
+            })),
+          ]
+          return { ...pet, medicalHistory: updatedMedicalHistory }
+        })
+
+        setPets(updatedPets)
+        setWorkers(workersData)
+      } catch (error) {
+        setError(error.message)
+      } finally {
+        setLoading(false)
+      }
     }
+
+    fetchData()
   }, [])
 
-  const fetchPets = async (userId) => {
-    try {
-      const response = await fetch(`http://localhost:3004/pets?ownerId=${userId}`)
-      const data = await response.json()
-      setPetData(data)
-    } catch (error) {
-      console.error('Error fetching pets:', error)
-    }
+  if (loading) {
+    return (
+      <div className="text-center p-3">
+        <CSpinner color="primary" />
+        <p className="mt-2">Cargando información de mascotas...</p>
+      </div>
+    )
   }
 
-  const fetchWorkers = async () => {
-    try {
-      const response = await fetch('http://localhost:3004/workers')
-      const data = await response.json()
-      setWorkers(data)
-    } catch (error) {
-      console.error('Error fetching workers:', error)
-    }
+  if (error) {
+    return <CAlert color="danger">{error}</CAlert>
+  }
+
+  if (pets.length === 0) {
+    return <CAlert color="info">No tienes mascotas registradas.</CAlert>
   }
 
   return (
     <CRow>
-      <CCol md={4}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>Mis Mascotas</strong>
-          </CCardHeader>
-          <CCardBody>
-            <CListGroup>
-              {petData.map((pet) => (
-                <CListGroupItem
-                  key={pet.id}
-                  onClick={() => setSelectedPet(pet.id === selectedPet ? null : pet.id)}
-                  active={pet.id === selectedPet}
-                  className="d-flex justify-content-between align-items-center"
-                >
-                  {pet.name}
-                  <CBadge color="primary" shape="rounded-pill">
-                    {pet.species}
-                  </CBadge>
-                </CListGroupItem>
-              ))}
-            </CListGroup>
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol md={8}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>Detalles de la Mascota</strong>
-          </CCardHeader>
-          <CCardBody>
-            {selectedPet ? (
-              <PetDetails pet={petData.find((p) => p.id === selectedPet)} workers={workers} />
-            ) : (
-              <p>Selecciona una mascota para ver sus detalles.</p>
-            )}
-          </CCardBody>
-        </CCard>
-      </CCol>
+      {pets.map((pet) => (
+        <CCol xs={12} key={pet.id} className="mb-4">
+          <PetCard pet={pet} workers={workers} />
+        </CCol>
+      ))}
     </CRow>
   )
 }
 
-function PetDetails({ pet, workers }) {
-  const [showHistory, setShowHistory] = useState(false)
-
+const PetCard = ({ pet, workers }) => {
   const getVetName = (workerId) => {
-    const worker = workers.find(w => w.id === workerId)
-    return worker ? worker.user.name : 'Desconocido'
+    const worker = workers.find((w) => w.id === workerId)
+    return worker ? worker.user.name : "Desconocido"
   }
 
   const calcularEdad = (fechaNacimiento) => {
@@ -117,71 +128,108 @@ function PetDetails({ pet, workers }) {
     return edad
   }
 
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" }
+    return new Date(dateString).toLocaleDateString("es-ES", options)
+  }
+
   return (
-    <>
-      <CRow className="mb-3">
-        <CCol sm={3}>
-          <strong>Nombre:</strong>
-        </CCol>
-        <CCol sm={9}>{pet.name}</CCol>
-      </CRow>
-      <CRow className="mb-3">
-        <CCol sm={3}>
-          <strong>Especie:</strong>
-        </CCol>
-        <CCol sm={9}>{pet.species}</CCol>
-      </CRow>
-      <CRow className="mb-3">
-        <CCol sm={3}>
-          <strong>Raza:</strong>
-        </CCol>
-        <CCol sm={9}>{pet.breed}</CCol>
-      </CRow>
-      <CRow className="mb-3">
-        <CCol sm={3}>
-          <strong>Edad:</strong>
-        </CCol>
-        <CCol sm={9}>{calcularEdad(pet.birthDate)} años</CCol>
-      </CRow>
-      <CRow className="mb-3">
-        <CCol sm={3}>
-          <strong>Color:</strong>
-        </CCol>
-        <CCol sm={9}>{pet.color}</CCol>
-      </CRow>
-      <CRow className="mb-3">
-        <CCol sm={3}>
-          <strong>Peso:</strong>
-        </CCol>
-        <CCol sm={9}>{pet.weight} kg</CCol>
-      </CRow>
-      <CRow className="mb-3">
-        <CCol>
-          <CButton onClick={() => setShowHistory(!showHistory)}>
-            {showHistory ? 'Ocultar' : 'Mostrar'} Historial Médico
-          </CButton>
-        </CCol>
-      </CRow>
-      <CCollapse visible={showHistory}>
-        <CTable hover responsive>
-          <CTableHead>
-            <CTableRow>
-              <CTableHeaderCell>Fecha</CTableHeaderCell>
-              <CTableHeaderCell>Descripción</CTableHeaderCell>
-              <CTableHeaderCell>Veterinario</CTableHeaderCell>
-            </CTableRow>
-          </CTableHead>
-          <CTableBody>
-            {pet.medicalHistory.map((record, index) => (
-              <CTableRow key={index}>
-                <CTableDataCell>{record.date}</CTableDataCell>
-                <CTableDataCell>{record.description}</CTableDataCell>
-                <CTableDataCell>{getVetName(record.workerId)}</CTableDataCell>
-              </CTableRow>
-            ))}
-          </CTableBody>
-        </CTable>
-      </CCollapse>
-    </>
+    <CCard>
+      <CCardHeader className="bg-light">
+        <div className="d-flex justify-content-between align-items-center">
+          <h4 className="mb-0">{pet.name}</h4>
+          <CBadge color="primary">{pet.species}</CBadge>
+        </div>
+      </CCardHeader>
+      <CCardBody>
+        <CRow className="mb-4">
+          <CCol md={3} className="mb-3">
+            <div className="text-medium-emphasis small">Raza</div>
+            <div className="fw-bold">{pet.breed}</div>
+          </CCol>
+          <CCol md={3} className="mb-3">
+            <div className="text-medium-emphasis small">Edad</div>
+            <div className="fw-bold">{calcularEdad(pet.birthDate)} años</div>
+          </CCol>
+          <CCol md={3} className="mb-3">
+            <div className="text-medium-emphasis small">Color</div>
+            <div className="fw-bold">{pet.color}</div>
+          </CCol>
+          <CCol md={3} className="mb-3">
+            <div className="text-medium-emphasis small">Peso</div>
+            <div className="fw-bold">{pet.weight} kg</div>
+          </CCol>
+        </CRow>
+
+        <CAccordion flush>
+          <CAccordionItem itemKey={1}>
+            <CAccordionHeader>
+              <CIcon icon={cilMedicalCross} className="me-2" />
+              Historial Médico
+            </CAccordionHeader>
+            <CAccordionBody>
+              {pet.medicalHistory && pet.medicalHistory.length > 0 ? (
+                <CTable responsive bordered small>
+                  <CTableHead>
+                    <CTableRow>
+                      <CTableHeaderCell>
+                        <CIcon icon={cilCalendar} className="me-2" />
+                        Fecha
+                      </CTableHeaderCell>
+                      <CTableHeaderCell>
+                        <CIcon icon={cilNotes} className="me-2" />
+                        Descripción
+                      </CTableHeaderCell>
+                      <CTableHeaderCell>
+                        <CIcon icon={cilBasket} className="me-2" />
+                        Productos Utilizados
+                      </CTableHeaderCell>
+                      <CTableHeaderCell>
+                        <CIcon icon={cilNotes} className="me-2" />
+                        Observaciones
+                      </CTableHeaderCell>
+                      <CTableHeaderCell>
+                        <CIcon icon={cilUser} className="me-2" />
+                        Veterinario
+                      </CTableHeaderCell>
+                    </CTableRow>
+                  </CTableHead>
+                  <CTableBody>
+                    {pet.medicalHistory.map((record, index) => (
+                      <CTableRow key={index}>
+                        <CTableDataCell>{formatDate(record.date)}</CTableDataCell>
+                        <CTableDataCell>{record.description}</CTableDataCell>
+                        <CTableDataCell>
+                          {record.productsUsed && record.productsUsed.length > 0 ? (
+                            <ul className="mb-0 ps-3">
+                              {record.productsUsed.map((product, idx) => (
+                                <li key={idx}>
+                                  {product.name} ({product.quantity} unidades)
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            "No se utilizaron productos"
+                          )}
+                        </CTableDataCell>
+                        <CTableDataCell>{record.observations || "Sin observaciones"}</CTableDataCell>
+                        <CTableDataCell>{getVetName(record.workerId)}</CTableDataCell>
+                      </CTableRow>
+                    ))}
+                  </CTableBody>
+                </CTable>
+              ) : (
+                <CAlert color="info" className="mb-0">
+                  No hay registros médicos disponibles.
+                </CAlert>
+              )}
+            </CAccordionBody>
+          </CAccordionItem>
+        </CAccordion>
+      </CCardBody>
+    </CCard>
   )
 }
+
+export default PetRecords
+
