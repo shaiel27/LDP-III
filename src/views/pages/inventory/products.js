@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 import {
   CCard,
   CCardBody,
@@ -16,31 +16,24 @@ import {
   CFormLabel,
   CButton,
   CContainer,
-  CModal,
-  CModalHeader,
-  CModalTitle,
-  CModalBody,
-  CModalFooter,
   CSpinner,
-  CInputGroup,
-  CInputGroupText,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilMinus, cilPlus } from '@coreui/icons'
+  CAlert,
+} from "@coreui/react"
+
+const API_BASE_URL = "http://localhost:3001/api/v1"
 
 export default function InventoryManagement() {
   const [products, setProducts] = useState([])
-  const [editingProduct, setEditingProduct] = useState(null)
   const [formData, setFormData] = useState({
-    name: '',
-    category: '',
-    price: '',
-    quantity: '',
-    image: '',
+    name: "",
+    category_id: "",
+    price: "",
+    description: "",
+    expiration_date: "",
   })
   const [file, setFile] = useState(null)
   const [isUploading, setIsUploading] = useState(false)
-  const [deleteConfirmation, setDeleteConfirmation] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     fetchProducts()
@@ -48,11 +41,38 @@ export default function InventoryManagement() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:3004/inventory')
+      const token = localStorage.getItem("token")
+      if (!token) {
+        setError("No se encontró token de autenticación. Por favor, inicie sesión.")
+        return
+      }
+
+      const response = await fetch(`${API_BASE_URL}/products`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          setError("La ruta del API no fue encontrada. Verifique la URL del servidor.")
+        } else {
+          const errorData = await response.text()
+          setError(`Error al obtener productos: ${errorData}`)
+        }
+        return
+      }
+
       const data = await response.json()
-      setProducts(data)
+      if (data.ok) {
+        setProducts(data.products)
+        setError(null)
+      } else {
+        setError(data.msg || "Error desconocido al obtener productos")
+      }
     } catch (error) {
-      console.error('Error fetching inventory:', error)
+      console.error("Error fetching products:", error)
+      setError("Error de conexión con el servidor")
     }
   }
 
@@ -69,16 +89,17 @@ export default function InventoryManagement() {
     if (!file) return null
 
     const formData = new FormData()
-    formData.append('file', file)
+    formData.append("file", file)
 
     setIsUploading(true)
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000)) 
-      const imageUrl = URL.createObjectURL(file) 
+      // Implement actual image upload to your backend here
+      // For now, we'll just use a local URL
+      const imageUrl = URL.createObjectURL(file)
       setIsUploading(false)
       return imageUrl
     } catch (error) {
-      console.error('Error uploading image:', error)
+      console.error("Error uploading image:", error)
       setIsUploading(false)
       return null
     }
@@ -91,109 +112,68 @@ export default function InventoryManagement() {
     if (file) {
       imageUrl = await uploadImage()
       if (!imageUrl) {
-        alert('Error al subir la imagen. Por favor, inténtelo de nuevo.')
+        setError("Error al subir la imagen. Por favor, inténtelo de nuevo.")
         return
       }
     }
 
     const productData = {
       ...formData,
-      price: parseFloat(formData.price),
-      quantity: parseInt(formData.quantity),
+      price: Number.parseFloat(formData.price),
       image: imageUrl,
     }
 
     try {
-      if (editingProduct) {
-        const response = await fetch(`http://localhost:3004/inventory/${editingProduct.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(productData),
-        })
-        if (response.ok) {
-          fetchProducts()
-        }
-      } else {
-        const response = await fetch('http://localhost:3004/inventory', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(productData),
-        })
-        if (response.ok) {
-          fetchProducts()
-        }
+      const token = localStorage.getItem("token")
+      if (!token) {
+        setError("No se encontró token de autenticación. Por favor, inicie sesión.")
+        return
       }
-      setEditingProduct(null)
-      setFormData({ name: '', category: '', price: '', quantity: '', image: '' })
-      setFile(null)
-    } catch (error) {
-      console.error('Error saving product:', error)
-    }
-  }
 
-  const handleEdit = (product) => {
-    setEditingProduct(product)
-    setFormData({
-      name: product.name,
-      category: product.category,
-      price: product.price.toString(),
-      quantity: product.quantity.toString(),
-      image: product.image,
-    })
-    setFile(null)
-  }
-
-  const cancelEdit = () => {
-    setEditingProduct(null)
-    setFormData({ name: '', category: '', price: '', quantity: '', image: '' })
-    setFile(null)
-  }
-
-  const handleDelete = (product) => {
-    setDeleteConfirmation(product)
-  }
-
-  const confirmDelete = async () => {
-    if (deleteConfirmation) {
-      try {
-        const response = await fetch(`http://localhost:3004/inventory/${deleteConfirmation.id}`, {
-          method: 'DELETE',
-        })
-        if (response.ok) {
-          fetchProducts()
-        }
-      } catch (error) {
-        console.error('Error deleting product:', error)
-      }
-      setDeleteConfirmation(null)
-    }
-  }
-
-  const handleQuantityChange = async (product, change) => {
-    const newQuantity = product.quantity + change
-    if (newQuantity < 0) return
-
-    try {
-      const response = await fetch(`http://localhost:3004/inventory/${product.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ quantity: newQuantity }),
+      const response = await fetch(`${API_BASE_URL}/products`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(productData),
       })
-      if (response.ok) {
+
+      if (!response.ok) {
+        const errorData = await response.text()
+        throw new Error(errorData)
+      }
+
+      const data = await response.json()
+
+      if (data.ok) {
         fetchProducts()
+        setFormData({
+          name: "",
+          category_id: "",
+          price: "",
+          description: "",
+          expiration_date: "",
+        })
+        setFile(null)
+        setError(null)
+      } else {
+        setError(data.msg || "Error al guardar el producto")
       }
     } catch (error) {
-      console.error('Error updating quantity:', error)
+      console.error("Error saving product:", error)
+      setError(`Error al conectar con el servidor: ${error.message}`)
     }
   }
 
   return (
     <CContainer>
+      {error && <CAlert color="danger">{error}</CAlert>}
       <CRow>
         <CCol>
           <CCard className="mb-4">
             <CCardHeader>
-              <strong>{editingProduct ? 'Editar producto' : 'Agregar nuevo producto'}</strong>
+              <strong>Agregar nuevo producto</strong>
             </CCardHeader>
             <CCardBody>
               <CForm onSubmit={handleSubmit}>
@@ -209,18 +189,18 @@ export default function InventoryManagement() {
                     />
                   </CCol>
                   <CCol md={6}>
-                    <CFormLabel htmlFor="category">Categoria</CFormLabel>
+                    <CFormLabel htmlFor="category_id">Categoria</CFormLabel>
                     <CFormSelect
-                      id="category"
-                      name="category"
-                      value={formData.category}
+                      id="category_id"
+                      name="category_id"
+                      value={formData.category_id}
                       onChange={handleInputChange}
                       required
                     >
                       <option value="">Seleccionar Categoria</option>
-                      <option value="Food">Alimento</option>
-                      <option value="Medication">Medicamento</option>
-                      <option value="Accessory">Accesorio</option>
+                      <option value="1">Alimento</option>
+                      <option value="2">Medicamento</option>
+                      <option value="3">Accesorio</option>
                     </CFormSelect>
                   </CCol>
                 </CRow>
@@ -239,35 +219,33 @@ export default function InventoryManagement() {
                     />
                   </CCol>
                   <CCol md={6}>
-                    <CFormLabel htmlFor="quantity">Cantidad</CFormLabel>
+                    <CFormLabel htmlFor="expiration_date">Fecha de Expiración</CFormLabel>
                     <CFormInput
-                      type="number"
-                      id="quantity"
-                      name="quantity"
-                      value={formData.quantity}
+                      type="date"
+                      id="expiration_date"
+                      name="expiration_date"
+                      value={formData.expiration_date}
                       onChange={handleInputChange}
                       required
-                      min="0"
+                    />
+                  </CCol>
+                </CRow>
+                <CRow className="mb-3">
+                  <CCol>
+                    <CFormLabel htmlFor="description">Descripción</CFormLabel>
+                    <CFormInput
+                      id="description"
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      required
                     />
                   </CCol>
                 </CRow>
                 <CRow className="mb-3">
                   <CCol>
                     <CFormLabel htmlFor="image">Imagen del producto</CFormLabel>
-                    <CFormInput
-                      type="file"
-                      id="image"
-                      name="image"
-                      onChange={handleFileChange}
-                      accept="image/*"
-                    />
-                    {formData.image && (
-                      <img 
-                        src={formData.image} 
-                        alt="Vista previa" 
-                        style={{ maxWidth: '200px', marginTop: '10px' }} 
-                      />
-                    )}
+                    <CFormInput type="file" id="image" name="image" onChange={handleFileChange} accept="image/*" />
                   </CCol>
                 </CRow>
                 <CButton type="submit" color="primary" className="me-2" disabled={isUploading}>
@@ -277,14 +255,9 @@ export default function InventoryManagement() {
                       Subiendo imagen...
                     </>
                   ) : (
-                    editingProduct ? 'Actualizar' : 'Agregar'
+                    "Agregar"
                   )}
                 </CButton>
-                {editingProduct && (
-                  <CButton type="button" color="secondary" onClick={cancelEdit}>
-                    Cancelar
-                  </CButton>
-                )}
               </CForm>
             </CCardBody>
           </CCard>
@@ -296,49 +269,31 @@ export default function InventoryManagement() {
           <h2 className="mb-4">Inventario</h2>
         </CCol>
       </CRow>
-      
+
       <CRow>
         {products.map((product) => (
           <CCol key={product.id} sm={6} lg={3}>
             <CCard className="mb-4">
-              <CCardImage orientation="top" src={product.image} />
+              <CCardImage orientation="top" src={product.image || "/placeholder.svg"} />
               <CCardBody>
                 <CCardTitle>{product.name}</CCardTitle>
                 <CCardText>
-                  Categoria: {product.category}<br />
-                  Precio: ${product.price.toFixed(2)}<br />
-                  <CInputGroup className="mt-2">
-                    <CButton color="primary" onClick={() => handleQuantityChange(product, -1)}>
-                      <CIcon icon={cilMinus} />
-                    </CButton>
-                    <CInputGroupText>Cantidad: {product.quantity}</CInputGroupText>
-                    <CButton color="primary" onClick={() => handleQuantityChange(product, 1)}>
-                      <CIcon icon={cilPlus} />
-                    </CButton>
-                  </CInputGroup>
+                  Categoria: {product.category_name}
+                  <br />
+                  Precio: ${product.price.toFixed(2)}
+                  <br />
+                  Descripción: {product.description}
+                  <br />
+                  Fecha de Expiración: {new Date(product.expiration_date).toLocaleDateString()}
+                  <br />
+                  Cantidad: {product.quantity || 0}
                 </CCardText>
-                <CButton color="primary" onClick={() => handleEdit(product)} className="me-2">Editar</CButton>
-                <CButton color="secondary" onClick={() => handleDelete(product)}>Eliminar</CButton>
               </CCardBody>
             </CCard>
           </CCol>
         ))}
       </CRow>
-
-      <CModal visible={deleteConfirmation !== null} onClose={() => setDeleteConfirmation(null)}>
-        <CModalHeader>
-          <CModalTitle>Confirmar eliminación</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          ¿Está seguro de que desea eliminar el producto "{deleteConfirmation?.name}"?
-        </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setDeleteConfirmation(null)}>
-            Cancelar
-          </CButton>
-          <CButton color="danger" onClick={confirmDelete}>Eliminar</CButton>
-        </CModalFooter>
-      </CModal>
     </CContainer>
   )
 }
+

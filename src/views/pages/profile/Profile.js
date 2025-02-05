@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import {
@@ -12,7 +10,6 @@ import {
   CImage,
   CForm,
   CFormInput,
-  CFormSelect,
   CInputGroup,
   CInputGroupText,
   CSpinner,
@@ -32,8 +29,6 @@ import {
   cilLocationPin,
   cilPencil,
   cilLockLocked,
-  cilCalendar,
-  cilGlobeAlt,
   cilPeople,
   cilAccountLogout,
 } from "@coreui/icons"
@@ -86,21 +81,14 @@ export default function Profile() {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    if (name.includes(".")) {
-      const [parent, child] = name.split(".")
-      setEditedUser({
-        ...editedUser,
-        [parent]: { ...editedUser[parent], [child]: value },
-      })
-    } else {
-      setEditedUser({ ...editedUser, [name]: value })
-    }
+    setEditedUser({ ...editedUser, [name]: value })
   }
 
   const handleSave = async () => {
     setIsSaving(true)
     try {
       const token = localStorage.getItem("token")
+
       const response = await fetch("http://localhost:3001/api/v1/users/update-profile", {
         method: "PUT",
         headers: {
@@ -176,7 +164,7 @@ export default function Profile() {
   }
 
   return (
-    <CCard className=" min-vh-100">
+    <CCard className="min-vh-100">
       <CContainer fluid className="p-0">
         <div className="position-relative mb-4">
           <div
@@ -191,7 +179,7 @@ export default function Profile() {
             <div className="position-relative">
               <CImage
                 rounded
-                src={user.profilePicture}
+                src={user.profilePicture || "/placeholder.svg?height=150&width=150"}
                 width={150}
                 height={150}
                 className="position-absolute profile-image"
@@ -224,9 +212,9 @@ export default function Profile() {
 
           <CRow>
             <CCol xs={12}>
-              <h2 className="mb-4">{user.name}</h2>
+              <h2 className="mb-4">{`${user.first_name} ${user.last_name}`}</h2>
               <CBadge color="primary" className="me-2">
-                {user.userType}
+                {user.permission_name}
               </CBadge>
             </CCol>
           </CRow>
@@ -257,14 +245,31 @@ export default function Profile() {
                               <CIcon icon={cilUser} />
                             </CInputGroupText>
                             <CFormInput
-                              name="name"
-                              value={editedUser.name}
+                              name="first_name"
+                              value={editedUser.first_name}
                               onChange={handleChange}
-                              placeholder="Full Name"
+                              placeholder="First Name"
                               required
                             />
                           </CInputGroup>
                         </CCol>
+                        <CCol md={6}>
+                          <CInputGroup className="mb-3">
+                            <CInputGroupText>
+                              <CIcon icon={cilUser} />
+                            </CInputGroupText>
+                            <CFormInput
+                              name="last_name"
+                              value={editedUser.last_name}
+                              onChange={handleChange}
+                              placeholder="Last Name"
+                              required
+                            />
+                          </CInputGroup>
+                        </CCol>
+                      </CRow>
+
+                      <CRow>
                         <CCol md={6}>
                           <CInputGroup className="mb-3">
                             <CInputGroupText>
@@ -277,36 +282,37 @@ export default function Profile() {
                               onChange={handleChange}
                               placeholder="Email"
                               required
+                              disabled
                             />
                           </CInputGroup>
                         </CCol>
-                      </CRow>
-
-                      <CRow>
                         <CCol md={6}>
                           <CInputGroup className="mb-3">
                             <CInputGroupText>
                               <CIcon icon={cilPhone} />
                             </CInputGroupText>
                             <CFormInput
-                              name="phone"
-                              value={editedUser.phone}
+                              name="telephone_number"
+                              value={editedUser.telephone_number}
                               onChange={handleChange}
                               placeholder="Phone"
                               required
                             />
                           </CInputGroup>
                         </CCol>
-                        <CCol md={6}>
+                      </CRow>
+
+                      <CRow>
+                        <CCol md={12}>
                           <CInputGroup className="mb-3">
                             <CInputGroupText>
                               <CIcon icon={cilLocationPin} />
                             </CInputGroupText>
                             <CFormInput
-                              name="address"
-                              value={editedUser.address}
+                              name="location"
+                              value={editedUser.location}
                               onChange={handleChange}
-                              placeholder="Address"
+                              placeholder="Location"
                               required
                             />
                           </CInputGroup>
@@ -314,50 +320,22 @@ export default function Profile() {
                       </CRow>
 
                       <CRow>
-                        <CCol md={6}>
+                        <CCol md={12}>
                           <CInputGroup className="mb-3">
                             <CInputGroupText>
-                              <CIcon icon={cilGlobeAlt} />
+                              <CIcon icon={cilLockLocked} />
                             </CInputGroupText>
                             <CFormInput
-                              name="country"
-                              value={editedUser.country}
+                              name="security_word"
+                              value={editedUser.security_word}
                               onChange={handleChange}
-                              placeholder="Country"
-                            />
-                          </CInputGroup>
-                        </CCol>
-                        <CCol md={6}>
-                          <CInputGroup className="mb-3">
-                            <CInputGroupText>
-                              <CIcon icon={cilCalendar} />
-                            </CInputGroupText>
-                            <CFormInput
-                              type="date"
-                              name="birthDate"
-                              value={editedUser.birthDate}
-                              onChange={handleChange}
-                              placeholder="Birth Date"
+                              placeholder="Security Word"
+                              required
                             />
                           </CInputGroup>
                         </CCol>
                       </CRow>
 
-                      <CRow>
-                        <CCol md={6}>
-                          <CInputGroup className="mb-3">
-                            <CInputGroupText>
-                              <CIcon icon={cilUser} />
-                            </CInputGroupText>
-                            <CFormSelect name="gender" value={editedUser.gender} onChange={handleChange}>
-                              <option value="">Seleccionar Genero</option>
-                              <option value="Male">Masculino</option>
-                              <option value="Female">Femenino</option>
-                              <option value="Other">Otro</option>
-                            </CFormSelect>
-                          </CInputGroup>
-                        </CCol>
-                      </CRow>
                       <CRow className="mt-4">
                         <CCol xs={6}>
                           <CButton color="primary" onClick={handleSave} disabled={isSaving}>
@@ -381,7 +359,7 @@ export default function Profile() {
                         <CIcon icon={cilUser} className="me-2" />
                         Nombre
                       </CCol>
-                      <CCol sm={9}>{user.name}</CCol>
+                      <CCol sm={9}>{`${user.first_name} ${user.last_name}`}</CCol>
                     </CRow>
 
                     <CRow className="mb-4">
@@ -397,39 +375,15 @@ export default function Profile() {
                         <CIcon icon={cilPhone} className="me-2" />
                         Telefono
                       </CCol>
-                      <CCol sm={9}>{user.phone}</CCol>
+                      <CCol sm={9}>{user.telephone_number}</CCol>
                     </CRow>
 
                     <CRow className="mb-4">
                       <CCol sm={3} className="text-secondary">
                         <CIcon icon={cilLocationPin} className="me-2" />
-                        Dirección
+                        Ubicación
                       </CCol>
-                      <CCol sm={9}>{user.address}</CCol>
-                    </CRow>
-
-                    <CRow className="mb-4">
-                      <CCol sm={3} className="text-secondary">
-                        <CIcon icon={cilGlobeAlt} className="me-2" />
-                        Pais
-                      </CCol>
-                      <CCol sm={9}>{user.country}</CCol>
-                    </CRow>
-
-                    <CRow className="mb-4">
-                      <CCol sm={3} className="text-secondary">
-                        <CIcon icon={cilCalendar} className="me-2" />
-                        Fecha de Nacimiento
-                      </CCol>
-                      <CCol sm={9}>{user.birthDate}</CCol>
-                    </CRow>
-
-                    <CRow className="mb-4">
-                      <CCol sm={3} className="text-secondary">
-                        <CIcon icon={cilUser} className="me-2" />
-                        Genero
-                      </CCol>
-                      <CCol sm={9}>{user.gender}</CCol>
+                      <CCol sm={9}>{user.location}</CCol>
                     </CRow>
 
                     <CRow className="mb-4">
@@ -438,7 +392,7 @@ export default function Profile() {
                         Tipo de Usuario
                       </CCol>
                       <CCol sm={9}>
-                        <CBadge color="primary">{user.userType}</CBadge>
+                        <CBadge color="primary">{user.permission_name}</CBadge>
                       </CCol>
                     </CRow>
                   </CCardBody>
