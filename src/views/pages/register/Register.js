@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import {
   CButton,
   CCard,
@@ -13,8 +13,8 @@ import {
   CRow,
   CFormSelect,
   CSpinner,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
+} from "@coreui/react"
+import CIcon from "@coreui/icons-react"
 import {
   cilUser,
   cilLockLocked,
@@ -24,20 +24,20 @@ import {
   cilCalendar,
   cilGlobeAlt,
   cilImage,
-} from '@coreui/icons'
+} from "@coreui/icons"
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    phone: '',
-    address: '',
-    country: '',
-    birthDate: '',
-    gender: '',
-    profilePicture: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phone: "",
+    address: "",
+    country: "",
+    birthDate: "",
+    gender: "",
+    profilePicture: "",
   })
   const [file, setFile] = useState(null)
   const [isUploading, setIsUploading] = useState(false)
@@ -46,9 +46,9 @@ const Register = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }))
   }
 
@@ -56,9 +56,9 @@ const Register = () => {
     setFile(e.target.files[0])
     if (e.target.files[0]) {
       const imageUrl = URL.createObjectURL(e.target.files[0])
-      setFormData(prevState => ({
+      setFormData((prevState) => ({
         ...prevState,
-        profilePicture: imageUrl
+        profilePicture: imageUrl,
       }))
     }
   }
@@ -68,12 +68,12 @@ const Register = () => {
 
     setIsUploading(true)
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000)) 
-      const imageUrl = URL.createObjectURL(file) 
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const imageUrl = URL.createObjectURL(file)
       setIsUploading(false)
       return imageUrl
     } catch (error) {
-      console.error('Error uploading image:', error)
+      console.error("Error uploading image:", error)
       setIsUploading(false)
       return null
     }
@@ -82,7 +82,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (formData.password !== formData.confirmPassword) {
-      alert('Las contraseñas no coinciden')
+      alert("Las contraseñas no coinciden")
       return
     }
 
@@ -91,35 +91,42 @@ const Register = () => {
     if (file) {
       imageUrl = await uploadImage()
       if (!imageUrl) {
-        alert('Error al subir la imagen. Por favor, inténtelo de nuevo.')
+        alert("Error al subir la imagen. Por favor, inténtelo de nuevo.")
         return
       }
     }
 
     const userData = {
-      ...formData,
-      profilePicture: imageUrl || '/placeholder.svg?height=150&width=150',
-      userType: 'client',
-      joinDate: new Date().toISOString().split('T')[0],
+      first_name: formData.name.split(" ")[0],
+      last_name: formData.name.split(" ").slice(1).join(" "),
+      email: formData.email,
+      password: formData.password,
+      telephone_number: formData.phone,
+      location: formData.address,
+      security_word: "default", // You might want to add this field to your form
     }
 
     try {
-      const response = await fetch('http://localhost:3004/users', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3001/api/v1/users/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(userData),
       })
 
       if (response.ok) {
-        navigate('/login')
+        const data = await response.json()
+        localStorage.setItem("token", data.token)
+        localStorage.setItem("userType", data.user.permission_name)
+        navigate(data.user.permission_name === "worker" ? "/worker-dashboard" : "/dashboard")
       } else {
-        throw new Error('Registro fallido')
+        const errorData = await response.json()
+        alert(errorData.message || "Registro fallido. Por favor, intente de nuevo.")
       }
     } catch (error) {
-      console.error('Error:', error)
-      alert('Registro fallido. Por favor, intente de nuevo.')
+      console.error("Error:", error)
+      alert("Registro fallido. Por favor, intente de nuevo.")
     }
   }
 
@@ -136,7 +143,7 @@ const Register = () => {
                   <CRow>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion'>
+                        <CInputGroupText className="bg-distortion">
                           <CIcon icon={cilUser} />
                         </CInputGroupText>
                         <CFormInput
@@ -146,13 +153,13 @@ const Register = () => {
                           value={formData.name}
                           onChange={handleChange}
                           required
-                          className='bg-distortion'
+                          className="bg-distortion"
                         />
                       </CInputGroup>
                     </CCol>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion'>
+                        <CInputGroupText className="bg-distortion">
                           <CIcon icon={cilEnvelopeClosed} />
                         </CInputGroupText>
                         <CFormInput
@@ -163,7 +170,7 @@ const Register = () => {
                           value={formData.email}
                           onChange={handleChange}
                           required
-                          className='bg-distortion'
+                          className="bg-distortion"
                         />
                       </CInputGroup>
                     </CCol>
@@ -171,7 +178,7 @@ const Register = () => {
                   <CRow>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion'>
+                        <CInputGroupText className="bg-distortion">
                           <CIcon icon={cilLockLocked} />
                         </CInputGroupText>
                         <CFormInput
@@ -182,13 +189,13 @@ const Register = () => {
                           value={formData.password}
                           onChange={handleChange}
                           required
-                          className='bg-distortion'
+                          className="bg-distortion"
                         />
                       </CInputGroup>
                     </CCol>
                     <CCol md={6}>
                       <CInputGroup className="mb-4">
-                        <CInputGroupText className='bg-distortion'>
+                        <CInputGroupText className="bg-distortion">
                           <CIcon icon={cilLockLocked} />
                         </CInputGroupText>
                         <CFormInput
@@ -199,7 +206,7 @@ const Register = () => {
                           value={formData.confirmPassword}
                           onChange={handleChange}
                           required
-                          className='bg-distortion'
+                          className="bg-distortion"
                         />
                       </CInputGroup>
                     </CCol>
@@ -207,7 +214,7 @@ const Register = () => {
                   <CRow>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion'>
+                        <CInputGroupText className="bg-distortion">
                           <CIcon icon={cilPhone} />
                         </CInputGroupText>
                         <CFormInput
@@ -215,13 +222,13 @@ const Register = () => {
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
-                          className='bg-distortion'
+                          className="bg-distortion"
                         />
                       </CInputGroup>
                     </CCol>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion'>
+                        <CInputGroupText className="bg-distortion">
                           <CIcon icon={cilGlobeAlt} />
                         </CInputGroupText>
                         <CFormInput
@@ -229,7 +236,7 @@ const Register = () => {
                           name="country"
                           value={formData.country}
                           onChange={handleChange}
-                          className='bg-distortion'
+                          className="bg-distortion"
                         />
                       </CInputGroup>
                     </CCol>
@@ -237,7 +244,7 @@ const Register = () => {
                   <CRow>
                     <CCol md={12}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion'>
+                        <CInputGroupText className="bg-distortion">
                           <CIcon icon={cilLocationPin} />
                         </CInputGroupText>
                         <CFormInput
@@ -245,7 +252,7 @@ const Register = () => {
                           name="address"
                           value={formData.address}
                           onChange={handleChange}
-                          className='bg-distortion'
+                          className="bg-distortion"
                         />
                       </CInputGroup>
                     </CCol>
@@ -253,7 +260,7 @@ const Register = () => {
                   <CRow>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion'>
+                        <CInputGroupText className="bg-distortion">
                           <CIcon icon={cilCalendar} />
                         </CInputGroupText>
                         <CFormInput
@@ -262,20 +269,20 @@ const Register = () => {
                           name="birthDate"
                           value={formData.birthDate}
                           onChange={handleChange}
-                          className='bg-distortion'
+                          className="bg-distortion"
                         />
                       </CInputGroup>
                     </CCol>
                     <CCol md={6}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion'>
+                        <CInputGroupText className="bg-distortion">
                           <CIcon icon={cilUser} />
                         </CInputGroupText>
                         <CFormSelect
                           name="gender"
                           value={formData.gender}
                           onChange={handleChange}
-                          className='bg-distortion'
+                          className="bg-distortion"
                         >
                           <option value="">Seleccionar Género</option>
                           <option value="Male">Masculino</option>
@@ -288,21 +295,21 @@ const Register = () => {
                   <CRow>
                     <CCol md={12}>
                       <CInputGroup className="mb-3">
-                        <CInputGroupText className='bg-distortion'>
+                        <CInputGroupText className="bg-distortion">
                           <CIcon icon={cilImage} />
                         </CInputGroupText>
                         <CFormInput
                           type="file"
                           accept="image/*"
                           onChange={handleFileChange}
-                          className='bg-distortion'
+                          className="bg-distortion"
                         />
                       </CInputGroup>
                       {formData.profilePicture && (
-                        <img 
-                          src={formData.profilePicture} 
-                          alt="Vista previa" 
-                          style={{ maxWidth: '200px', marginTop: '10px', marginBottom: '10px' }} 
+                        <img
+                          src={formData.profilePicture || "/placeholder.svg"}
+                          alt="Vista previa"
+                          style={{ maxWidth: "200px", marginTop: "10px", marginBottom: "10px" }}
                         />
                       )}
                     </CCol>
@@ -317,7 +324,7 @@ const Register = () => {
                               Subiendo imagen...
                             </>
                           ) : (
-                            'Crear Cuenta'
+                            "Crear Cuenta"
                           )}
                         </CButton>
                       </div>

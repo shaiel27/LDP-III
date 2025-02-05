@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import {
   CButton,
   CCard,
@@ -23,8 +23,8 @@ import {
   CNavLink,
   CTabContent,
   CTabPane,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
+} from "@coreui/react"
+import CIcon from "@coreui/icons-react"
 import {
   cilUser,
   cilEnvelopeClosed,
@@ -34,63 +34,46 @@ import {
   cilLockLocked,
   cilCalendar,
   cilGlobeAlt,
-  cilBriefcase,
   cilPeople,
-  cilLanguage,
   cilAccountLogout,
-} from '@coreui/icons'
+} from "@coreui/icons"
 
 export default function Profile() {
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [error, setError] = useState("")
   const [isEditing, setIsEditing] = useState(false)
   const [editedUser, setEditedUser] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
-  const [successMessage, setSuccessMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState("")
   const [activeTab, setActiveTab] = useState(1)
   const navigate = useNavigate()
 
   useEffect(() => {
     const fetchUserProfile = async () => {
-      const token = localStorage.getItem('token')
-      const userType = localStorage.getItem('userType')
-      if (!token) {
-        navigate('/login')
-        return
-      }
-
       try {
-        const userId = token.split('-')[2]
-        let response
-
-        if (userType === 'worker') {
-          response = await fetch(`http://localhost:3004/workers/${userId}`)
-        } else {
-          response = await fetch(`http://localhost:3004/users/${userId}`)
-        }
-
+        const token = localStorage.getItem("token")
+        const response = await fetch("http://localhost:3001/api/v1/users/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        const data = await response.json()
         if (response.ok) {
-          let userData = await response.json()
-          if (userType === 'worker') {
-            userData = { ...userData.user, id: userData.id, userType: 'worker' }
-          }
-          // Ensure we're using the correct profile picture URL
-          userData.profilePicture = userData.profilePicture || '/placeholder.svg?height=150&width=150'
-          setUser(userData)
-          setEditedUser(userData)
+          setUser(data.user)
+          setEditedUser(data.user)
         } else {
-          throw new Error('Failed to fetch user profile')
+          setError("Error al cargar el perfil. Por favor, intente de nuevo.")
         }
       } catch (error) {
-        setError('An error occurred while fetching your profile. Please try again.')
+        setError("Error al cargar el perfil. Por favor, intente de nuevo.")
       } finally {
         setIsLoading(false)
       }
     }
 
     fetchUserProfile()
-  }, [navigate])
+  }, [])
 
   const handleEdit = () => {
     setIsEditing(true)
@@ -103,11 +86,11 @@ export default function Profile() {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.')
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".")
       setEditedUser({
         ...editedUser,
-        [parent]: { ...editedUser[parent], [child]: value }
+        [parent]: { ...editedUser[parent], [child]: value },
       })
     } else {
       setEditedUser({ ...editedUser, [name]: value })
@@ -117,48 +100,58 @@ export default function Profile() {
   const handleSave = async () => {
     setIsSaving(true)
     try {
-      const userType = localStorage.getItem('userType')
-      let response
-
-      if (userType === 'worker') {
-        const workerData = await fetch(`http://localhost:3004/workers/${user.id}`).then(res => res.json())
-        const updatedWorkerData = { ...workerData, user: editedUser }
-        response = await fetch(`http://localhost:3004/workers/${user.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updatedWorkerData),
-        })
-      } else {
-        response = await fetch(`http://localhost:3004/users/${user.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(editedUser),
-        })
-      }
+      const token = localStorage.getItem("token")
+      const response = await fetch("http://localhost:3001/api/v1/users/update-profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          first_name: editedUser.first_name,
+          last_name: editedUser.last_name,
+          telephone_number: editedUser.telephone_number,
+          location: editedUser.location,
+          security_word: editedUser.security_word,
+        }),
+      })
 
       if (response.ok) {
-        setUser(editedUser)
+        const updatedUser = await response.json()
+        setUser(updatedUser.user)
         setIsEditing(false)
-        setSuccessMessage('Profile updated successfully!')
-        setTimeout(() => setSuccessMessage(''), 3000)
+        setSuccessMessage("Profile updated successfully!")
+        setTimeout(() => setSuccessMessage(""), 3000)
       } else {
-        throw new Error('Failed to update profile')
+        throw new Error("Failed to update profile")
       }
     } catch (error) {
-      setError('An error occurred while updating your profile. Please try again.')
+      setError("An error occurred while updating your profile. Please try again.")
     } finally {
       setIsSaving(false)
     }
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('userType')
-    navigate('/login')
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("token")
+      const response = await fetch("http://localhost:3001/api/v1/users/logout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (response.ok) {
+        localStorage.removeItem("token")
+        localStorage.removeItem("userType")
+        navigate("/login")
+      } else {
+        throw new Error("Failed to logout")
+      }
+    } catch (error) {
+      console.error("Error logging out:", error)
+    }
   }
 
   if (isLoading) {
@@ -186,12 +179,12 @@ export default function Profile() {
     <CCard className=" min-vh-100">
       <CContainer fluid className="p-0">
         <div className="position-relative mb-4">
-          <div 
-            className="profile-cover" 
-            style={{ 
-              height: '300px', 
-              backgroundColor: '#1e4d3b',
-              backgroundImage: 'linear-gradient(45deg, #1e4d3b 0%, #2c7659 100%)'
+          <div
+            className="profile-cover"
+            style={{
+              height: "300px",
+              backgroundColor: "#1e4d3b",
+              backgroundImage: "linear-gradient(45deg, #1e4d3b 0%, #2c7659 100%)",
             }}
           />
           <CContainer>
@@ -202,30 +195,21 @@ export default function Profile() {
                 width={150}
                 height={150}
                 className="position-absolute profile-image"
-                style={{ 
-                  bottom: '-75px', 
-                  left: '15px', 
-                  border: '4px solid #fff',
-                  backgroundColor: '#fff' 
+                style={{
+                  bottom: "-75px",
+                  left: "15px",
+                  border: "4px solid #fff",
+                  backgroundColor: "#fff",
                 }}
                 alt="Profile"
               />
               {!isEditing && (
-                <div className="position-absolute" style={{ bottom: '-60px', right: '15px' }}>
-                  <CButton
-                    color="secondary"
-                    variant="ghost"
-                    className="me-2"
-                    onClick={handleEdit}
-                  >
+                <div className="position-absolute" style={{ bottom: "-60px", right: "15px" }}>
+                  <CButton color="secondary" variant="ghost" className="me-2" onClick={handleEdit}>
                     <CIcon icon={cilPencil} className="me-2" />
                     Editar Perfil
                   </CButton>
-                  <CButton
-                    color="secondary"
-                    variant="ghost"
-                    onClick={handleLogout}
-                  >
+                  <CButton color="secondary" variant="ghost" onClick={handleLogout}>
                     <CIcon icon={cilAccountLogout} className="me-2" />
                     Cerrar Sesion
                   </CButton>
@@ -237,28 +221,24 @@ export default function Profile() {
 
         <CContainer className="mt-5 pt-4">
           {successMessage && <CAlert color="success">{successMessage}</CAlert>}
-          
+
           <CRow>
             <CCol xs={12}>
               <h2 className="mb-4">{user.name}</h2>
-              <CBadge color="primary" className="me-2">{user.userType}</CBadge>
+              <CBadge color="primary" className="me-2">
+                {user.userType}
+              </CBadge>
             </CCol>
           </CRow>
 
           <CNav variant="tabs" className="mt-4">
             <CNavItem>
-              <CNavLink
-                active={activeTab === 1}
-                onClick={() => setActiveTab(1)}
-              >
+              <CNavLink active={activeTab === 1} onClick={() => setActiveTab(1)}>
                 Informacion de Perfil
               </CNavLink>
             </CNavItem>
             <CNavItem>
-              <CNavLink
-                active={activeTab === 2}
-                onClick={() => setActiveTab(2)}
-              >
+              <CNavLink active={activeTab === 2} onClick={() => setActiveTab(2)}>
                 Ajustes
               </CNavLink>
             </CNavItem>
@@ -369,11 +349,7 @@ export default function Profile() {
                             <CInputGroupText>
                               <CIcon icon={cilUser} />
                             </CInputGroupText>
-                            <CFormSelect
-                              name="gender"
-                              value={editedUser.gender}
-                              onChange={handleChange}
-                            >
+                            <CFormSelect name="gender" value={editedUser.gender} onChange={handleChange}>
                               <option value="">Seleccionar Genero</option>
                               <option value="Male">Masculino</option>
                               <option value="Female">Femenino</option>
@@ -385,7 +361,7 @@ export default function Profile() {
                       <CRow className="mt-4">
                         <CCol xs={6}>
                           <CButton color="primary" onClick={handleSave} disabled={isSaving}>
-                            {isSaving ? 'Saving...' : 'Save Changes'}
+                            {isSaving ? "Saving..." : "Save Changes"}
                           </CButton>
                         </CCol>
                         <CCol xs={6} className="text-end">
@@ -494,3 +470,4 @@ export default function Profile() {
     </CCard>
   )
 }
+

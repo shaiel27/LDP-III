@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 import {
   CCard,
   CCardBody,
@@ -25,18 +25,9 @@ import {
   CInputGroup,
   CInputGroupText,
   CImage,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import {
-  cilPeople,
-  cilPencil,
-  cilTrash,
-  cilEnvelopeClosed,
-  cilPhone,
-  cilCalendar,
-  cilLocationPin,
-  cilSearch,
-} from '@coreui/icons'
+} from "@coreui/react"
+import CIcon from "@coreui/icons-react"
+import { cilPencil, cilTrash, cilEnvelopeClosed, cilPhone, cilCalendar, cilLocationPin, cilSearch } from "@coreui/icons"
 
 export default function UserManagement() {
   const [users, setUsers] = useState([])
@@ -46,7 +37,7 @@ export default function UserManagement() {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false)
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
   const [isUserDetailsModalVisible, setIsUserDetailsModalVisible] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
     fetchUsers()
@@ -54,22 +45,29 @@ export default function UserManagement() {
 
   useEffect(() => {
     const lowercasedFilter = searchTerm.toLowerCase()
-    const filtered = users.filter(user => {
-      return Object.keys(user).some(key =>
-        user[key].toString().toLowerCase().includes(lowercasedFilter)
-      )
+    const filtered = users.filter((user) => {
+      return Object.keys(user).some((key) => user[key].toString().toLowerCase().includes(lowercasedFilter))
     })
     setFilteredUsers(filtered)
   }, [users, searchTerm])
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:3004/users')
+      const token = localStorage.getItem("token")
+      const response = await fetch("http://localhost:3001/api/v1/users/list", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       const data = await response.json()
-      setUsers(data)
-      setFilteredUsers(data)
+      if (response.ok) {
+        setUsers(data.users)
+        setFilteredUsers(data.users)
+      } else {
+        console.error("Error loading data:", data.message)
+      }
     } catch (error) {
-      console.error('Error loading data:', error)
+      console.error("Error loading data:", error)
     }
   }
 
@@ -93,28 +91,40 @@ export default function UserManagement() {
   const handleEditSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await fetch(`http://localhost:3004/users/${editingUser.id}`, {
-        method: 'PUT',
+      const token = localStorage.getItem("token")
+      const response = await fetch(`http://localhost:3001/api/v1/users/update-profile`, {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(editingUser),
+        body: JSON.stringify({
+          first_name: editingUser.first_name,
+          last_name: editingUser.last_name,
+          telephone_number: editingUser.telephone_number,
+          location: editingUser.location,
+          security_word: editingUser.security_word,
+        }),
       })
       if (response.ok) {
         setIsEditModalVisible(false)
         fetchUsers()
       } else {
-        console.error('Failed to update user')
+        console.error("Failed to update user")
       }
     } catch (error) {
-      console.error('Error updating user:', error)
+      console.error("Error updating user:", error)
     }
   }
 
   const handleDeleteConfirm = async () => {
     try {
-      const response = await fetch(`http://localhost:3004/users/${editingUser.id}`, {
-        method: 'DELETE',
+      const token = localStorage.getItem("token")
+      const response = await fetch(`http://localhost:3001/api/v1/users/remove/${editingUser.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
       if (response.ok) {
         setIsDeleteModalVisible(false)
@@ -123,18 +133,18 @@ export default function UserManagement() {
           setSelectedUser(null)
         }
       } else {
-        console.error('Failed to delete user')
+        console.error("Failed to delete user")
       }
     } catch (error) {
-      console.error('Error deleting user:', error)
+      console.error("Error deleting user:", error)
     }
   }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
-    setEditingUser(prev => ({
+    setEditingUser((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }))
   }
 
@@ -155,11 +165,7 @@ export default function UserManagement() {
                 <CInputGroupText>
                   <CIcon icon={cilSearch} />
                 </CInputGroupText>
-                <CFormInput
-                  placeholder="Buscar usuarios..."
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                />
+                <CFormInput placeholder="Buscar usuarios..." value={searchTerm} onChange={handleSearchChange} />
               </CInputGroup>
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead className="text-nowrap">
@@ -172,17 +178,21 @@ export default function UserManagement() {
                 </CTableHead>
                 <CTableBody>
                   {filteredUsers.map((user, index) => (
-                    <CTableRow key={index} onClick={() => handleRowClick(user)} style={{ cursor: 'pointer' }}>
+                    <CTableRow key={index} onClick={() => handleRowClick(user)} style={{ cursor: "pointer" }}>
                       <CTableDataCell>
                         <div>{user.name}</div>
-                        <div className="small text-body-secondary text-nowrap">
-                          Se unió: {user.joinDate}
-                        </div>
+                        <div className="small text-body-secondary text-nowrap">Se unió: {user.joinDate}</div>
                       </CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell>{user.userType}</CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CButton color="primary" variant="ghost" size="sm" className="me-2" onClick={(e) => handleEdit(e, user)}>
+                        <CButton
+                          color="primary"
+                          variant="ghost"
+                          size="sm"
+                          className="me-2"
+                          onClick={(e) => handleEdit(e, user)}
+                        >
                           <CIcon icon={cilPencil} size="sm" />
                         </CButton>
                         <CButton color="danger" variant="ghost" size="sm" onClick={(e) => handleDelete(e, user)}>
@@ -209,7 +219,7 @@ export default function UserManagement() {
                 <CImage
                   rounded
                   thumbnail
-                  src={selectedUser.profilePicture || '/placeholder.svg?height=150&width=150'}
+                  src={selectedUser.profilePicture || "/placeholder.svg?height=150&width=150"}
                   width={150}
                   height={150}
                   alt="Profile Picture"
@@ -217,14 +227,34 @@ export default function UserManagement() {
               </CCol>
               <CCol md={8}>
                 <h3>{selectedUser.name}</h3>
-                <p><CIcon icon={cilEnvelopeClosed} className="me-2" /><strong>Email:</strong> {selectedUser.email}</p>
-                <p><CIcon icon={cilPhone} className="me-2" /><strong>Teléfono:</strong> {selectedUser.phone}</p>
-                <p><strong>Tipo de Usuario:</strong> {selectedUser.userType}</p>
-                <p><strong>País:</strong> {selectedUser.country}</p>
-                <p><CIcon icon={cilCalendar} className="me-2" /><strong>Fecha de nacimiento:</strong> {selectedUser.birthDate}</p>
-                <p><CIcon icon={cilLocationPin} className="me-2" /><strong>Dirección:</strong> {selectedUser.address}</p>
-                <p><strong>Género:</strong> {selectedUser.gender}</p>
-                <p><strong>Fecha de registro:</strong> {selectedUser.joinDate}</p>
+                <p>
+                  <CIcon icon={cilEnvelopeClosed} className="me-2" />
+                  <strong>Email:</strong> {selectedUser.email}
+                </p>
+                <p>
+                  <CIcon icon={cilPhone} className="me-2" />
+                  <strong>Teléfono:</strong> {selectedUser.phone}
+                </p>
+                <p>
+                  <strong>Tipo de Usuario:</strong> {selectedUser.userType}
+                </p>
+                <p>
+                  <strong>País:</strong> {selectedUser.country}
+                </p>
+                <p>
+                  <CIcon icon={cilCalendar} className="me-2" />
+                  <strong>Fecha de nacimiento:</strong> {selectedUser.birthDate}
+                </p>
+                <p>
+                  <CIcon icon={cilLocationPin} className="me-2" />
+                  <strong>Dirección:</strong> {selectedUser.address}
+                </p>
+                <p>
+                  <strong>Género:</strong> {selectedUser.gender}
+                </p>
+                <p>
+                  <strong>Fecha de registro:</strong> {selectedUser.joinDate}
+                </p>
               </CCol>
             </CRow>
           )}
@@ -244,10 +274,19 @@ export default function UserManagement() {
           <CForm onSubmit={handleEditSubmit}>
             <CFormInput
               type="text"
-              id="name"
-              name="name"
+              id="first_name"
+              name="first_name"
               label="Nombre"
-              value={editingUser?.name || ''}
+              value={editingUser?.first_name || ""}
+              onChange={handleInputChange}
+              className="mb-3"
+            />
+            <CFormInput
+              type="text"
+              id="last_name"
+              name="last_name"
+              label="Apellido"
+              value={editingUser?.last_name || ""}
               onChange={handleInputChange}
               className="mb-3"
             />
@@ -256,16 +295,16 @@ export default function UserManagement() {
               id="email"
               name="email"
               label="Email"
-              value={editingUser?.email || ''}
+              value={editingUser?.email || ""}
               onChange={handleInputChange}
               className="mb-3"
             />
             <CFormInput
               type="tel"
-              id="phone"
-              name="phone"
+              id="telephone_number"
+              name="telephone_number"
               label="Teléfono"
-              value={editingUser?.phone || ''}
+              value={editingUser?.telephone_number || ""}
               onChange={handleInputChange}
               className="mb-3"
             />
@@ -274,16 +313,16 @@ export default function UserManagement() {
               id="birthDate"
               name="birthDate"
               label="Fecha de nacimiento"
-              value={editingUser?.birthDate || ''}
+              value={editingUser?.birthDate || ""}
               onChange={handleInputChange}
               className="mb-3"
             />
             <CFormInput
               type="text"
-              id="address"
-              name="address"
+              id="location"
+              name="location"
               label="Dirección"
-              value={editingUser?.address || ''}
+              value={editingUser?.location || ""}
               onChange={handleInputChange}
               className="mb-3"
             />
@@ -291,7 +330,7 @@ export default function UserManagement() {
               id="userType"
               name="userType"
               label="Tipo de Usuario"
-              value={editingUser?.userType || ''}
+              value={editingUser?.userType || ""}
               onChange={handleInputChange}
               className="mb-3"
             >
@@ -305,7 +344,16 @@ export default function UserManagement() {
               id="country"
               name="country"
               label="País"
-              value={editingUser?.country || ''}
+              value={editingUser?.country || ""}
+              onChange={handleInputChange}
+              className="mb-3"
+            />
+            <CFormInput
+              type="text"
+              id="security_word"
+              name="security_word"
+              label="Palabra de seguridad"
+              value={editingUser?.security_word || ""}
               onChange={handleInputChange}
               className="mb-3"
             />
@@ -325,9 +373,7 @@ export default function UserManagement() {
         <CModalHeader>
           <CModalTitle>Confirmar Eliminación</CModalTitle>
         </CModalHeader>
-        <CModalBody>
-          ¿Está seguro de que desea eliminar al usuario {editingUser?.name}?
-        </CModalBody>
+        <CModalBody>¿Está seguro de que desea eliminar al usuario {editingUser?.name}?</CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setIsDeleteModalVisible(false)}>
             Cancelar
@@ -340,3 +386,4 @@ export default function UserManagement() {
     </>
   )
 }
+

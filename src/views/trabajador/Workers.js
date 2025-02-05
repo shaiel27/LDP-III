@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 import {
   CAvatar,
   CCard,
@@ -25,8 +25,8 @@ import {
   CForm,
   CFormInput,
   CFormSelect,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
+} from "@coreui/react"
+import CIcon from "@coreui/icons-react"
 import {
   cibCcAmex,
   cibCcApplePay,
@@ -49,15 +49,15 @@ import {
   cilPhone,
   cilCalendar,
   cilLocationPin,
-} from '@coreui/icons'
+} from "@coreui/icons"
 
 const avatarMap = {
-  avatar1: 'https://api.dicebear.com/7.x/initials/svg?seed=YA',
-  avatar2: 'https://api.dicebear.com/7.x/initials/svg?seed=AT',
-  avatar3: 'https://api.dicebear.com/7.x/initials/svg?seed=QE',
-  avatar4: 'https://api.dicebear.com/7.x/initials/svg?seed=EK',
-  avatar5: 'https://api.dicebear.com/7.x/initials/svg?seed=SB',
-  avatar6: 'https://api.dicebear.com/7.x/initials/svg?seed=FD',
+  avatar1: "https://api.dicebear.com/7.x/initials/svg?seed=YA",
+  avatar2: "https://api.dicebear.com/7.x/initials/svg?seed=AT",
+  avatar3: "https://api.dicebear.com/7.x/initials/svg?seed=QE",
+  avatar4: "https://api.dicebear.com/7.x/initials/svg?seed=EK",
+  avatar5: "https://api.dicebear.com/7.x/initials/svg?seed=SB",
+  avatar6: "https://api.dicebear.com/7.x/initials/svg?seed=FD",
 }
 
 const countryFlagMap = {
@@ -70,12 +70,12 @@ const countryFlagMap = {
 }
 
 const paymentIconMap = {
-  'General Practice': cibCcMastercard,
-  'Orthopedics': cibCcVisa,
-  'Dentistry': cibCcStripe,
-  'Cardiology': cibCcPaypal,
-  'Neurology': cibCcApplePay,
-  'Dermatology': cibCcAmex,
+  "General Practice": cibCcMastercard,
+  Orthopedics: cibCcVisa,
+  Dentistry: cibCcStripe,
+  Cardiology: cibCcPaypal,
+  Neurology: cibCcApplePay,
+  Dermatology: cibCcAmex,
 }
 
 export default function VetWorkersDashboard() {
@@ -91,11 +91,20 @@ export default function VetWorkersDashboard() {
 
   const fetchWorkers = async () => {
     try {
-      const response = await fetch('http://localhost:3004/workers')
+      const token = localStorage.getItem("token")
+      const response = await fetch("http://localhost:3001/api/v1/workers/all", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       const data = await response.json()
-      setWorkers(data)
+      if (response.ok) {
+        setWorkers(data.workers)
+      } else {
+        console.error("Error loading data:", data.message)
+      }
     } catch (error) {
-      console.error('Error loading data:', error)
+      console.error("Error loading data:", error)
     }
   }
 
@@ -118,10 +127,12 @@ export default function VetWorkersDashboard() {
   const handleEditSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await fetch(`http://localhost:3004/workers/${editingWorker.id}`, {
-        method: 'PUT',
+      const token = localStorage.getItem("token")
+      const response = await fetch(`http://localhost:3001/api/v1/workers/${editingWorker.id}`, {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(editingWorker),
       })
@@ -129,17 +140,21 @@ export default function VetWorkersDashboard() {
         setIsEditModalVisible(false)
         fetchWorkers()
       } else {
-        console.error('Failed to update worker')
+        console.error("Failed to update worker")
       }
     } catch (error) {
-      console.error('Error updating worker:', error)
+      console.error("Error updating worker:", error)
     }
   }
 
   const handleDeleteConfirm = async () => {
     try {
-      const response = await fetch(`http://localhost:3004/workers/${editingWorker.id}`, {
-        method: 'DELETE',
+      const token = localStorage.getItem("token")
+      const response = await fetch(`http://localhost:3001/api/v1/workers/${editingWorker.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
       if (response.ok) {
         setIsDeleteModalVisible(false)
@@ -148,34 +163,34 @@ export default function VetWorkersDashboard() {
           setSelectedWorker(null)
         }
       } else {
-        console.error('Failed to delete worker')
+        console.error("Failed to delete worker")
       }
     } catch (error) {
-      console.error('Error deleting worker:', error)
+      console.error("Error deleting worker:", error)
     }
   }
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    if (name.startsWith('schedule-')) {
-      const day = name.split('-')[1];
-      setEditingWorker(prev => ({
+    const { name, value } = e.target
+    if (name.startsWith("schedule-")) {
+      const day = name.split("-")[1]
+      setEditingWorker((prev) => ({
         ...prev,
         schedule: {
           ...prev.schedule,
-          [day]: value
-        }
-      }));
+          [day]: value,
+        },
+      }))
     } else {
-      setEditingWorker(prev => ({
+      setEditingWorker((prev) => ({
         ...prev,
         user: {
           ...prev.user,
-          [name]: value
-        }
-      }));
+          [name]: value,
+        },
+      }))
     }
-  };
+  }
 
   return (
     <>
@@ -200,14 +215,14 @@ export default function VetWorkersDashboard() {
                 </CTableHead>
                 <CTableBody>
                   {workers.map((item, index) => (
-                    <CTableRow key={index} onClick={() => handleRowClick(item)} style={{ cursor: 'pointer' }}>
+                    <CTableRow key={index} onClick={() => handleRowClick(item)} style={{ cursor: "pointer" }}>
                       <CTableDataCell className="text-center">
                         <CAvatar size="md" src={avatarMap[item.avatar.src]} status={item.avatar.status} />
                       </CTableDataCell>
                       <CTableDataCell>
                         <div>{item.user.name}</div>
                         <div className="small text-body-secondary text-nowrap">
-                          <span>{item.user.new ? 'Nuevo' : 'Experimentado'}</span> | Se unió: {item.user.registered}
+                          <span>{item.user.new ? "Nuevo" : "Experimentado"}</span> | Se unió: {item.user.registered}
                         </div>
                       </CTableDataCell>
                       <CTableDataCell>
@@ -224,7 +239,13 @@ export default function VetWorkersDashboard() {
                         <div className="fw-semibold text-nowrap">{item.activity}</div>
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CButton color="primary" variant="ghost" size="sm" className="me-2" onClick={(e) => handleEdit(e, item)}>
+                        <CButton
+                          color="primary"
+                          variant="ghost"
+                          size="sm"
+                          className="me-2"
+                          onClick={(e) => handleEdit(e, item)}
+                        >
                           <CIcon icon={cilPencil} size="sm" />
                         </CButton>
                         <CButton color="danger" variant="ghost" size="sm" onClick={(e) => handleDelete(e, item)}>
@@ -239,7 +260,7 @@ export default function VetWorkersDashboard() {
           </CCard>
         </CCol>
       </CRow>
-      
+
       {selectedWorker && (
         <>
           <CRow>
@@ -251,20 +272,49 @@ export default function VetWorkersDashboard() {
                 <CCardBody>
                   <CRow>
                     <CCol md={6}>
-                      <p><strong>País:</strong> {selectedWorker.country.name}</p>
-                      <p><strong>Especialización:</strong> {selectedWorker.payment.name}</p>
-                      <p><strong>Estado:</strong> {selectedWorker.user.new ? 'Nuevo' : 'Experimentado'}</p>
-                      <p><strong>Fecha de registro:</strong> {selectedWorker.user.registered}</p>
-                      <p><CIcon icon={cilEnvelopeClosed} className="me-2" /><strong>Email:</strong> {selectedWorker.user.email}</p>
-                      <p><CIcon icon={cilPhone} className="me-2" /><strong>Teléfono:</strong> {selectedWorker.user.phone}</p>
+                      <p>
+                        <strong>País:</strong> {selectedWorker.country.name}
+                      </p>
+                      <p>
+                        <strong>Especialización:</strong> {selectedWorker.payment.name}
+                      </p>
+                      <p>
+                        <strong>Estado:</strong> {selectedWorker.user.new ? "Nuevo" : "Experimentado"}
+                      </p>
+                      <p>
+                        <strong>Fecha de registro:</strong> {selectedWorker.user.registered}
+                      </p>
+                      <p>
+                        <CIcon icon={cilEnvelopeClosed} className="me-2" />
+                        <strong>Email:</strong> {selectedWorker.user.email}
+                      </p>
+                      <p>
+                        <CIcon icon={cilPhone} className="me-2" />
+                        <strong>Teléfono:</strong> {selectedWorker.user.phone}
+                      </p>
                     </CCol>
                     <CCol md={6}>
-                      <p><strong>Última actividad:</strong> {selectedWorker.activity}</p>
-                      <p><strong>Periodo de uso:</strong> {selectedWorker.usage.period}</p>
-                      <p><strong>Pacientes atendidos:</strong> {selectedWorker.usage.value}</p>
-                      <p><strong>Rendimiento:</strong> <CProgress thin color={selectedWorker.usage.color} value={selectedWorker.usage.value} /></p>
-                      <p><CIcon icon={cilCalendar} className="me-2" /><strong>Fecha de nacimiento:</strong> {selectedWorker.user.birthDate}</p>
-                      <p><CIcon icon={cilLocationPin} className="me-2" /><strong>Dirección:</strong> {selectedWorker.user.address}</p>
+                      <p>
+                        <strong>Última actividad:</strong> {selectedWorker.activity}
+                      </p>
+                      <p>
+                        <strong>Periodo de uso:</strong> {selectedWorker.usage.period}
+                      </p>
+                      <p>
+                        <strong>Pacientes atendidos:</strong> {selectedWorker.usage.value}
+                      </p>
+                      <p>
+                        <strong>Rendimiento:</strong>{" "}
+                        <CProgress thin color={selectedWorker.usage.color} value={selectedWorker.usage.value} />
+                      </p>
+                      <p>
+                        <CIcon icon={cilCalendar} className="me-2" />
+                        <strong>Fecha de nacimiento:</strong> {selectedWorker.user.birthDate}
+                      </p>
+                      <p>
+                        <CIcon icon={cilLocationPin} className="me-2" />
+                        <strong>Dirección:</strong> {selectedWorker.user.address}
+                      </p>
                     </CCol>
                   </CRow>
                 </CCardBody>
@@ -370,7 +420,7 @@ export default function VetWorkersDashboard() {
               id="name"
               name="name"
               label="Nombre"
-              value={editingWorker?.user.name || ''}
+              value={editingWorker?.user.name || ""}
               onChange={handleInputChange}
               className="mb-3"
             />
@@ -379,7 +429,7 @@ export default function VetWorkersDashboard() {
               id="email"
               name="email"
               label="Email"
-              value={editingWorker?.user.email || ''}
+              value={editingWorker?.user.email || ""}
               onChange={handleInputChange}
               className="mb-3"
             />
@@ -388,7 +438,7 @@ export default function VetWorkersDashboard() {
               id="phone"
               name="phone"
               label="Teléfono"
-              value={editingWorker?.user.phone || ''}
+              value={editingWorker?.user.phone || ""}
               onChange={handleInputChange}
               className="mb-3"
             />
@@ -397,7 +447,7 @@ export default function VetWorkersDashboard() {
               id="birthDate"
               name="birthDate"
               label="Fecha de nacimiento"
-              value={editingWorker?.user.birthDate || ''}
+              value={editingWorker?.user.birthDate || ""}
               onChange={handleInputChange}
               className="mb-3"
             />
@@ -406,7 +456,7 @@ export default function VetWorkersDashboard() {
               id="address"
               name="address"
               label="Dirección"
-              value={editingWorker?.user.address || ''}
+              value={editingWorker?.user.address || ""}
               onChange={handleInputChange}
               className="mb-3"
             />
@@ -414,26 +464,34 @@ export default function VetWorkersDashboard() {
               id="country"
               name="country"
               label="País"
-              value={editingWorker?.country.name || ''}
-              onChange={(e) => setEditingWorker(prev => ({ ...prev, country: { ...prev.country, name: e.target.value } }))}
+              value={editingWorker?.country.name || ""}
+              onChange={(e) =>
+                setEditingWorker((prev) => ({ ...prev, country: { ...prev.country, name: e.target.value } }))
+              }
               className="mb-3"
             >
               <option value="">Seleccionar País</option>
-              {Object.keys(countryFlagMap).map(country => (
-                <option key={country} value={country}>{country}</option>
+              {Object.keys(countryFlagMap).map((country) => (
+                <option key={country} value={country}>
+                  {country}
+                </option>
               ))}
             </CFormSelect>
             <CFormSelect
               id="specialization"
               name="specialization"
               label="Especialización"
-              value={editingWorker?.payment.name || ''}
-              onChange={(e) => setEditingWorker(prev => ({ ...prev, payment: { ...prev.payment, name: e.target.value } }))}
+              value={editingWorker?.payment.name || ""}
+              onChange={(e) =>
+                setEditingWorker((prev) => ({ ...prev, payment: { ...prev.payment, name: e.target.value } }))
+              }
               className="mb-3"
             >
               <option value="">Seleccionar Especialización</option>
-              {Object.keys(paymentIconMap).map(specialization => (
-                <option key={specialization} value={specialization}>{specialization}</option>
+              {Object.keys(paymentIconMap).map((specialization) => (
+                <option key={specialization} value={specialization}>
+                  {specialization}
+                </option>
               ))}
             </CFormSelect>
             <div className="mb-3">
@@ -467,9 +525,7 @@ export default function VetWorkersDashboard() {
         <CModalHeader>
           <CModalTitle>Confirmar Eliminación</CModalTitle>
         </CModalHeader>
-        <CModalBody>
-          ¿Está seguro de que desea eliminar al empleado {editingWorker?.user.name}?
-        </CModalBody>
+        <CModalBody>¿Está seguro de que desea eliminar al empleado {editingWorker?.user.name}?</CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setIsDeleteModalVisible(false)}>
             Cancelar
